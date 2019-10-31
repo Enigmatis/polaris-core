@@ -1,0 +1,80 @@
+{
+  "name": "@enigmatis/polaris-core",
+  "version": "0.0.1",
+  "description": "Apollo Server based library with extra features",
+  "main": "dist/src/main.js",
+  "types": "dist/src/main.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.json",
+    "test": "jest --runInBand --detectOpenHandles",
+    "coverage": "jest --runInBand --detectOpenHandles --coverage",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once",
+    "prepare": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true
+        }
+      ],
+      "@semantic-release/github"
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      {
+        "path": "@semantic-release/git",
+        "assets": [
+          "package.json",
+          "package-lock.json",
+          "CHANGELOG.md"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Enigmatis/polaris-core.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Enigmatis/polaris-core/issues"
+  },
+  "homepage": "https://github.com/Enigmatis/polaris-core#readme",
+  "dependencies": {
+    "@enigmatis/polaris-common": "^1.0.1",
+    "@enigmatis/polaris-graphql-logger": "^1.0.2",
+    "@enigmatis/polaris-middlewares": "^1.0.0",
+    "@enigmatis/polaris-schema": "^1.0.4",
+    "apollo-server-core": "^2.9.7"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "@semantic-release/changelog": "^3.0.5",
+    "@semantic-release/git": "^7.0.17",
+    "@types/jest": "^24.0.21",
+    "husky": "^3.0.9",
+    "jest": "^24.1.0",
+    "rimraf": "^3.0.0",
+    "travis-deploy-once": "^5.0.11",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
