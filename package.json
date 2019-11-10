@@ -10,7 +10,10 @@
     "coverage": "jest --runInBand --detectOpenHandles --coverage",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once",
-    "prepare": "npm run build"
+    "prepare": "npm run lint:fix && npm run build",
+    "lint": "npm run tslint-check && tslint -p .",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "lint:fix": "npm run tslint-check && tslint -p . --fix"
   },
   "publishConfig": {
     "access": "public"
@@ -53,28 +56,35 @@
   },
   "homepage": "https://github.com/Enigmatis/polaris-core#readme",
   "dependencies": {
-    "@enigmatis/polaris-common": "^1.0.1",
+    "@enigmatis/polaris-common": "^1.0.6",
     "@enigmatis/polaris-graphql-logger": "^1.0.2",
     "@enigmatis/polaris-middlewares": "^1.0.0",
-    "@enigmatis/polaris-schema": "^1.0.4",
+    "@enigmatis/polaris-schema": "^1.0.5",
     "apollo-server-core": "^2.9.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@semantic-release/changelog": "^3.0.5",
-    "@semantic-release/git": "^7.0.17",
-    "@types/jest": "^24.0.21",
+    "@semantic-release/git": "^7.0.18",
+    "@types/jest": "^24.0.22",
     "husky": "^3.0.9",
-    "jest": "^24.1.0",
+    "jest": "24.1.0",
+    "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
     "travis-deploy-once": "^5.0.11",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.4"
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-consistent-codestyle": "^1.16.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.7.2"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint:fix"
     }
   }
 }
