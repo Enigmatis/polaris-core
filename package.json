@@ -60,7 +60,8 @@
     "@enigmatis/polaris-graphql-logger": "^1.0.2",
     "@enigmatis/polaris-middlewares": "^1.0.0",
     "@enigmatis/polaris-schema": "^1.0.5",
-    "apollo-server-core": "^2.9.7"
+    "apollo-server": "^2.9.7",
+    "http-status": "^1.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
