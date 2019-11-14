@@ -14,7 +14,9 @@
       "src/type-declarations"
     ],
     "types": [
-      "jest"
+      "jest",
+      "ip",
+      "uuid"
     ],
     "declaration": true,
     "lib": [
