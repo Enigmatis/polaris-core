@@ -23,13 +23,14 @@ import { address } from 'ip';
 import { v4 } from 'uuid';
 import { formatError, PolarisServerConfig } from '..';
 import { MiddlewareConfiguration } from '../config/middleware-configuration';
+import { middlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
 
 export class PolarisServer {
     public static getDefaultMiddlewareConfiguration(): MiddlewareConfiguration {
         return {
-            allowDataVersionMiddleware: true,
+            allowDataVersionAndIrrelevantEntitiesMiddleware: true,
             allowRealityMiddleware: true,
             allowSoftDeleteMiddleware: true,
         };
@@ -70,9 +71,10 @@ export class PolarisServer {
             },
         };
     }
-    public apolloServer: ApolloServer;
-    public polarisServerConfig?: PolarisServerConfig;
-    public polarisGraphQLLogger: PolarisGraphQLLogger;
+
+    private readonly polarisServerConfig?: PolarisServerConfig;
+    private apolloServer: ApolloServer;
+    private polarisGraphQLLogger: PolarisGraphQLLogger;
 
     constructor(config: PolarisServerConfig) {
         this.polarisServerConfig = config;
@@ -115,12 +117,18 @@ export class PolarisServer {
                 this.polarisServerConfig.typeDefs,
                 this.polarisServerConfig.resolvers,
             );
-            return applyMiddleware(
-                schema,
-                dataVersionMiddleware,
-                softDeletedMiddleware,
-                realitiesMiddleware,
-            );
+
+            const allowedMiddlewares: any = [];
+            const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
+            for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
+                if (value) {
+                    const middlewares = middlewaresMap.get(key);
+                    if (middlewares) {
+                        middlewares.forEach(x => allowedMiddlewares.push(x));
+                    }
+                }
+            }
+            return applyMiddleware(schema, ...allowedMiddlewares);
         }
     }
 }

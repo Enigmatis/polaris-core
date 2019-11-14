@@ -1,5 +1,5 @@
 export interface MiddlewareConfiguration {
-    allowDataVersionMiddleware: boolean;
+    allowDataVersionAndIrrelevantEntitiesMiddleware: boolean;
     allowSoftDeleteMiddleware: boolean;
     allowRealityMiddleware: boolean;
 }
