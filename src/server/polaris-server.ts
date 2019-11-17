@@ -10,19 +10,14 @@ import {
 } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import {
-    dataVersionMiddleware,
-    realitiesMiddleware,
-    softDeletedMiddleware,
-} from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
+import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import { address } from 'ip';
 import { v4 } from 'uuid';
-import { formatError, PolarisServerConfig } from '..';
-import { MiddlewareConfiguration } from '../config/middleware-configuration';
+import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
 import { middlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
@@ -44,17 +39,18 @@ export class PolarisServer {
         };
     }
 
-    private static getPolarisContext(context: any): PolarisGraphQLContext {
-        const requestId = context.req.headers[REQUEST_ID] ? context.req.headers[REQUEST_ID] : v4();
+    public static getPolarisContext(context: any): PolarisGraphQLContext {
+        const httpHeaders = context.req.headers;
+        const requestId = httpHeaders.headers[REQUEST_ID] ? httpHeaders.headers[REQUEST_ID] : v4();
         return {
             requestHeaders: {
-                dataVersion: +context.req.headers[DATA_VERSION],
                 requestId,
-                realityId: +context.req.headers[REALITY_ID],
-                includeLinkedOper: context.req.headers[INCLUDE_LINKED_OPER] === 'true',
-                requestingSystemId: context.req.headers[REQUESTING_SYS],
-                requestingSystemName: context.req.headers[REQUESTING_SYS_NAME],
-                upn: context.req.headers[OICD_CLAIM_UPN],
+                dataVersion: +httpHeaders[DATA_VERSION],
+                realityId: +httpHeaders[REALITY_ID],
+                includeLinkedOper: httpHeaders[INCLUDE_LINKED_OPER] === 'true',
+                requestingSystemId: httpHeaders[REQUESTING_SYS],
+                requestingSystemName: httpHeaders[REQUESTING_SYS_NAME],
+                upn: httpHeaders[OICD_CLAIM_UPN],
             },
             responseHeaders: {
                 requestId,
@@ -72,7 +68,7 @@ export class PolarisServer {
         };
     }
 
-    private readonly polarisServerConfig?: PolarisServerConfig;
+    private readonly polarisServerConfig: PolarisServerConfig;
     private apolloServer: ApolloServer;
     private polarisGraphQLLogger: PolarisGraphQLLogger;
 
@@ -84,51 +80,60 @@ export class PolarisServer {
         if (!this.polarisServerConfig.loggerConfiguration) {
             this.polarisServerConfig.loggerConfiguration = PolarisServer.getDefaultLoggerConfiguration();
         }
+
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
             this.polarisServerConfig.applicationLogProperties,
             this.polarisServerConfig.loggerConfiguration,
         );
+
+        const serverContext: (context: any) => any = this.polarisServerConfig.customContext
+            ? this.polarisServerConfig.customContext
+            : PolarisServer.getPolarisContext;
+
         this.apolloServer = new ApolloServer({
             schema: this.getSchemaWithMiddlewares(),
             formatError,
-            context: ctx => PolarisServer.getPolarisContext(ctx),
+            context: ctx => serverContext(ctx),
         });
         this.apolloServer.applyMiddleware({ app });
         app.use(this.apolloServer.getMiddleware());
     }
 
-    public async start() {
-        if (this.polarisServerConfig) {
-            await app.listen({ port: this.polarisServerConfig.port });
-            this.polarisGraphQLLogger.info(
-                `Server started at http://localhost:${this.polarisServerConfig.port}${this.apolloServer.graphqlPath}`,
-            );
-        }
+    public async start(): Promise<void> {
+        await app.listen({ port: this.polarisServerConfig.port });
+        this.polarisGraphQLLogger.info(
+            `Server started at http://localhost:${this.polarisServerConfig.port}${this.apolloServer.graphqlPath}`,
+        );
     }
 
-    public async stop() {
+    public async stop(): Promise<void> {
         await this.apolloServer.stop();
         this.polarisGraphQLLogger.info('Server stopped');
     }
 
-    private getSchemaWithMiddlewares() {
-        if (this.polarisServerConfig) {
-            const schema = makeExecutablePolarisSchema(
-                this.polarisServerConfig.typeDefs,
-                this.polarisServerConfig.resolvers,
-            );
+    private getSchemaWithMiddlewares(): GraphQLSchema {
+        const schema = makeExecutablePolarisSchema(
+            this.polarisServerConfig.typeDefs,
+            this.polarisServerConfig.resolvers,
+        );
+        const middlewares = this.getAllowedPolarisMiddlewares();
+        if (this.polarisServerConfig.customMiddlewares) {
+            middlewares.push(this.polarisServerConfig.customMiddlewares);
+        }
+        return applyMiddleware(schema, ...middlewares);
+    }
 
-            const allowedMiddlewares: any = [];
-            const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
-            for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
-                if (value) {
-                    const middlewares = middlewaresMap.get(key);
-                    if (middlewares) {
-                        middlewares.forEach(x => allowedMiddlewares.push(x));
-                    }
+    private getAllowedPolarisMiddlewares(): any[] {
+        const allowedMiddlewares: any = [];
+        const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
+        for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
+            if (value) {
+                const middlewares = middlewaresMap.get(key);
+                if (middlewares) {
+                    middlewares.forEach(x => allowedMiddlewares.push(x));
                 }
             }
-            return applyMiddleware(schema, ...allowedMiddlewares);
         }
+        return allowedMiddlewares;
     }
 }
