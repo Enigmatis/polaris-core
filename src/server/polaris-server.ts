@@ -15,9 +15,10 @@ import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
-import { address } from 'ip';
-import { v4 } from 'uuid';
+import { address as getIpAddress } from 'ip';
+import { v4 as uuid } from 'uuid';
 import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
+import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { middlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
@@ -41,7 +42,7 @@ export class PolarisServer {
 
     public static getPolarisContext(context: any): PolarisGraphQLContext {
         const httpHeaders = context.req.headers;
-        const requestId = httpHeaders.headers[REQUEST_ID] ? httpHeaders.headers[REQUEST_ID] : v4();
+        const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
         return {
             requestHeaders: {
                 requestId,
@@ -55,16 +56,14 @@ export class PolarisServer {
             responseHeaders: {
                 requestId,
             },
-            clientIp: address(),
+            clientIp: getIpAddress(),
             request: {
                 query: context.req.body.query,
                 operationName: context.req.body.operationName,
                 polarisVariables: context.req.body.variables,
             },
             response: context.res,
-            returnedExtensions: {
-                globalDataVersion: 0,
-            },
+            returnedExtensions: {} as any,
         };
     }
 
@@ -94,6 +93,7 @@ export class PolarisServer {
             schema: this.getSchemaWithMiddlewares(),
             formatError,
             context: ctx => serverContext(ctx),
+            plugins: [new ExtensionsPlugin(this.polarisGraphQLLogger)],
         });
         this.apolloServer.applyMiddleware({ app });
         app.use(this.apolloServer.getMiddleware());
