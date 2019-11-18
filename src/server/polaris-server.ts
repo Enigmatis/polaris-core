@@ -67,9 +67,9 @@ export class PolarisServer {
         };
     }
 
+    private readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
-    private apolloServer: ApolloServer;
-    private polarisGraphQLLogger: PolarisGraphQLLogger;
+    private readonly polarisGraphQLLogger: PolarisGraphQLLogger;
 
     constructor(config: PolarisServerConfig) {
         this.polarisServerConfig = config;
@@ -95,15 +95,21 @@ export class PolarisServer {
             context: ctx => serverContext(ctx),
             plugins: [new ExtensionsPlugin(this.polarisGraphQLLogger)],
         });
-        this.apolloServer.applyMiddleware({ app });
-        app.use(this.apolloServer.getMiddleware());
+
+        const endpoint = `${this.polarisServerConfig.applicationLogProperties.version}/graphql`;
+        app.use(
+            this.apolloServer.getMiddleware({
+                path: `/${endpoint}`,
+            }),
+        );
+        app.use('/', (req: any, res: any) => {
+            res.redirect(endpoint);
+        });
     }
 
     public async start(): Promise<void> {
         await app.listen({ port: this.polarisServerConfig.port });
-        this.polarisGraphQLLogger.info(
-            `Server started at http://localhost:${this.polarisServerConfig.port}${this.apolloServer.graphqlPath}`,
-        );
+        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
@@ -118,7 +124,7 @@ export class PolarisServer {
         );
         const middlewares = this.getAllowedPolarisMiddlewares();
         if (this.polarisServerConfig.customMiddlewares) {
-            middlewares.push(this.polarisServerConfig.customMiddlewares);
+            middlewares.push(...this.polarisServerConfig.customMiddlewares);
         }
         return applyMiddleware(schema, ...middlewares);
     }
