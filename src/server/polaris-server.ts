@@ -19,7 +19,7 @@ import { address as getIpAddress } from 'ip';
 import { v4 as uuid } from 'uuid';
 import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
-import { middlewaresMap } from '../middlewares/middlewares-map';
+import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
 
@@ -132,6 +132,10 @@ export class PolarisServer {
     private getAllowedPolarisMiddlewares(): any[] {
         const allowedMiddlewares: any = [];
         const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
+        const middlewaresMap = getMiddlewaresMap(
+            this.polarisGraphQLLogger,
+            this.polarisServerConfig.connection,
+        );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
                 const middlewares = middlewaresMap.get(key);

@@ -1,4 +1,5 @@
 import { ApplicationLogProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
+import { Connection } from '@enigmatis/polaris-typeorm';
 import { MiddlewareConfiguration } from '../index';
 
 export interface PolarisServerConfig {
@@ -10,5 +11,5 @@ export interface PolarisServerConfig {
     customContext?: (context: any) => any;
     loggerConfiguration?: LoggerConfiguration;
     middlewareConfiguration?: MiddlewareConfiguration;
-    endpoint?: string;
+    connection?: Connection;
 }
