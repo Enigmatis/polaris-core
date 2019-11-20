@@ -11,18 +11,20 @@ export const getMiddlewaresMap = (
     logger: PolarisGraphQLLogger,
     connection?: Connection,
 ): Map<string, any[]> => {
-    const dataVersionMiddleware = new DataVersionMiddleware(logger, connection).getMiddleware;
-    const irrelevantEntitiesMiddleware = new IrrelevantEntitiesMiddleware(logger, connection)
-        .getMiddleware;
-    const realitiesMiddleware = new RealitiesMiddleware(logger).getMiddleware;
-    const softDeleteMiddleware = new SoftDeleteMiddleware(logger).getMiddleware;
+    const softDeleteMiddleware = new SoftDeleteMiddleware(logger).getMiddleware();
+    const realitiesMiddleware = new RealitiesMiddleware(logger).getMiddleware();
+    const dataVersionMiddleware = new DataVersionMiddleware(logger, connection).getMiddleware();
+    const irrelevantEntitiesMiddleware = new IrrelevantEntitiesMiddleware(
+        logger,
+        connection,
+    ).getMiddleware();
 
     return new Map([
+        ['allowSoftDeleteMiddleware', [realitiesMiddleware]],
+        ['allowRealityMiddleware', [softDeleteMiddleware]],
         [
             'allowDataVersionAndIrrelevantEntitiesMiddleware',
             [dataVersionMiddleware, irrelevantEntitiesMiddleware],
         ],
-        ['allowSoftDeleteMiddleware', [realitiesMiddleware]],
-        ['allowRealityMiddleware', [softDeleteMiddleware]],
     ]);
 };

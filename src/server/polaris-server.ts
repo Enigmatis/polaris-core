@@ -19,6 +19,7 @@ import { address as getIpAddress } from 'ip';
 import { v4 as uuid } from 'uuid';
 import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
+import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
@@ -43,18 +44,22 @@ export class PolarisServer {
     public static getPolarisContext(context: any): PolarisGraphQLContext {
         const httpHeaders = context.req.headers;
         const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
+        const upn = httpHeaders[OICD_CLAIM_UPN];
+        const realityId = +httpHeaders[REALITY_ID];
         return {
             requestHeaders: {
+                upn,
                 requestId,
+                realityId,
                 dataVersion: +httpHeaders[DATA_VERSION],
-                realityId: +httpHeaders[REALITY_ID],
                 includeLinkedOper: httpHeaders[INCLUDE_LINKED_OPER] === 'true',
                 requestingSystemId: httpHeaders[REQUESTING_SYS],
                 requestingSystemName: httpHeaders[REQUESTING_SYS_NAME],
-                upn: httpHeaders[OICD_CLAIM_UPN],
             },
             responseHeaders: {
+                upn,
                 requestId,
+                realityId,
             },
             clientIp: getIpAddress(),
             request: {
@@ -93,15 +98,14 @@ export class PolarisServer {
             schema: this.getSchemaWithMiddlewares(),
             formatError,
             context: ctx => serverContext(ctx),
-            plugins: [new ExtensionsPlugin(this.polarisGraphQLLogger)],
+            plugins: [
+                new ExtensionsPlugin(this.polarisGraphQLLogger),
+                new ResponseHeadersPlugin(this.polarisGraphQLLogger),
+            ],
         });
 
         const endpoint = `${this.polarisServerConfig.applicationLogProperties.version}/graphql`;
-        app.use(
-            this.apolloServer.getMiddleware({
-                path: `/${endpoint}`,
-            }),
-        );
+        app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use('/', (req: any, res: any) => {
             res.redirect(endpoint);
         });
