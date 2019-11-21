@@ -1,4 +1,4 @@
-import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server';
+import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-express';
 import * as status from 'http-status';
 import { formatError, PolarisError } from '../../src';
 

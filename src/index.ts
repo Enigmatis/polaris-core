@@ -1,2 +1,11 @@
+export { PolarisServer } from './server/polaris-server';
+export { PolarisServerConfig } from './config/polaris-server-config';
+export { MiddlewareConfiguration } from './config/middleware-configuration';
 export { formatError } from './errors/error-formatter';
 export { PolarisError } from './errors/polaris-error';
+export { gql } from 'apollo-server-express';
+export * from '@enigmatis/polaris-logs';
+export * from '@enigmatis/polaris-common';
+export * from '@enigmatis/polaris-graphql-logger';
+export * from '@enigmatis/polaris-middlewares';
+export * from '@enigmatis/polaris-schema';
