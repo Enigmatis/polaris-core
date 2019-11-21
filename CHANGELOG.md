@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Enigmatis/polaris-core/compare/v1.0.0...v1.0.1) (2019-11-21)
+
+
+### Bug Fixes
+
+* fixed main and types in package.json ([2f1ea93](https://github.com/Enigmatis/polaris-core/commit/2f1ea93763024a40e378af05394802cbc8c7d2f1))
+
 # 1.0.0 (2019-11-21)
 
 
