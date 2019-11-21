@@ -1,6 +1,6 @@
 {
   "name": "@enigmatis/polaris-core",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Apollo Server based library with extra features",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
