@@ -2,8 +2,8 @@
   "name": "@enigmatis/polaris-core",
   "version": "1.0.0",
   "description": "Apollo Server based library with extra features",
-  "main": "dist/src/main.js",
-  "types": "dist/src/main.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.json",
     "test": "jest --runInBand --detectOpenHandles",
