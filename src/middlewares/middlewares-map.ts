@@ -20,8 +20,8 @@ export const getMiddlewaresMap = (
     ).getMiddleware();
 
     return new Map([
-        ['allowSoftDeleteMiddleware', [realitiesMiddleware]],
-        ['allowRealityMiddleware', [softDeleteMiddleware]],
+        ['allowSoftDeleteMiddleware', [softDeleteMiddleware]],
+        ['allowRealityMiddleware', [realitiesMiddleware]],
         [
             'allowDataVersionAndIrrelevantEntitiesMiddleware',
             [dataVersionMiddleware, irrelevantEntitiesMiddleware],
