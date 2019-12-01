@@ -11,6 +11,7 @@ import {
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
+import { Connection } from '@enigmatis/polaris-typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -41,12 +42,12 @@ export class PolarisServer {
         };
     }
 
-    public static getPolarisContext(context: any): PolarisGraphQLContext {
+    public static getPolarisContext(context: any, connection?: Connection): PolarisGraphQLContext {
         const httpHeaders = context.req.headers;
         const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
         const upn = httpHeaders[OICD_CLAIM_UPN];
         const realityId = +httpHeaders[REALITY_ID];
-        return {
+        const polarisContext = {
             requestHeaders: {
                 upn,
                 requestId,
@@ -70,6 +71,19 @@ export class PolarisServer {
             response: context.res,
             returnedExtensions: {} as any,
         };
+
+        if (
+            connection &&
+            connection.manager &&
+            connection.manager.queryRunner &&
+            connection.manager.queryRunner.data
+        ) {
+            connection.manager.queryRunner.data = {
+                requestHeaders: polarisContext.requestHeaders,
+            };
+        }
+
+        return polarisContext;
     }
 
     private readonly apolloServer: ApolloServer;
@@ -85,14 +99,19 @@ export class PolarisServer {
             this.polarisServerConfig.loggerConfiguration = PolarisServer.getDefaultLoggerConfiguration();
         }
 
+        if (!this.polarisServerConfig.applicationProperties) {
+            this.polarisServerConfig.applicationProperties = { version: 'v1' };
+        }
+
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-            this.polarisServerConfig.applicationLogProperties,
             this.polarisServerConfig.loggerConfiguration,
+            this.polarisServerConfig.applicationProperties,
         );
 
-        const serverContext: (context: any) => any = this.polarisServerConfig.customContext
-            ? this.polarisServerConfig.customContext
-            : PolarisServer.getPolarisContext;
+        const serverContext: (context: any) => any = (ctx: any) =>
+            this.polarisServerConfig.customContext
+                ? this.polarisServerConfig.customContext(ctx, this.polarisServerConfig.connection)
+                : PolarisServer.getPolarisContext(ctx, this.polarisServerConfig.connection);
 
         this.apolloServer = new ApolloServer({
             schema: this.getSchemaWithMiddlewares(),
@@ -104,7 +123,7 @@ export class PolarisServer {
             ],
         });
 
-        const endpoint = `${this.polarisServerConfig.applicationLogProperties.version}/graphql`;
+        const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use('/', (req: any, res: any) => {
             res.redirect(endpoint);
