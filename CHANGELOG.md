@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/Enigmatis/polaris-core/compare/v1.0.2...v1.0.3) (2019-12-01)
+
+
+### Bug Fixes
+
+* fix the middleware map bug ([8a5e103](https://github.com/Enigmatis/polaris-core/commit/8a5e103d30af488885b51cf274254039d7877f57))
+
 ## [1.0.2](https://github.com/Enigmatis/polaris-core/compare/v1.0.1...v1.0.2) (2019-11-25)
 
 
