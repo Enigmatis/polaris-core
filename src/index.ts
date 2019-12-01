@@ -10,3 +10,4 @@ export * from '@enigmatis/polaris-graphql-logger';
 export * from '@enigmatis/polaris-middlewares';
 export * from '@enigmatis/polaris-schema';
 export * from '@enigmatis/polaris-typeorm';
+export { Entity } from '@enigmatis/polaris-typeorm';
