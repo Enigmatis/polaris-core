@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/Enigmatis/polaris-core/compare/v1.0.3...v1.0.4) (2019-12-01)
+
+
+### Bug Fixes
+
+* updated logs version ([35d4c3a](https://github.com/Enigmatis/polaris-core/commit/35d4c3a0e6d924aa6a41e4e21cb368d075dc2e57))
+
 ## [1.0.3](https://github.com/Enigmatis/polaris-core/compare/v1.0.2...v1.0.3) (2019-12-01)
 
 
