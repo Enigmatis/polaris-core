@@ -5,7 +5,7 @@
 [![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
 [![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
 
-This is the core library of polaris. Through this core project we supply you with all of the polaris products.
+This is the core library of polaris. This core is the best way to quickly build a data service based on polaris products.
 
 ## Features
 
@@ -36,7 +36,7 @@ Through this interface you should set the following configurations which will be
     If you don't provide those properties, the core will put 'v1' in the version.
 -   **customMiddlewares** (_any[] - optional_) - Custom middlewares that can be provided the `PolarisServer` with.
 -   **customContext** (_(context: any, connection?: Connection) => any - optional_) - You can provide the `PolarisServer` your own custom context.
-    If you do not set your custom middleware, the core will use a default core.
+    If you do not set your custom context, the core will use a default context.
 -   **loggerConfiguration** (_LoggerConfiguration - optional_) - This is an interface that defines the logger in the `PolarisServer`.
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
