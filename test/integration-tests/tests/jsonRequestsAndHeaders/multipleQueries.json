@@ -1,0 +1,7 @@
+{
+  "request": "{\n  a:bookByTitle(title:\"3\"){\n    title\n    id\n  }\n  b:bookByTitle(title:\"4\"){\n    title\n    id\n  }\n}",
+  "headers": {
+    "reality-id": 3,
+    "data-version": 1
+  }
+}

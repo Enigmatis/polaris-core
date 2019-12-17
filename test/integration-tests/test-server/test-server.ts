@@ -1,8 +1,12 @@
-import { CommonModel, ConnectionOptions, DataVersion } from '@enigmatis/polaris-typeorm';
+import {
+    CommonModel,
+    ConnectionOptions,
+    DataVersion,
+    getConnectionManager,
+} from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
-import { connection, initConnection } from './connection-manager';
-import { deleteTables } from './data-initalizer';
-import { loggerConfig, polarisGraphQLLogger } from './logger';
+import { initConnection } from './connection-manager';
+import { loggerConfig} from './logger';
 import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
@@ -15,23 +19,23 @@ const connectionOptions: ConnectionOptions = {
     logging: true,
 };
 
-let server: PolarisServer;
-
 export async function startTestServer(): Promise<PolarisServer> {
-    jest.setTimeout(15000);
+    jest.setTimeout(150000);
     await initConnection(connectionOptions);
-    server = new PolarisServer({
+    const server = new PolarisServer({
         typeDefs,
         resolvers,
         port: polarisProperties.port,
         loggerConfiguration: loggerConfig,
-        connection,
+        connection: getConnectionManager().get(),
     });
     await server.start();
     return server;
 }
 
-export async function stopTestServer() {
-    await connection.close();
+export async function stopTestServer(server: PolarisServer) {
     await server.stop();
+    await getConnectionManager()
+        .get()
+        .close();
 }

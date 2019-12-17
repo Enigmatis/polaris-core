@@ -1,0 +1,4 @@
+{
+  "request": "mutation($id:String!){\n  deleteBook(id:$id)\n}",
+  "headers": { "reality-id": 3 }
+}

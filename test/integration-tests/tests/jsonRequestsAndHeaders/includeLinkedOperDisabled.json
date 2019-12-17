@@ -1,4 +1,4 @@
 {
-  "request": "{\n  allBooks {\n    title\n    author {\n      firstName\n      lastName\n    }\n  }\n}",
-  "headers": "{\n  \"reality-id\": 3\n}"
+  "request": "{\n  allBooks {\n    id\n    title\n    realityId\n    author {\n      firstName\n      lastName\n    }\n  }\n}",
+  "headers": {"reality-id": 3}
 }

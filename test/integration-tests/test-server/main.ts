@@ -1,6 +1,11 @@
-import { CommonModel, ConnectionOptions, DataVersion } from '@enigmatis/polaris-typeorm';
+import {
+    CommonModel,
+    ConnectionOptions,
+    DataVersion,
+    getConnectionManager,
+} from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src/index';
-import { connection, initConnection } from './connection-manager';
+import { initConnection } from './connection-manager';
 import { initializeDatabase } from './data-initalizer';
 import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
@@ -23,7 +28,7 @@ const startApp = async () => {
         resolvers,
         port: polarisProperties.port,
         loggerConfiguration: loggerConfig,
-        connection,
+        connection: getConnectionManager().get(),
     });
     await server.start();
 };

@@ -3,11 +3,14 @@ export const typeDefs = `
         allBooks: [Book]!
         authorById(id: String!): Author
         bookByTitle(title: String!): [Book]!
+        authorsByName(name: String!): [Author]!
     }
 
     type Mutation{
         createAuthor(firstName: String!, lastName: String!): Author!
         updateBook(title: String!, newTitle: String!): Book
+        deleteBook(id:String!): Boolean
+        deleteAuthor(id:String!): Boolean
     }
     
     type Book implements RepositoryEntity {

@@ -1,9 +1,10 @@
-import { connection } from './connection-manager';
+import { getConnectionManager} from '@enigmatis/polaris-typeorm';
 import { Author } from './dal/author';
 import { Book } from './dal/book';
 import { polarisGraphQLLogger } from './logger';
 
 export async function deleteTables() {
+    const connection = getConnectionManager().get();
     const tables = ['book', 'author', 'dataVersion'];
     for (const table of tables) {
         if (connection) {
@@ -17,7 +18,7 @@ export async function deleteTables() {
 }
 
 function getAuthors(): Author[] {
-    return [new Author('Author', 'First'), new Author('Author', 'Two')];
+    return [new Author('Author1', 'First'), new Author('Author2', 'Two')];
 }
 
 function getBooks(authors: Author[]): Book[] {
@@ -31,6 +32,7 @@ function getBooks(authors: Author[]): Book[] {
 }
 
 async function createExampleData(authors: Author[], books: Book[]) {
+    const connection = getConnectionManager().get();
     const authorRepo = connection.getRepository(Author);
     const bookRepo = connection.getRepository(Book);
     await authorRepo.save(authors);
@@ -46,6 +48,7 @@ async function createExampleData(authors: Author[], books: Book[]) {
 }
 
 export async function initializeDatabase() {
+    const connection = getConnectionManager().get();
     await deleteTables();
     await connection.synchronize();
     const authors: Author[] = getAuthors();
