@@ -1,3 +1,5 @@
+import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
+import { id } from '../../../../dist/test/integration-tests/test-server/polaris-properties';
 import { getConnectionManager, Like } from '../../../../src/index';
 import { Author } from '../dal/author';
 import { Book } from '../dal/book';
@@ -8,7 +10,10 @@ export const resolvers = {
         allBooks: async (): Promise<Book[]> => {
             const connection = getConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books");
-            const result = await connection.getRepository(Book).find({ relations: ['author'] });
+            const fuckingContext: any = {};
+            const result = connection
+                .getRepository(Book)
+                .find({ relations: ['author'], context: fuckingContext } as any);
             return result;
         },
         bookByTitle: (parent: any, args: any): Promise<Book[]> => {
@@ -35,7 +40,8 @@ export const resolvers = {
             const connection = getConnectionManager().get();
             const authorRepo = connection.getRepository(Author);
             const newAuthor = new Author(args.firstName, args.lastName);
-            await authorRepo.save(newAuthor);
+            const fuckingContext: any = {};
+            await authorRepo.save(newAuthor, fuckingContext);
             return newAuthor;
         },
         updateBook: async (parent: any, args: any): Promise<Book> => {
@@ -49,10 +55,14 @@ export const resolvers = {
             }
             return bookToUpdate;
         },
-        deleteBook: async (parent: any, args: any): Promise<boolean> => {
+        deleteBook: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<boolean> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
-            await bookRepo.delete(args.id);
+            await bookRepo.delete({ criteria: args.id, context } as any);
             return true;
         },
         deleteAuthor: async (parent: any, args: any): Promise<boolean> => {

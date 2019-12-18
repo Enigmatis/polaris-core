@@ -73,13 +73,6 @@ export class PolarisServer {
             returnedExtensions: {} as any,
         };
 
-        if (connection && connection.manager && connection.manager.queryRunner) {
-            connection.manager.queryRunner.data = connection.manager.queryRunner.data || {};
-            connection.manager.queryRunner.data = {
-                requestHeaders: polarisContext.requestHeaders,
-            };
-        }
-
         return polarisContext;
     }
 

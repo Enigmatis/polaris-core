@@ -22,7 +22,7 @@ const connectionOptions: ConnectionOptions = {
 };
 const startApp = async () => {
     await initConnection(connectionOptions);
-    await initializeDatabase();
+    // await initializeDatabase();
     server = new PolarisServer({
         typeDefs,
         resolvers,
