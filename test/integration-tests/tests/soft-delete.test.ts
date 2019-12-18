@@ -46,7 +46,7 @@ describe('soft delete tests', () => {
 
         const bookDeleteionCriteria = {
             title: '1',
-        }
+        };
 
         const authorToDelete = await graphQLRequest(
             authorsByName.request,

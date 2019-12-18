@@ -11,7 +11,7 @@ import {
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { Connection, getConnectionManager} from '@enigmatis/polaris-typeorm';
+import { Connection, getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -24,7 +24,7 @@ import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
-let server : any = {};
+let server: any = {};
 
 export class PolarisServer {
     public static getDefaultMiddlewareConfiguration(): MiddlewareConfiguration {

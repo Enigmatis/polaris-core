@@ -1,4 +1,4 @@
-import { getConnectionManager} from '@enigmatis/polaris-typeorm';
+import { getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { Author } from './dal/author';
 import { Book } from './dal/book';
 import { polarisGraphQLLogger } from './logger';

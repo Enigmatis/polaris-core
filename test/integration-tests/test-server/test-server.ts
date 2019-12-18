@@ -6,7 +6,7 @@ import {
 } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
-import { loggerConfig} from './logger';
+import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
