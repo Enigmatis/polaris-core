@@ -1,55 +1,95 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
-import {getConnectionManager, Like, PolarisFindOptions, PolarisSaveOptions} from '../../../../src/index';
+import {
+    getConnectionManager,
+    Like,
+    PolarisFindOptions,
+    PolarisSaveOptions,
+} from '../../../../src/index';
 import { Author } from '../dal/author';
 import { Book } from '../dal/book';
 import { polarisGraphQLLogger } from '../logger';
 
 export const resolvers = {
     Query: {
-        allBooks: async (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
+        allBooks: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Book[]> => {
             const connection = getConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books");
             const result = await connection
                 .getRepository(Book)
-                .find(new PolarisFindOptions({ relations: ['author']}, context) as any);
+                .find(new PolarisFindOptions({ relations: ['author'] }, context) as any);
             return result;
         },
-        bookByTitle: (parent: any, args: any): Promise<Book[]> => {
+        bookByTitle: (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
             const connection = getConnectionManager().get();
-            return connection.getRepository(Book).find({
-                where: { title: Like(`%${args.title}%`) },
-                relations: ['author'],
-            });
+            return connection.getRepository(Book).find(
+                new PolarisFindOptions(
+                    {
+                        where: { title: Like(`%${args.title}%`) },
+                        relations: ['author'],
+                    },
+                    context,
+                ) as any,
+            );
         },
-        authorsByName: async (parent: any, args: any): Promise<Author[]> => {
+        authorsByName: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Author[]> => {
             const connection = getConnectionManager().get();
-            const result = await connection.getRepository(Author).find({
-                where: { firstName: Like(`%${args.name}%`) },
-            });
+            const result = await connection.getRepository(Author).find(
+                new PolarisFindOptions(
+                    {
+                        where: { firstName: Like(`%${args.name}%`) },
+                    },
+                    context,
+                ) as any,
+            );
             return result;
         },
-        authorById: async (parent: any, args: any): Promise<Author | {}> => {
+        authorById: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Author | {}> => {
             const connection = getConnectionManager().get();
-            return connection.getRepository(Author).findOne({ where: { id: args.id } }) || {};
+            return (
+                (await connection
+                    .getRepository(Author)
+                    .findOne(new PolarisFindOptions({ where: { id: args.id } }, context) as any)) ||
+                {}
+            );
         },
     },
     Mutation: {
-        createAuthor: async (parent: any, args: any): Promise<Author> => {
+        createAuthor: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Author> => {
             const connection = getConnectionManager().get();
             const authorRepo = connection.getRepository(Author);
             const newAuthor = new Author(args.firstName, args.lastName);
-            const fuckingContext: any = {};
-            await authorRepo.save(newAuthor, fuckingContext);
+            await authorRepo.save(new PolarisSaveOptions(newAuthor, context) as any);
             return newAuthor;
         },
-        updateBook: async (parent: any, args: any): Promise<Book> => {
+        updateBook: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Book> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
             const result = await bookRepo.find({ where: { title: Like(`%${args.title}%`) } });
             const bookToUpdate = result.length > 0 ? result[0] : undefined;
             if (bookToUpdate) {
-                bookToUpdate.title = args.newTitle;
-                await bookRepo.save(bookToUpdate);
+                await bookRepo.update(new PolarisSaveOptions(bookToUpdate, context) as any, {
+                    title: args.newTitle,
+                });
             }
             return bookToUpdate;
         },
@@ -60,13 +100,19 @@ export const resolvers = {
         ): Promise<boolean> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
-            await bookRepo.delete({ criteria: args.id, context } as any);
-            return true;
+            const result = await bookRepo.delete(new PolarisFindOptions(args.id, context) as any);
+            return result.affected > 0;
         },
-        deleteAuthor: async (parent: any, args: any): Promise<boolean> => {
+        deleteAuthor: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<boolean> => {
             const connection = getConnectionManager().get();
             const authorRepos = connection.getRepository(Author);
-            await authorRepos.delete(args.id);
+            await authorRepos.delete(
+                new PolarisFindOptions({ where: { id: args.id } }, context) as any,
+            );
             return true;
         },
     },
