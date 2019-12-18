@@ -37,7 +37,7 @@ async function createExampleData(authors: Author[], books: Book[]) {
     const bookRepo = connection.getRepository(Book);
     await authorRepo.save(authors);
     await bookRepo.save([books[0], books[1]]);
-    connection.manager.queryRunner.data = { requestHeaders: { realityId: 3 } };
+    const context =  { requestHeaders: { realityId: 3 } };
     await bookRepo.save(books[2]);
     connection.manager.queryRunner.data.returnedExtensions = {};
     await bookRepo.save(books[3]);

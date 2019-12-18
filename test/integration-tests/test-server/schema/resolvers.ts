@@ -1,19 +1,17 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
-import { id } from '../../../../dist/test/integration-tests/test-server/polaris-properties';
-import { getConnectionManager, Like } from '../../../../src/index';
+import {getConnectionManager, Like, PolarisFindOptions, PolarisSaveOptions} from '../../../../src/index';
 import { Author } from '../dal/author';
 import { Book } from '../dal/book';
 import { polarisGraphQLLogger } from '../logger';
 
 export const resolvers = {
     Query: {
-        allBooks: async (): Promise<Book[]> => {
+        allBooks: async (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
             const connection = getConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books");
-            const fuckingContext: any = {};
-            const result = connection
+            const result = await connection
                 .getRepository(Book)
-                .find({ relations: ['author'], context: fuckingContext } as any);
+                .find(new PolarisFindOptions({ relations: ['author']}, context) as any);
             return result;
         },
         bookByTitle: (parent: any, args: any): Promise<Book[]> => {
