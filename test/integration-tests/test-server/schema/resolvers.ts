@@ -2,7 +2,9 @@ import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import {
     getConnectionManager,
     Like,
-    PolarisFindOptions,
+    PolarisCriteria,
+    PolarisFindManyOptions,
+    PolarisFindOneOptions,
     PolarisSaveOptions,
 } from '../../../../src/index';
 import { Author } from '../dal/author';
@@ -18,15 +20,14 @@ export const resolvers = {
         ): Promise<Book[]> => {
             const connection = getConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books");
-            const result = await connection
+            return connection
                 .getRepository(Book)
-                .find(new PolarisFindOptions({ relations: ['author'] }, context) as any);
-            return result;
+                .find(new PolarisFindManyOptions({ relations: ['author'] }, context) as any);
         },
         bookByTitle: (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
             const connection = getConnectionManager().get();
             return connection.getRepository(Book).find(
-                new PolarisFindOptions(
+                new PolarisFindManyOptions(
                     {
                         where: { title: Like(`%${args.title}%`) },
                         relations: ['author'],
@@ -41,15 +42,14 @@ export const resolvers = {
             context: PolarisGraphQLContext,
         ): Promise<Author[]> => {
             const connection = getConnectionManager().get();
-            const result = await connection.getRepository(Author).find(
-                new PolarisFindOptions(
+            return connection.getRepository(Author).find(
+                new PolarisFindManyOptions(
                     {
                         where: { firstName: Like(`%${args.name}%`) },
                     },
                     context,
                 ) as any,
             );
-            return result;
         },
         authorById: async (
             parent: any,
@@ -57,12 +57,9 @@ export const resolvers = {
             context: PolarisGraphQLContext,
         ): Promise<Author | {}> => {
             const connection = getConnectionManager().get();
-            return (
-                (await connection
-                    .getRepository(Author)
-                    .findOne(new PolarisFindOptions({ where: { id: args.id } }, context) as any)) ||
-                {}
-            );
+            return connection
+                .getRepository(Author)
+                .findOne(new PolarisFindOneOptions({ where: { id: args.id } }, context) as any, {});
         },
     },
     Mutation: {
@@ -87,7 +84,7 @@ export const resolvers = {
             const result = await bookRepo.find({ where: { title: Like(`%${args.title}%`) } });
             const bookToUpdate = result.length > 0 ? result[0] : undefined;
             if (bookToUpdate) {
-                await bookRepo.update(new PolarisSaveOptions(bookToUpdate, context) as any, {
+                await bookRepo.update(new PolarisFindOneOptions(bookToUpdate, context) as any, {
                     title: args.newTitle,
                 });
             }
@@ -100,7 +97,7 @@ export const resolvers = {
         ): Promise<boolean> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
-            const result = await bookRepo.delete(new PolarisFindOptions(args.id, context) as any);
+            const result = await bookRepo.delete(new PolarisCriteria(args.id, context) as any);
             return result.affected > 0;
         },
         deleteAuthor: async (
@@ -111,7 +108,7 @@ export const resolvers = {
             const connection = getConnectionManager().get();
             const authorRepos = connection.getRepository(Author);
             await authorRepos.delete(
-                new PolarisFindOptions({ where: { id: args.id } }, context) as any,
+                new PolarisCriteria({ where: { id: args.id } }, context) as any,
             );
             return true;
         },
