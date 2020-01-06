@@ -1,25 +1,14 @@
-import {
-    CommonModel,
-    ConnectionOptions,
-    DataVersion,
-    getConnectionManager,
-} from '@enigmatis/polaris-typeorm';
-import { PolarisServer } from '../../../src/index';
+import { getConnectionManager } from '@enigmatis/polaris-typeorm';
+import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { initializeDatabase } from './data-initalizer';
 import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
+import { connectionOptions } from './test-server';
 
 let server: PolarisServer;
-const connectionOptions: ConnectionOptions = {
-    type: 'postgres',
-    url: process.env.CONNECTION_STRING || '',
-    entities: [__dirname + '/dal/*.ts', CommonModel, DataVersion],
-    synchronize: false,
-    logging: true,
-};
 const startApp = async () => {
     await initConnection(connectionOptions);
     await initializeDatabase();

@@ -1,9 +1,4 @@
-import {
-    CommonModel,
-    ConnectionOptions,
-    DataVersion,
-    getConnectionManager,
-} from '@enigmatis/polaris-typeorm';
+import { ConnectionOptions, getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { loggerConfig } from './logger';
@@ -11,10 +6,10 @@ import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
 
-const connectionOptions: ConnectionOptions = {
+export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
-    entities: [__dirname + '/dal/*.ts', CommonModel, DataVersion],
+    entities: [__dirname + '/dal/*.ts'],
     synchronize: false,
     logging: true,
 };
