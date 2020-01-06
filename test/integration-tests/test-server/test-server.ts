@@ -10,7 +10,7 @@ export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/*.ts'],
-    synchronize: false,
+    synchronize: true,
     logging: true,
 };
 
