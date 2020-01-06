@@ -1,5 +1,6 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import {
+    DeleteResult,
     getConnectionManager,
     Like,
     PolarisCriteria,
@@ -55,7 +56,7 @@ export const resolvers = {
             parent: any,
             args: any,
             context: PolarisGraphQLContext,
-        ): Promise<Author | {}> => {
+        ): Promise<Author | undefined> => {
             const connection = getConnectionManager().get();
             return connection
                 .getRepository(Author)
@@ -78,7 +79,7 @@ export const resolvers = {
             parent: any,
             args: any,
             context: PolarisGraphQLContext,
-        ): Promise<Book> => {
+        ): Promise<Book | undefined> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
             const result = await bookRepo.find({ where: { title: Like(`%${args.title}%`) } });
@@ -97,8 +98,15 @@ export const resolvers = {
         ): Promise<boolean> => {
             const connection = getConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
-            const result = await bookRepo.delete(new PolarisCriteria(args.id, context) as any);
-            return result.affected > 0;
+            const result: DeleteResult = await bookRepo.delete(
+                new PolarisCriteria(args.id, context) as any,
+            );
+            return (
+                result &&
+                result.affected !== null &&
+                result.affected !== undefined &&
+                result.affected > 0
+            );
         },
         deleteAuthor: async (
             parent: any,

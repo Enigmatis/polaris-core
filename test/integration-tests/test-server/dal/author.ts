@@ -13,10 +13,17 @@ export class Author extends CommonModel {
         () => Book,
         book => book.author,
     )
-    public books: Book[];
+    public books: Book[] | undefined;
     constructor(firstName: string, lastName: string) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    public getBooks(): Book[] | undefined {
+        return this.books;
+    }
+
+    public setBooks(value: Book[]) {
+        this.books = value;
     }
 }

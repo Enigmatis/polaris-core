@@ -21,11 +21,8 @@ const startApp = async () => {
     });
     await server.start();
 };
-try {
-    startApp();
-} catch (e) {
-    if (server) {
-        server.stop();
-    }
+
+startApp().catch(async e => {
+    await server.stop();
     process.exit(0);
-}
+});

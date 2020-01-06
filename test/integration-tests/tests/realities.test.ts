@@ -36,7 +36,7 @@ describe('reality is specified in the headers', () => {
             includeLinkedOperDisabled.request,
             includeLinkedOperDisabled.headers,
         );
-        result.allBooks.forEach(book => {
+        result.allBooks.forEach((book: { realityId: number }) => {
             expect(book.realityId).toEqual(3);
         });
     });
@@ -48,10 +48,12 @@ describe('reality is specified in the headers', () => {
                 includeLinkedOperEnabled.headers,
             );
 
-            result.allBooks.forEach(book => {
-                expect(book.realityId).toBe(3);
-                expect(book.author.realityId).toBe(0);
-            });
+            result.allBooks.forEach(
+                (book: { realityId: number; author: { realityId: number } }) => {
+                    expect(book.realityId).toBe(3);
+                    expect(book.author.realityId).toBe(0);
+                },
+            );
         });
 
         it('should filter operational entities if set to false', async () => {
@@ -60,7 +62,7 @@ describe('reality is specified in the headers', () => {
                 includeLinkedOperDisabled.headers,
             );
 
-            result.allBooks.forEach(book => {
+            result.allBooks.forEach((book: { author: any }) => {
                 expect(book.author).toBeNull();
             });
         });

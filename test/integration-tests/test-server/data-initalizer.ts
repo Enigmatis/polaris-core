@@ -1,4 +1,3 @@
-import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { getConnectionManager, PolarisSaveOptions } from '@enigmatis/polaris-typeorm';
 import { Author } from './dal/author';
 import { Book } from './dal/book';
