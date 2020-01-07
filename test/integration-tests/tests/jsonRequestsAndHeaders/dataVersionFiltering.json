@@ -1,0 +1,4 @@
+{
+  "request": "{\n  allBooks {\n    title\n    author {\n      firstName\n      lastName\n    }\n  }\n}\n",
+  "headers": {"reality-id": 3, "data-version": 2}
+}

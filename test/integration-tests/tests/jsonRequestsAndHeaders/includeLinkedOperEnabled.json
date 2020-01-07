@@ -1,0 +1,7 @@
+{
+  "request": "{\n  allBooks {\n    id\n    title\n      realityId\n      author {\n      firstName\n    lastName\n   realityId\n    }\n  }\n}",
+  "headers": {
+    "include-linked-oper": true,
+    "reality-id": 3
+  }
+}

@@ -1,103 +1,107 @@
 {
-  "name": "@enigmatis/polaris-core",
-  "version": "1.0.4",
-  "description": "Apollo Server based library with extra features",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.json",
-    "test": "jest --runInBand --detectOpenHandles",
-    "coverage": "jest --runInBand --detectOpenHandles --coverage",
-    "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once",
-    "prepare": "npm run lint:fix && npm run build",
-    "lint": "npm run tslint-check && tslint -p .",
-    "tslint-check": "tslint-config-prettier-check ./tslint.json",
-    "lint:fix": "npm run tslint-check && tslint -p . --fix"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "release": {
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": true
-        }
-      ],
-      "@semantic-release/github"
-    ],
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      {
-        "path": "@semantic-release/git",
-        "assets": [
-          "package.json",
-          "package-lock.json",
-          "CHANGELOG.md"
+    "name": "@enigmatis/polaris-core",
+    "version": "1.0.4",
+    "description": "Apollo Server based library with extra features",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "scripts": {
+        "build": "rimraf dist && tsc -p tsconfig.json",
+        "test": "jest --runInBand --detectOpenHandles",
+        "coverage": "jest --runInBand --detectOpenHandles --coverage",
+        "semantic-release": "semantic-release",
+        "travis-deploy-once": "travis-deploy-once",
+        "prepare": "npm run lint:fix && npm run build",
+        "lint": "npm run tslint-check && tslint -p .",
+        "tslint-check": "tslint-config-prettier-check ./tslint.json",
+        "lint:fix": "npm run tslint-check && tslint -p . --fix"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            [
+                "@semantic-release/npm",
+                {
+                    "npmPublish": true
+                }
+            ],
+            "@semantic-release/github"
         ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Enigmatis/polaris-core.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Enigmatis/polaris-core/issues"
-  },
-  "homepage": "https://github.com/Enigmatis/polaris-core#readme",
-  "dependencies": {
-    "@enigmatis/polaris-common": "^1.0.9",
-    "@enigmatis/polaris-graphql-logger": "^1.1.0",
-    "@enigmatis/polaris-logs": "^2.6.0",
-    "@enigmatis/polaris-middlewares": "^1.1.0",
-    "@enigmatis/polaris-schema": "^1.0.5",
-    "@enigmatis/polaris-typeorm": "^1.1.3",
-    "apollo-server-express": "^2.9.12",
-    "apollo-server-plugin-base": "^0.6.8",
-    "express": "^4.17.1",
-    "graphql": "^14.5.8",
-    "graphql-middleware": "^4.0.2",
-    "http-status": "^1.4.1",
-    "ip": "^1.1.5",
-    "uuid": "^3.3.3"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0",
-    "@semantic-release/changelog": "^3.0.6",
-    "@semantic-release/git": "^7.0.18",
-    "@types/express": "^4.17.2",
-    "@types/graphql": "^14.5.0",
-    "@types/ip": "^1.1.0",
-    "@types/jest": "^24.0.23",
-    "@types/uuid": "^3.4.6",
-    "husky": "^3.1.0",
-    "jest": "24.1.0",
-    "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
-    "travis-deploy-once": "^5.0.11",
-    "ts-jest": "^24.2.0",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-consistent-codestyle": "^1.16.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.7.2"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run lint:fix"
+        "prepare": [
+            "@semantic-release/changelog",
+            "@semantic-release/npm",
+            {
+                "path": "@semantic-release/git",
+                "assets": [
+                    "package.json",
+                    "package-lock.json",
+                    "CHANGELOG.md"
+                ],
+                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+            }
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Enigmatis/polaris-core.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Enigmatis/polaris-core/issues"
+    },
+    "homepage": "https://github.com/Enigmatis/polaris-core#readme",
+    "dependencies": {
+        "@enigmatis/polaris-common": "^1.0.10",
+        "@enigmatis/polaris-graphql-logger": "^1.1.1",
+        "@enigmatis/polaris-logs": "^2.6.1",
+        "@enigmatis/polaris-middlewares": "^1.1.5",
+        "@enigmatis/polaris-schema": "^1.0.6",
+        "@enigmatis/polaris-typeorm": "^1.1.12",
+        "apollo-server-express": "^2.9.13",
+        "apollo-server-plugin-base": "^0.6.8",
+        "express": "^4.17.1",
+        "graphql": "^14.5.8",
+        "graphql-middleware": "^4.0.2",
+        "http-status": "^1.4.2",
+        "ip": "^1.1.5",
+        "ts-node": "^8.5.4",
+        "uuid": "^3.3.3"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^8.2.0",
+        "@commitlint/config-conventional": "^8.2.0",
+        "@semantic-release/changelog": "^3.0.6",
+        "@semantic-release/git": "^7.0.18",
+        "@types/express": "^4.17.2",
+        "@types/graphql": "^14.5.0",
+        "@types/ip": "^1.1.0",
+        "@types/jest": "^24.0.23",
+        "@types/uuid": "^3.4.6",
+        "axios": "^0.19.0",
+        "graphql-request": "^1.8.2",
+        "husky": "^3.1.0",
+        "jest": "^24.9.0",
+        "pg": "^7.14.0",
+        "prettier": "^1.19.1",
+        "rimraf": "^3.0.0",
+        "travis-deploy-once": "^5.0.11",
+        "ts-jest": "^24.2.0",
+        "tslint": "^5.20.1",
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-consistent-codestyle": "^1.16.0",
+        "tslint-eslint-rules": "^5.4.0",
+        "tslint-plugin-prettier": "^2.0.1",
+        "typescript": "^3.7.3"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "npm run lint:fix"
+        }
     }
-  }
 }

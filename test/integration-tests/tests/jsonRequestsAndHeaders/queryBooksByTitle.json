@@ -1,0 +1,4 @@
+{
+  "request": "query($title:String!){\n  bookByTitle(title:$title){\n    id\n    title\n  }\n}",
+  "headers": { "reality-id": 3 }
+}

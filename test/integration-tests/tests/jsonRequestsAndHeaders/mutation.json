@@ -1,0 +1,5 @@
+{
+  "request": "mutation($firstName:String!, $lastName:String!){\n  createAuthor(firstName:$firstName,lastName:$lastName){\n    id\n    firstName\n    lastName\n    realityId\n  }\n}",
+  "requestTwo": "mutation($firstName:String!, $lastName:String!){\n  a:createAuthor(firstName:$firstName,lastName:$lastName){\n    id\n    firstName\n    lastName\n  }\n  b:createAuthor(firstName:$firstName,lastName:$lastName){\n    id\n    firstName\n    lastName\n  }\n}",
+  "headers": { "reality-id": 0 }
+}

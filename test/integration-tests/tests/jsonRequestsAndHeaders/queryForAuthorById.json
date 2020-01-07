@@ -1,0 +1,4 @@
+{
+  "request": "query($id:String!){\n  authorById(id:$id){\n    id\n    firstName\n  }\n}",
+  "headers": { "reality-id": 0 }
+}
