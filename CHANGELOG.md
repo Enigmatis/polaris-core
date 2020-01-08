@@ -1,3 +1,20 @@
+## [1.0.5](https://github.com/Enigmatis/polaris-core/compare/v1.0.4...v1.0.5) (2020-01-07)
+
+
+### Bug Fixes
+
+* a bit less messy needs works ([328dbc8](https://github.com/Enigmatis/polaris-core/commit/328dbc81ea18bf78b6d71f6c1ca1396fe799b2b0))
+* added test server and some tests ([5165c02](https://github.com/Enigmatis/polaris-core/commit/5165c02badd4d8f4742b85e533b784c664b3cd33))
+* delete syntax done ([d53ccec](https://github.com/Enigmatis/polaris-core/commit/d53ccecace32c799aa015915cb9513f540350b77))
+* dependencies ([9c4922b](https://github.com/Enigmatis/polaris-core/commit/9c4922be451a7967adb55dbaae283c7b6e02b524))
+* fixed tests ([5c1082d](https://github.com/Enigmatis/polaris-core/commit/5c1082d61fa63f6812085b259139b8b35c91cf75))
+* fixed tests and connection handling ([83f471f](https://github.com/Enigmatis/polaris-core/commit/83f471fd3e1f3ced1dde5fa6dbc4e050c3dd90da))
+* integration tests are now working in batch ([f72a9d7](https://github.com/Enigmatis/polaris-core/commit/f72a9d7716768e69fc5a85fc2bd18889d16a8601))
+* kinda works fine i guess ([70061ec](https://github.com/Enigmatis/polaris-core/commit/70061eca7911a83d06017bcb44068f52cac7112c))
+* prettier ([36c4674](https://github.com/Enigmatis/polaris-core/commit/36c4674ce89af975dfb69c90a9a4d15c4b492f97))
+* prettier ([de21ec5](https://github.com/Enigmatis/polaris-core/commit/de21ec5fa072dca9727bbfeeefc43c8a0ffa884e))
+* prettier ([606120a](https://github.com/Enigmatis/polaris-core/commit/606120aa9c0897851623e3b8f318133effe535ed))
+
 ## [1.0.4](https://github.com/Enigmatis/polaris-core/compare/v1.0.3...v1.0.4) (2019-12-01)
 
 ### Bug Fixes
