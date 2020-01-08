@@ -1,6 +1,5 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';

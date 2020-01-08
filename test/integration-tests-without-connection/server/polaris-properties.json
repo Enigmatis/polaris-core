@@ -1,7 +1,7 @@
 {
     "port": 8082,
-    "id": "p0laris-ex5mpl3",
-    "name": "polaris-example",
+    "id": "p0laris-s33d",
+    "name": "polaris-seed",
     "version": "v1",
     "environment": "environment",
     "component": "component"
