@@ -125,7 +125,7 @@ export class PolarisServer {
             '/graphql-playground-react',
             express.static(path.join(__dirname, '../../../static/playground')),
         );
-        app.use('/$', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
         });
     }
