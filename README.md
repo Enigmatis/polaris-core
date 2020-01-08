@@ -2,7 +2,7 @@
 
 ![Polaris-logo](static/img/polariscoolsm.png)
 
-#polaris-core
+# polaris-core
 
 [![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
 [![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
