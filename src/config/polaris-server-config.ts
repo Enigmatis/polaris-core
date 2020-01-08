@@ -2,7 +2,7 @@ import { ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-l
 import { Connection } from '@enigmatis/polaris-typeorm';
 import { MiddlewareConfiguration } from '../index';
 
-export interface PolarisServerConfigInput {
+export interface PolarisServerOptions {
     typeDefs: any;
     resolvers: any;
     port: number;

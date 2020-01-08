@@ -8,8 +8,8 @@ import {
     REQUESTING_SYS,
     REQUESTING_SYS_NAME,
 } from '@enigmatis/polaris-common';
-import { v4 as uuid } from 'uuid';
 import { address as getIpAddress } from 'ip';
+import { v4 as uuid } from 'uuid';
 
 export const getPolarisContext = (context: any): PolarisGraphQLContext => {
     const httpHeaders = context.req.headers;

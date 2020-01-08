@@ -5,7 +5,7 @@ import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import { formatError, PolarisServerConfig } from '..';
-import { PolarisServerConfigInput } from '../config/polaris-server-config';
+import { PolarisServerOptions } from '../config/polaris-server-config';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
@@ -23,7 +23,7 @@ export class PolarisServer {
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisGraphQLLogger: PolarisGraphQLLogger;
 
-    constructor(config: PolarisServerConfigInput) {
+    constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = this.getActualConfiguration(config);
 
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
@@ -33,7 +33,7 @@ export class PolarisServer {
 
         const serverContext: (context: any) => any = (ctx: any) =>
             this.polarisServerConfig.customContext
-                ? this.polarisServerConfig.customContext(ctx, getConnectionManager().get())
+                ? this.polarisServerConfig.customContext(ctx)
                 : getPolarisContext(ctx);
 
         this.apolloServer = new ApolloServer(this.getApolloServerConfigurations(serverContext));
@@ -98,7 +98,7 @@ export class PolarisServer {
         return allowedMiddlewares;
     }
 
-    private getActualConfiguration(config: PolarisServerConfigInput): PolarisServerConfig {
+    private getActualConfiguration(config: PolarisServerOptions): PolarisServerConfig {
         return {
             ...config,
             middlewareConfiguration:
