@@ -1,0 +1,4 @@
+{
+    "request": "{\n  bookByTitle(title:\"Book3\"){\n    title\n    id\n  }\n}",
+    "headers": { "reality-id": 0, "data-version": 1 }
+}
