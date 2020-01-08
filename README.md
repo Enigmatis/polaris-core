@@ -1,22 +1,19 @@
-<p align="center">
-
-![Polaris-logo](static/img/polariscoolsm.png)
+![Polaris-logo](static/img/polaris-logo.png)
 
 # polaris-core
 
 [![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
 [![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
 
-</p>
+This is the core library of polaris. Through this core project we supply you with all of the polaris products.
 
-Polaris is a set of libraries that help you create the perfect graphql service, integrated with type orm and the hottest API standards.
-polaris-core organizes all of the libraries for you, and let you create your graphql service as easily as it can be.
 ## Features
 
--   GraphQL service creation (integrated with apollo-server & express)
--   Auto soft deletion of entities
--   Fetching Deltas of entities (including irrelevant entities)
--   Data versioning of entities
+-   Integration with ApolloServer and Express
+-   Soft delete
+-   Realities
+-   Irrelevant entities
+-   Data version
 -   Standard errors
 -   Standard logs
 -   Standard GraphQL scalars
@@ -39,7 +36,7 @@ Through this interface you should set the following configurations which will be
     If you don't provide those properties, the core will put 'v1' in the version.
 -   **customMiddlewares** (_any[] - optional_) - Custom middlewares that can be provided the `PolarisServer` with.
 -   **customContext** (_(context: any, connection?: Connection) => any - optional_) - You can provide the `PolarisServer` your own custom context.
-    If you do not set your custom context, the core will use a default context.
+    If you do not set your custom middleware, the core will use a default core.
 -   **loggerConfiguration** (_LoggerConfiguration - optional_) - This is an interface that defines the logger in the `PolarisServer`.
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
@@ -85,7 +82,7 @@ const resolvers = {
         ],
     },
 };
-const applicationProperties: ApplicationProperties = {
+const applicationLogProperties: ApplicationProperties = {
     id: 'p0laris-c0re',
     name: 'polaris-core',
     version: 'v1',
@@ -96,7 +93,7 @@ const server = new PolarisServer({
     typeDefs,
     resolvers,
     port: 4000,
-    applicationProperties,
+    applicationLogProperties,
 });
 server.start();
 
