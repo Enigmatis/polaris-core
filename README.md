@@ -60,7 +60,7 @@ const typeDefs = `
     type Query {
         allPersons: [Person]
     }
-​
+
     type Person implements RepositoryEntity {
         id: String!
         deleted: Boolean!
@@ -82,7 +82,7 @@ const resolvers = {
         ],
     },
 };
-const applicationLogProperties: ApplicationProperties = {
+const applicationProperties: ApplicationProperties = {
     id: 'p0laris-c0re',
     name: 'polaris-core',
     version: 'v1',
@@ -93,7 +93,7 @@ const server = new PolarisServer({
     typeDefs,
     resolvers,
     port: 4000,
-    applicationLogProperties,
+    applicationProperties,
 });
 server.start();
 

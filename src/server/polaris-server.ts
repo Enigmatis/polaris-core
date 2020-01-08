@@ -16,7 +16,9 @@ import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
+import * as http from 'http';
 import { address as getIpAddress } from 'ip';
+import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
@@ -24,7 +26,7 @@ import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 
 const app = express();
-let server: any = {};
+let server: http.Server;
 
 export class PolarisServer {
     public static getDefaultMiddlewareConfiguration(): MiddlewareConfiguration {
@@ -111,11 +113,19 @@ export class PolarisServer {
                 new ExtensionsPlugin(this.polarisGraphQLLogger),
                 new ResponseHeadersPlugin(this.polarisGraphQLLogger),
             ],
+            playground: {
+                cdnUrl: '',
+                version: '',
+            },
         });
 
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
-        app.use('/', (req: any, res: any) => {
+        app.use(
+            '/graphql-playground-react',
+            express.static(path.join(__dirname, '../../../static/playground')),
+        );
+        app.use('/$', (req: express.Request, res: express.Response, next: express.NextFunction) => {
             res.redirect(endpoint);
         });
     }
@@ -126,8 +136,12 @@ export class PolarisServer {
     }
 
     public async stop(): Promise<void> {
-        await this.apolloServer.stop();
-        await server.close();
+        if (this.apolloServer) {
+            await this.apolloServer.stop();
+        }
+        if (server) {
+            await server.close();
+        }
         this.polarisGraphQLLogger.info('Server stopped');
     }
 
