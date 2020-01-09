@@ -1,19 +1,22 @@
-![Polaris-logo](static/img/polaris-logo.png)
+<p align="center">
+
+![Polaris-logo](static/img/polariscoolsm.png)
 
 # polaris-core
 
 [![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
 [![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
 
-This is the core library of polaris. This core is the best way to quickly build a data service based on polaris products.
+</p>
 
+Polaris is a set of libraries that help you create the perfect graphql service, integrated with type orm and the hottest API standards.
+polaris-core organizes all of the libraries for you, and let you create your graphql service as easily as it can be.
 ## Features
 
--   Integration with ApolloServer and Express
--   Soft delete
--   Realities
--   Irrelevant entities
--   Data version
+-   GraphQL service creation (integrated with apollo-server & express)
+-   Auto soft deletion of entities
+-   Fetching Deltas of entities (including irrelevant entities)
+-   Data versioning of entities
 -   Standard errors
 -   Standard logs
 -   Standard GraphQL scalars
@@ -82,7 +85,7 @@ const resolvers = {
         ],
     },
 };
-const applicationLogProperties: ApplicationProperties = {
+const applicationProperties: ApplicationProperties = {
     id: 'p0laris-c0re',
     name: 'polaris-core',
     version: 'v1',
@@ -93,7 +96,7 @@ const server = new PolarisServer({
     typeDefs,
     resolvers,
     port: 4000,
-    applicationLogProperties,
+    applicationProperties,
 });
 server.start();
 
