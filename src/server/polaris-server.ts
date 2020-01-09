@@ -7,6 +7,7 @@ import { applyMiddleware } from 'graphql-middleware';
 import * as http from 'http';
 import * as path from 'path';
 import { formatError, PolarisServerOptions } from '..';
+import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
@@ -20,7 +21,7 @@ const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    private static getActualConfiguration(config: PolarisServerOptions): PolarisServerOptions {
+    private static getActualConfiguration(config: PolarisServerOptions): PolarisServerConfig {
         return {
             ...config,
             middlewareConfiguration:
@@ -31,27 +32,25 @@ export class PolarisServer {
     }
 
     private readonly apolloServer: ApolloServer;
-    private readonly polarisServerOptions: PolarisServerOptions;
+    private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisGraphQLLogger: PolarisGraphQLLogger;
 
     constructor(config: PolarisServerOptions) {
-        this.polarisServerOptions = PolarisServer.getActualConfiguration(config);
+        this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-            // @ts-ignore
-            this.polarisServerOptions.loggerConfiguration,
-            this.polarisServerOptions.applicationProperties,
+            this.polarisServerConfig.loggerConfiguration,
+            this.polarisServerConfig.applicationProperties,
         );
 
         const serverContext: (context: any) => any = (ctx: any) =>
-            this.polarisServerOptions.customContext
-                ? this.polarisServerOptions.customContext(ctx)
+            this.polarisServerConfig.customContext
+                ? this.polarisServerConfig.customContext(ctx)
                 : getPolarisContext(ctx);
 
         this.apolloServer = new ApolloServer(this.getApolloServerConfigurations(serverContext));
 
-        // @ts-ignore
-        const endpoint = `${this.polarisServerOptions.applicationProperties.version}/graphql`;
+        const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
@@ -63,8 +62,8 @@ export class PolarisServer {
     }
 
     public async start(): Promise<void> {
-        server = await app.listen({ port: this.polarisServerOptions.port });
-        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerOptions.port}`);
+        server = await app.listen({ port: this.polarisServerConfig.port });
+        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
@@ -95,22 +94,22 @@ export class PolarisServer {
 
     private getSchemaWithMiddlewares(): GraphQLSchema {
         const schema = makeExecutablePolarisSchema(
-            this.polarisServerOptions.typeDefs,
-            this.polarisServerOptions.resolvers,
+            this.polarisServerConfig.typeDefs,
+            this.polarisServerConfig.resolvers,
         );
         const middlewares = this.getAllowedPolarisMiddlewares();
-        if (this.polarisServerOptions.customMiddlewares) {
-            middlewares.push(...this.polarisServerOptions.customMiddlewares);
+        if (this.polarisServerConfig.customMiddlewares) {
+            middlewares.push(...this.polarisServerConfig.customMiddlewares);
         }
         return applyMiddleware(schema, ...middlewares);
     }
 
     private getAllowedPolarisMiddlewares(): any[] {
         const allowedMiddlewares: any = [];
-        const middlewareConfiguration = this.polarisServerOptions.middlewareConfiguration;
+        const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
             this.polarisGraphQLLogger,
-            this.polarisServerOptions.connection,
+            this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
