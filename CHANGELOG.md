@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/Enigmatis/polaris-core/compare/v1.0.7...v1.0.8) (2020-01-09)
+
+
+### Bug Fixes
+
+* separated config and options ([49ad630](https://github.com/Enigmatis/polaris-core/commit/49ad6304d2fe5730c27b36a7776fb1be8b56966b))
+
 ## [1.0.7](https://github.com/Enigmatis/polaris-core/compare/v1.0.6...v1.0.7) (2020-01-09)
 
 
