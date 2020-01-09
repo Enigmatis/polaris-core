@@ -59,9 +59,8 @@
         "@enigmatis/polaris-common": "^1.0.10",
         "@enigmatis/polaris-graphql-logger": "^1.1.1",
         "@enigmatis/polaris-logs": "^2.6.1",
-        "@enigmatis/polaris-middlewares": "^1.1.5",
+        "@enigmatis/polaris-middlewares": "^1.1.6",
         "@enigmatis/polaris-schema": "^1.0.6",
-        "@enigmatis/polaris-typeorm": "^1.1.12",
         "apollo-server-express": "^2.9.13",
         "apollo-server-plugin-base": "^0.6.8",
         "express": "^4.17.1",
@@ -73,6 +72,7 @@
         "uuid": "^3.3.3"
     },
     "devDependencies": {
+        "@enigmatis/polaris-typeorm": "^1.1.12",
         "@commitlint/cli": "^8.2.0",
         "@commitlint/config-conventional": "^8.2.0",
         "@semantic-release/changelog": "^3.0.6",

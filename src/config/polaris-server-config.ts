@@ -8,7 +8,7 @@ export interface PolarisServerConfig {
     port: number;
     applicationProperties?: ApplicationProperties;
     customMiddlewares?: any[];
-    customContext?: (context: any, connection?: Connection) => any;
+    customContext?: (context: any) => any;
     loggerConfiguration?: LoggerConfiguration;
     middlewareConfiguration?: MiddlewareConfiguration;
     connection?: Connection;
