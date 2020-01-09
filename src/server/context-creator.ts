@@ -13,7 +13,7 @@ import { v4 as uuid } from 'uuid';
 
 export const getPolarisContext = (context: any): PolarisGraphQLContext => {
     const httpHeaders = context.req.headers;
-    const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
+    const requestId = httpHeaders[REQUEST_ID] || uuid();
     const upn = httpHeaders[OICD_CLAIM_UPN];
     const realityId = +httpHeaders[REALITY_ID];
     return {
