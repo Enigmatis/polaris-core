@@ -4,13 +4,13 @@ import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
 import { MiddlewareConfiguration } from '../index';
 
-export interface PolarisServerConfig {
+export interface PolarisServerOptions {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
     resolvers: IResolvers | IResolvers[];
     port: number;
-    applicationProperties: ApplicationProperties;
-    loggerConfiguration: LoggerConfiguration;
-    middlewareConfiguration: MiddlewareConfiguration;
+    applicationProperties?: ApplicationProperties;
+    loggerConfiguration?: LoggerConfiguration;
+    middlewareConfiguration?: MiddlewareConfiguration;
     customMiddlewares?: any[];
     customContext?: (context: any) => any;
     connection?: Connection;
