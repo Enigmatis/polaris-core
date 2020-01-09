@@ -11,7 +11,6 @@ import {
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { Connection, getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -43,12 +42,12 @@ export class PolarisServer {
         };
     }
 
-    public static getPolarisContext(context: any, connection?: Connection): PolarisGraphQLContext {
+    public static getPolarisContext(context: any): PolarisGraphQLContext {
         const httpHeaders = context.req.headers;
         const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
         const upn = httpHeaders[OICD_CLAIM_UPN];
         const realityId = +httpHeaders[REALITY_ID];
-        const polarisContext = {
+        return {
             requestHeaders: {
                 upn,
                 requestId,
@@ -72,8 +71,6 @@ export class PolarisServer {
             response: context.res,
             returnedExtensions: {} as any,
         };
-
-        return polarisContext;
     }
 
     private readonly apolloServer: ApolloServer;
@@ -100,8 +97,8 @@ export class PolarisServer {
 
         const serverContext: (context: any) => any = (ctx: any) =>
             this.polarisServerConfig.customContext
-                ? this.polarisServerConfig.customContext(ctx, getConnectionManager().get())
-                : PolarisServer.getPolarisContext(ctx, getConnectionManager().get());
+                ? this.polarisServerConfig.customContext(ctx)
+                : PolarisServer.getPolarisContext(ctx);
 
         this.apolloServer = new ApolloServer({
             schema: this.getSchemaWithMiddlewares(),
