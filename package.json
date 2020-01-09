@@ -69,6 +69,7 @@
         "express": "^4.17.1",
         "graphql": "^14.5.8",
         "graphql-middleware": "^4.0.2",
+        "graphql-vision-plugin": "^0.1.2",
         "http-status": "^1.4.2",
         "ip": "^1.1.5",
         "ts-node": "^8.5.4",
