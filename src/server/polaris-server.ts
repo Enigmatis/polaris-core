@@ -1,151 +1,116 @@
-import {
-    DATA_VERSION,
-    INCLUDE_LINKED_OPER,
-    OICD_CLAIM_UPN,
-    PolarisGraphQLContext,
-    REALITY_ID,
-    REQUEST_ID,
-    REQUESTING_SYS,
-    REQUESTING_SYS_NAME,
-} from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
-import { address as getIpAddress } from 'ip';
-import { v4 as uuid } from 'uuid';
-import { formatError, MiddlewareConfiguration, PolarisServerConfig } from '..';
+import * as http from 'http';
+import * as path from 'path';
+import { formatError, PolarisServerOptions } from '..';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
+import {
+    getDefaultLoggerConfiguration,
+    getDefaultMiddlewareConfiguration,
+} from './configurations-manager';
+import { getPolarisContext } from './context-creator';
 
 const app = express();
-let server: any = {};
+let server: http.Server;
 
 export class PolarisServer {
-    public static getDefaultMiddlewareConfiguration(): MiddlewareConfiguration {
+    private static getActualConfiguration(config: PolarisServerOptions): PolarisServerOptions {
         return {
-            allowDataVersionAndIrrelevantEntitiesMiddleware: true,
-            allowRealityMiddleware: true,
-            allowSoftDeleteMiddleware: true,
-        };
-    }
-
-    public static getDefaultLoggerConfiguration(): LoggerConfiguration {
-        return {
-            loggerLevel: 'info',
-            writeToConsole: true,
-            writeFullMessageToConsole: false,
-        };
-    }
-
-    public static getPolarisContext(context: any): PolarisGraphQLContext {
-        const httpHeaders = context.req.headers;
-        const requestId = httpHeaders[REQUEST_ID] ? httpHeaders[REQUEST_ID] : uuid();
-        const upn = httpHeaders[OICD_CLAIM_UPN];
-        const realityId = +httpHeaders[REALITY_ID];
-        return {
-            requestHeaders: {
-                upn,
-                requestId,
-                realityId,
-                dataVersion: +httpHeaders[DATA_VERSION],
-                includeLinkedOper: httpHeaders[INCLUDE_LINKED_OPER] === 'true',
-                requestingSystemId: httpHeaders[REQUESTING_SYS],
-                requestingSystemName: httpHeaders[REQUESTING_SYS_NAME],
-            },
-            responseHeaders: {
-                upn,
-                requestId,
-                realityId,
-            },
-            clientIp: getIpAddress(),
-            request: {
-                query: context.req.body.query,
-                operationName: context.req.body.operationName,
-                polarisVariables: context.req.body.variables,
-            },
-            response: context.res,
-            returnedExtensions: {} as any,
+            ...config,
+            middlewareConfiguration:
+                config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
+            loggerConfiguration: config.loggerConfiguration || getDefaultLoggerConfiguration(),
+            applicationProperties: config.applicationProperties || { version: 'v1' },
         };
     }
 
     private readonly apolloServer: ApolloServer;
-    private readonly polarisServerConfig: PolarisServerConfig;
+    private readonly polarisServerOptions: PolarisServerOptions;
     private readonly polarisGraphQLLogger: PolarisGraphQLLogger;
 
-    constructor(config: PolarisServerConfig) {
-        this.polarisServerConfig = config;
-        if (!this.polarisServerConfig.middlewareConfiguration) {
-            this.polarisServerConfig.middlewareConfiguration = PolarisServer.getDefaultMiddlewareConfiguration();
-        }
-        if (!this.polarisServerConfig.loggerConfiguration) {
-            this.polarisServerConfig.loggerConfiguration = PolarisServer.getDefaultLoggerConfiguration();
-        }
-
-        if (!this.polarisServerConfig.applicationProperties) {
-            this.polarisServerConfig.applicationProperties = { version: 'v1' };
-        }
+    constructor(config: PolarisServerOptions) {
+        this.polarisServerOptions = PolarisServer.getActualConfiguration(config);
 
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-            this.polarisServerConfig.loggerConfiguration,
-            this.polarisServerConfig.applicationProperties,
+            // @ts-ignore
+            this.polarisServerOptions.loggerConfiguration,
+            this.polarisServerOptions.applicationProperties,
         );
 
         const serverContext: (context: any) => any = (ctx: any) =>
-            this.polarisServerConfig.customContext
-                ? this.polarisServerConfig.customContext(ctx)
-                : PolarisServer.getPolarisContext(ctx);
+            this.polarisServerOptions.customContext
+                ? this.polarisServerOptions.customContext(ctx)
+                : getPolarisContext(ctx);
 
-        this.apolloServer = new ApolloServer({
-            schema: this.getSchemaWithMiddlewares(),
-            formatError,
-            context: ctx => serverContext(ctx),
-            plugins: [
-                new ExtensionsPlugin(this.polarisGraphQLLogger),
-                new ResponseHeadersPlugin(this.polarisGraphQLLogger),
-            ],
-        });
+        this.apolloServer = new ApolloServer(this.getApolloServerConfigurations(serverContext));
 
-        const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
+        // @ts-ignore
+        const endpoint = `${this.polarisServerOptions.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
-        app.use('/', (req: any, res: any) => {
+        app.use(
+            '/graphql-playground-react',
+            express.static(path.join(__dirname, '../../../static/playground')),
+        );
+        app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
         });
     }
 
     public async start(): Promise<void> {
-        server = await app.listen({ port: this.polarisServerConfig.port });
-        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
+        server = await app.listen({ port: this.polarisServerOptions.port });
+        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerOptions.port}`);
     }
 
     public async stop(): Promise<void> {
-        await this.apolloServer.stop();
-        await server.close();
+        if (this.apolloServer) {
+            await this.apolloServer.stop();
+        }
+        if (server) {
+            await server.close();
+        }
         this.polarisGraphQLLogger.info('Server stopped');
+    }
+
+    private getApolloServerConfigurations(serverContext: (context: any) => any) {
+        return {
+            schema: this.getSchemaWithMiddlewares(),
+            formatError,
+            context: (ctx: any) => serverContext(ctx),
+            plugins: [
+                new ExtensionsPlugin(this.polarisGraphQLLogger),
+                new ResponseHeadersPlugin(this.polarisGraphQLLogger),
+            ],
+            playground: {
+                cdnUrl: '',
+                version: '',
+            },
+        };
     }
 
     private getSchemaWithMiddlewares(): GraphQLSchema {
         const schema = makeExecutablePolarisSchema(
-            this.polarisServerConfig.typeDefs,
-            this.polarisServerConfig.resolvers,
+            this.polarisServerOptions.typeDefs,
+            this.polarisServerOptions.resolvers,
         );
         const middlewares = this.getAllowedPolarisMiddlewares();
-        if (this.polarisServerConfig.customMiddlewares) {
-            middlewares.push(...this.polarisServerConfig.customMiddlewares);
+        if (this.polarisServerOptions.customMiddlewares) {
+            middlewares.push(...this.polarisServerOptions.customMiddlewares);
         }
         return applyMiddleware(schema, ...middlewares);
     }
 
     private getAllowedPolarisMiddlewares(): any[] {
         const allowedMiddlewares: any = [];
-        const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
+        const middlewareConfiguration = this.polarisServerOptions.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
             this.polarisGraphQLLogger,
-            this.polarisServerConfig.connection,
+            this.polarisServerOptions.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
