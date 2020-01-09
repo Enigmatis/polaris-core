@@ -1,7 +1,7 @@
 {
     "name": "@enigmatis/polaris-core",
     "version": "1.0.5",
-    "description": "Apollo Server based library with extra features",
+    "description": "Create a node js graphql service easily",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
     "scripts": {
