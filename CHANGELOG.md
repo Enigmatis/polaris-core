@@ -1,3 +1,11 @@
+## [1.0.6](https://github.com/Enigmatis/polaris-core/compare/v1.0.5...v1.0.6) (2020-01-09)
+
+
+### Bug Fixes
+
+* tests for no connection ([490abb4](https://github.com/Enigmatis/polaris-core/commit/490abb4e528370409f8946e02c007cf9f5866589))
+* tests for no connection ([361a7a1](https://github.com/Enigmatis/polaris-core/commit/361a7a1f6fb0defcf62a4f14ce882bcdca45f817))
+
 ## [1.0.5](https://github.com/Enigmatis/polaris-core/compare/v1.0.4...v1.0.5) (2020-01-07)
 
 
