@@ -1,3 +1,14 @@
+## [1.0.7](https://github.com/Enigmatis/polaris-core/compare/v1.0.6...v1.0.7) (2020-01-09)
+
+
+### Bug Fixes
+
+* change to options ([25c71cd](https://github.com/Enigmatis/polaris-core/commit/25c71cd979d2e325897b3293e19588783797afe8))
+* merge with chen's branch to remove redundant connection & fix classes for better looking code in polaris-server file ([8030a57](https://github.com/Enigmatis/polaris-core/commit/8030a573538a62508eb926203241b24078e867c9))
+* merged with readme fixes ([b78174f](https://github.com/Enigmatis/polaris-core/commit/b78174f616d2598b20a103ff290e74bb96aadd5a))
+* playground can be used offline ([555a6b1](https://github.com/Enigmatis/polaris-core/commit/555a6b1a644c5ecfd6aba6f88c2f493afa540c54))
+* playground can be used offline ([c658cc4](https://github.com/Enigmatis/polaris-core/commit/c658cc479f6950a98607dc7fed9fd850500538c5))
+
 ## [1.0.6](https://github.com/Enigmatis/polaris-core/compare/v1.0.5...v1.0.6) (2020-01-09)
 
 
