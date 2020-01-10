@@ -16,7 +16,7 @@ export class ExtensionsListener implements GraphQLRequestListener {
         }: { context: PolarisGraphQLContext; response: any } = requestContext;
         if (context.returnedExtensions) {
             this.logger.debug('extensions were set to response');
-            response.extensions = context.returnedExtensions;
+            response.extensions = { ...response.extensions, ...context.returnedExtensions };
         }
         return requestContext;
     }

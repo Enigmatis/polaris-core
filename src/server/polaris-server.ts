@@ -1,9 +1,11 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
+import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
+import GraphQLVisionPlugin from 'graphql-vision-plugin';
 import * as http from 'http';
 import * as path from 'path';
 import { formatError, PolarisServerOptions } from '..';
@@ -28,6 +30,7 @@ export class PolarisServer {
                 config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
             loggerConfiguration: config.loggerConfiguration || getDefaultLoggerConfiguration(),
             applicationProperties: config.applicationProperties || { version: 'v1' },
+            tracing: config.tracing || config.visionServer !== undefined || false,
         };
     }
 
@@ -37,7 +40,6 @@ export class PolarisServer {
 
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
-
         this.polarisGraphQLLogger = new PolarisGraphQLLogger(
             this.polarisServerConfig.loggerConfiguration,
             this.polarisServerConfig.applicationProperties,
@@ -76,15 +78,28 @@ export class PolarisServer {
         this.polarisGraphQLLogger.info('Server stopped');
     }
 
-    private getApolloServerConfigurations(serverContext: (context: any) => any) {
+    private getApolloServerConfigurations(
+        serverContext: (context: any) => any,
+    ): ApolloServerExpressConfig {
+        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+            new ExtensionsPlugin(this.polarisGraphQLLogger),
+            new ResponseHeadersPlugin(this.polarisGraphQLLogger),
+        ];
+
+        if (this.polarisServerConfig.plugins) {
+            plugins.push(...this.polarisServerConfig.plugins);
+        }
+
+        if (this.polarisServerConfig.visionServer) {
+            plugins.push(new GraphQLVisionPlugin(this.polarisServerConfig.visionServer));
+        }
+
         return {
+            ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
             formatError,
             context: (ctx: any) => serverContext(ctx),
-            plugins: [
-                new ExtensionsPlugin(this.polarisGraphQLLogger),
-                new ResponseHeadersPlugin(this.polarisGraphQLLogger),
-            ],
+            plugins,
             playground: {
                 cdnUrl: '',
                 version: '',
