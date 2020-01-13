@@ -9,7 +9,7 @@ export interface PolarisServerOptions {
     resolvers: IResolvers | IResolvers[];
     port: number;
     applicationProperties?: ApplicationProperties;
-    loggerConfiguration?: LoggerConfiguration;
+    logger?: LoggerConfiguration | PolarisGraphQLLogger;
     middlewareConfiguration?: MiddlewareConfiguration;
     customMiddlewares?: any[];
     customContext?: (context: any) => any;

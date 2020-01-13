@@ -38,10 +38,14 @@ export class PolarisServer {
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
-        this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-            this.polarisServerConfig.loggerConfiguration,
-            this.polarisServerConfig.applicationProperties,
-        );
+        if (typeof config.logger === 'PolarisGraphQLLogger') {
+            this.polarisGraphQLLogger = config.logger;
+        } else if (typeof config.logger === 'LoggerConfiguration') {
+            this.polarisGraphQLLogger = new PolarisGraphQLLogger(
+                this.polarisServerConfig.loggerConfiguration,
+                this.polarisServerConfig.applicationProperties,
+            );
+        }
 
         const serverContext: (context: any) => any = (ctx: any) =>
             this.polarisServerConfig.customContext
