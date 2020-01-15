@@ -9,8 +9,8 @@ beforeEach(async () => {
     polarisServer = await startTestServer();
 });
 
-afterEach(async () => {
-    await stopTestServer(polarisServer);
+afterEach(() => {
+    return stopTestServer(polarisServer);
 });
 
 describe('simple queries', () => {
