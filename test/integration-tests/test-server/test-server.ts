@@ -21,7 +21,7 @@ export async function startTestServer(): Promise<PolarisServer> {
         typeDefs,
         resolvers,
         port: polarisProperties.port,
-        loggerConfiguration: loggerConfig,
+        logger: loggerConfig,
         connection: getConnectionManager().get(),
     });
     await server.start();

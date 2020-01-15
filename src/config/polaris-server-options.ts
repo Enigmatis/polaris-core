@@ -1,3 +1,4 @@
+import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { Connection } from '@enigmatis/polaris-typeorm';
 import { DocumentNode } from 'graphql';

@@ -1,4 +1,5 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
@@ -26,7 +27,7 @@ export class PolarisServer {
             ...config,
             middlewareConfiguration:
                 config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
-            loggerConfiguration: config.loggerConfiguration || getDefaultLoggerConfiguration(),
+            logger: config.logger || getDefaultLoggerConfiguration(),
             applicationProperties: config.applicationProperties || { version: 'v1' },
         };
     }
@@ -38,11 +39,11 @@ export class PolarisServer {
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
-        if (typeof config.logger === 'PolarisGraphQLLogger') {
+        if (config.logger instanceof PolarisGraphQLLogger) {
             this.polarisGraphQLLogger = config.logger;
-        } else if (typeof config.logger === 'LoggerConfiguration') {
+        } else {
             this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-                this.polarisServerConfig.loggerConfiguration,
+                this.polarisServerConfig.logger as LoggerConfiguration,
                 this.polarisServerConfig.applicationProperties,
             );
         }
