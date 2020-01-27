@@ -1,4 +1,5 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
@@ -26,7 +27,7 @@ export class PolarisServer {
             ...config,
             middlewareConfiguration:
                 config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
-            loggerConfiguration: config.loggerConfiguration || getDefaultLoggerConfiguration(),
+            logger: config.logger || getDefaultLoggerConfiguration(),
             applicationProperties: config.applicationProperties || { version: 'v1' },
         };
     }
@@ -38,10 +39,14 @@ export class PolarisServer {
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
-        this.polarisGraphQLLogger = new PolarisGraphQLLogger(
-            this.polarisServerConfig.loggerConfiguration,
-            this.polarisServerConfig.applicationProperties,
-        );
+        if (this.isPolarisGraphQLLogger(this.polarisServerConfig.logger)) {
+            this.polarisGraphQLLogger = this.polarisServerConfig.logger;
+        } else {
+            this.polarisGraphQLLogger = new PolarisGraphQLLogger(
+                this.polarisServerConfig.logger as LoggerConfiguration,
+                this.polarisServerConfig.applicationProperties,
+            );
+        }
 
         const serverContext: (context: any) => any = (ctx: any) =>
             this.polarisServerConfig.customContext
@@ -74,6 +79,16 @@ export class PolarisServer {
             await server.close();
         }
         this.polarisGraphQLLogger.info('Server stopped');
+    }
+
+    private isPolarisGraphQLLogger(
+        logger: LoggerConfiguration | PolarisGraphQLLogger | undefined,
+    ): logger is PolarisGraphQLLogger {
+        if (logger as PolarisGraphQLLogger) {
+            return (logger as PolarisGraphQLLogger).polarisLogger !== undefined;
+        } else {
+            return false;
+        }
     }
 
     private getApolloServerConfigurations(serverContext: (context: any) => any) {

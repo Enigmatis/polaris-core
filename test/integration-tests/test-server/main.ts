@@ -16,7 +16,7 @@ const startApp = async () => {
         typeDefs,
         resolvers,
         port: polarisProperties.port,
-        loggerConfiguration: loggerConfig,
+        logger: loggerConfig,
         connection: getConnectionManager().get(),
     });
     await server.start();

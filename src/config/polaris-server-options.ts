@@ -1,3 +1,4 @@
+import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { Connection } from '@enigmatis/polaris-typeorm';
 import { DocumentNode } from 'graphql';
@@ -9,7 +10,7 @@ export interface PolarisServerOptions {
     resolvers: IResolvers | IResolvers[];
     port: number;
     applicationProperties?: ApplicationProperties;
-    loggerConfiguration?: LoggerConfiguration;
+    logger?: LoggerConfiguration | PolarisGraphQLLogger;
     middlewareConfiguration?: MiddlewareConfiguration;
     customMiddlewares?: any[];
     customContext?: (context: any) => any;
