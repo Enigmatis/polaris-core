@@ -63,16 +63,16 @@
         "@enigmatis/polaris-logs": "^2.6.1",
         "@enigmatis/polaris-middlewares": "^1.1.7",
         "@enigmatis/polaris-schema": "^1.0.6",
-        "@enigmatis/polaris-typeorm": "^1.1.12",
+        "@enigmatis/polaris-typeorm": "^1.1.13",
         "apollo-server-express": "^2.9.16",
         "apollo-server-plugin-base": "^0.6.10",
         "express": "^4.17.1",
-        "graphql": "^14.5.8",
+        "graphql": "^14.6.0",
         "graphql-middleware": "^4.0.2",
         "http-status": "^1.4.2",
         "ip": "^1.1.5",
         "ts-node": "^8.6.2",
-        "uuid": "^3.3.3"
+        "uuid": "^3.4.0"
     },
     "devDependencies": {
         "@commitlint/cli": "^8.3.5",
