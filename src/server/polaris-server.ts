@@ -1,7 +1,9 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
+import { LoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
+import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
@@ -91,15 +93,23 @@ export class PolarisServer {
         }
     }
 
-    private getApolloServerConfigurations(serverContext: (context: any) => any) {
+    private getApolloServerConfigurations(
+        serverContext: (context: any) => any,
+    ): ApolloServerExpressConfig {
+        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+            new ExtensionsPlugin(this.polarisGraphQLLogger),
+            new ResponseHeadersPlugin(this.polarisGraphQLLogger),
+            new LoggerPlugin(this.polarisGraphQLLogger),
+        ];
+        if (this.polarisServerConfig.plugins) {
+            plugins.push(...this.polarisServerConfig.plugins);
+        }
         return {
+            ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
             formatError,
             context: (ctx: any) => serverContext(ctx),
-            plugins: [
-                new ExtensionsPlugin(this.polarisGraphQLLogger),
-                new ResponseHeadersPlugin(this.polarisGraphQLLogger),
-            ],
+            plugins,
             playground: {
                 cdnUrl: '',
                 version: '',
