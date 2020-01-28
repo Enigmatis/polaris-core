@@ -60,7 +60,7 @@
     "dependencies": {
         "@enigmatis/polaris-common": "^1.0.10",
         "@enigmatis/polaris-graphql-logger": "^1.1.1",
-        "@enigmatis/polaris-logs": "^2.6.1",
+        "@enigmatis/polaris-logs": "^2.6.2",
         "@enigmatis/polaris-middlewares": "^1.1.7",
         "@enigmatis/polaris-schema": "^1.0.6",
         "@enigmatis/polaris-typeorm": "^1.1.13",
@@ -78,19 +78,19 @@
         "@commitlint/cli": "^8.3.5",
         "@commitlint/config-conventional": "^8.3.4",
         "@semantic-release/changelog": "^3.0.6",
-        "@semantic-release/git": "^7.0.18",
+        "@semantic-release/git": "latest",
         "@types/express": "^4.17.2",
         "@types/graphql": "^14.5.0",
         "@types/ip": "^1.1.0",
-        "@types/jest": "^24.9.0",
+        "@types/jest": "^24.9.1",
         "@types/uuid": "^3.4.6",
-        "axios": "^0.19.1",
+        "axios": "^0.19.2",
         "graphql-request": "^1.8.2",
         "husky": "^3.1.0",
         "jest": "^24.9.0",
         "pg": "^7.17.1",
         "prettier": "^1.19.1",
-        "rimraf": "^3.0.0",
+        "rimraf": "^3.0.1",
         "travis-deploy-once": "^5.0.11",
         "ts-jest": "^24.3.0",
         "tslint": "^5.20.1",
@@ -98,7 +98,7 @@
         "tslint-consistent-codestyle": "^1.16.0",
         "tslint-eslint-rules": "^5.4.0",
         "tslint-plugin-prettier": "^2.1.0",
-        "typescript": "^3.7.4"
+        "typescript": "^3.7.5"
     },
     "husky": {
         "hooks": {
