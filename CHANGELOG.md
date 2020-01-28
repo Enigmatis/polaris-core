@@ -1,3 +1,15 @@
+## [1.0.9](https://github.com/Enigmatis/polaris-core/compare/v1.0.8...v1.0.9) (2020-01-28)
+
+
+### Bug Fixes
+
+* add the ability to send logger configuration or a logger ([8939235](https://github.com/Enigmatis/polaris-core/commit/89392359029ec87c490ad88ed4479bd7cd621ecb))
+* add the ability to send logger configuration or a logger ([9c13d59](https://github.com/Enigmatis/polaris-core/commit/9c13d59d1e87d39e0a01e2ca668e4ff6f884b4d8))
+* added import to default context ([914850b](https://github.com/Enigmatis/polaris-core/commit/914850b477738f082ece9e9b0225816e50b4e5f9))
+* code review fixes ([4e40e72](https://github.com/Enigmatis/polaris-core/commit/4e40e722f1a9fd7e81574003860030e90db6f19f))
+* updated ([3c661e7](https://github.com/Enigmatis/polaris-core/commit/3c661e796e9cd39007a52bb41e6ebe0af48a9fb3))
+* updated dependencies ([592e736](https://github.com/Enigmatis/polaris-core/commit/592e736318907ddbf3b0d23e813df8bb2c1b0e64))
+
 ## [1.0.8](https://github.com/Enigmatis/polaris-core/compare/v1.0.7...v1.0.8) (2020-01-09)
 
 
