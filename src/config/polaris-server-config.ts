@@ -1,11 +1,12 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { Connection } from '@enigmatis/polaris-typeorm';
+import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
 import { MiddlewareConfiguration } from '../index';
 
-export interface PolarisServerConfig {
+export interface PolarisServerConfig extends ApolloServerExpressConfig {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
     resolvers: IResolvers | IResolvers[];
     port: number;
