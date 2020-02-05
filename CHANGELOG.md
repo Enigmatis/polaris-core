@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/Enigmatis/polaris-core/compare/v1.0.9...v1.1.0) (2020-02-04)
+
+
+### Features
+
+* **config&plugins:** config changed to support apollo configurations & a logger plugin was added ([c68eb4c](https://github.com/Enigmatis/polaris-core/commit/c68eb4cd1249764c07a152a3a1516ce1419afa49))
+* **polaris-middlewares:** update polaris-middlewares version ([987002d](https://github.com/Enigmatis/polaris-core/commit/987002d382311754a9172ff3f3981ae6b52e5d17))
+
 ## [1.0.9](https://github.com/Enigmatis/polaris-core/compare/v1.0.8...v1.0.9) (2020-01-28)
 
 
