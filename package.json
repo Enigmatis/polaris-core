@@ -12,6 +12,7 @@
         "coverage": "jest --runInBand --detectOpenHandles --coverage",
         "semantic-release": "semantic-release",
         "travis-deploy-once": "travis-deploy-once",
+        "prepare": "npm run lint:fix && npm run build",
         "lint": "npm run tslint-check && tslint -p .",
         "tslint-check": "tslint-config-prettier-check ./tslint.json",
         "lint:fix": "npm run tslint-check && tslint -p . --fix"
