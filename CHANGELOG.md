@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/Enigmatis/polaris-core/compare/v1.1.0...v1.1.1) (2020-02-05)
+
+
+### Bug Fixes
+
+* fixing deployment ([836c3db](https://github.com/Enigmatis/polaris-core/commit/836c3dbeb6b62269c216b1a6134ca32d94275df0))
+* set nullable to fix tests ([4f31ff3](https://github.com/Enigmatis/polaris-core/commit/4f31ff3a7e013f58ed741efce38fd1e9abb9627c))
+* set nullable to fix tests ([8f511b6](https://github.com/Enigmatis/polaris-core/commit/8f511b6128d21c57c11fccd4264b90f770ca85b4))
+
 # [1.1.0](https://github.com/Enigmatis/polaris-core/compare/v1.0.9...v1.1.0) (2020-02-04)
 
 
