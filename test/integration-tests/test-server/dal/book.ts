@@ -3,7 +3,7 @@ import { Author } from './author';
 
 @Entity()
 export class Book extends CommonModel {
-    @Column()
+    @Column({ nullable: true })
     public title: string;
 
     @ManyToOne(
