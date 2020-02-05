@@ -1,3 +1,4 @@
+import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { LoggerPlugin } from '@enigmatis/polaris-middlewares';
@@ -61,6 +62,7 @@ export class PolarisServer {
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
+            // @ts-ignore
             express.static(path.join(__dirname, '../../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
@@ -134,6 +136,7 @@ export class PolarisServer {
         const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
             this.polarisGraphQLLogger,
+            this.polarisServerConfig.supportedRealities || new RealitiesHolder(),
             this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {

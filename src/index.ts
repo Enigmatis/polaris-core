@@ -3,7 +3,6 @@ export { getPolarisContext } from './server/context-creator';
 export { PolarisServerOptions } from './config/polaris-server-options';
 export { MiddlewareConfiguration } from './config/middleware-configuration';
 export { formatError } from './errors/error-formatter';
-export { PolarisError } from './errors/polaris-error';
 export { gql } from 'apollo-server-express';
 export * from '@enigmatis/polaris-logs';
 export * from '@enigmatis/polaris-common';
