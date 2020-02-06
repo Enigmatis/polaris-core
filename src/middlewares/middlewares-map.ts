@@ -15,9 +15,14 @@ export const getMiddlewaresMap = (
 ): Map<string, any[]> => {
     const softDeleteMiddleware = new SoftDeleteMiddleware(logger).getMiddleware();
     const realitiesMiddleware = new RealitiesMiddleware(logger, realitiesHolder).getMiddleware();
-    const dataVersionMiddleware = new DataVersionMiddleware(logger, connection).getMiddleware();
+    const dataVersionMiddleware = new DataVersionMiddleware(
+        logger,
+        realitiesHolder,
+        connection,
+    ).getMiddleware();
     const irrelevantEntitiesMiddleware = new IrrelevantEntitiesMiddleware(
         logger,
+        realitiesHolder,
         connection,
     ).getMiddleware();
 

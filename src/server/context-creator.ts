@@ -15,7 +15,7 @@ export const getPolarisContext = (context: any): PolarisGraphQLContext => {
     const httpHeaders = context.req.headers;
     const requestId = httpHeaders[REQUEST_ID] || uuid();
     const upn = httpHeaders[OICD_CLAIM_UPN];
-    const realityId = +httpHeaders[REALITY_ID];
+    const realityId = +httpHeaders[REALITY_ID] || 0;
     return {
         requestHeaders: {
             upn,

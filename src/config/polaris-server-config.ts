@@ -18,5 +18,4 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     customContext?: (context: any) => any;
     connection?: Connection;
     supportedRealities?: RealitiesHolder;
-
 }

@@ -1,3 +1,4 @@
+import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
@@ -22,6 +23,9 @@ export async function startTestServer(): Promise<PolarisServer> {
         resolvers,
         port: polarisProperties.port,
         logger: loggerConfig,
+        supportedRealities: new RealitiesHolder(
+            new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
+        ),
         connection: getConnectionManager().get(),
     });
     await server.start();

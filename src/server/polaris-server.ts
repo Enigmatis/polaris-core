@@ -106,6 +106,19 @@ export class PolarisServer {
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
         }
+
+        if (!this.polarisServerConfig.supportedRealities) {
+            this.polarisServerConfig.supportedRealities = new RealitiesHolder();
+        }
+
+        if (!this.polarisServerConfig.supportedRealities.hasReality(0)) {
+            this.polarisServerConfig.supportedRealities.addReality({
+                id: 0,
+                type: 'real',
+                name: 'default',
+            });
+        }
+
         return {
             ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
