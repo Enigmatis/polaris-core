@@ -62,7 +62,6 @@ export class PolarisServer {
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
-            // @ts-ignore
             express.static(path.join(__dirname, '../../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
@@ -107,6 +106,20 @@ export class PolarisServer {
             plugins.push(...this.polarisServerConfig.plugins);
         }
 
+        return {
+            ...this.polarisServerConfig,
+            schema: this.getSchemaWithMiddlewares(),
+            formatError,
+            context: (ctx: any) => serverContext(ctx),
+            plugins,
+            playground: {
+                cdnUrl: '',
+                version: '',
+            },
+        };
+    }
+
+    private getSupportedRealities() {
         if (!this.polarisServerConfig.supportedRealities) {
             this.polarisServerConfig.supportedRealities = new RealitiesHolder();
         }
@@ -119,17 +132,7 @@ export class PolarisServer {
             });
         }
 
-        return {
-            ...this.polarisServerConfig,
-            schema: this.getSchemaWithMiddlewares(),
-            formatError,
-            context: (ctx: any) => serverContext(ctx),
-            plugins,
-            playground: {
-                cdnUrl: '',
-                version: '',
-            },
-        };
+        return this.polarisServerConfig.supportedRealities;
     }
 
     private getSchemaWithMiddlewares(): GraphQLSchema {
@@ -149,7 +152,7 @@ export class PolarisServer {
         const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
             this.polarisGraphQLLogger,
-            this.polarisServerConfig.supportedRealities || new RealitiesHolder(),
+            this.getSupportedRealities(),
             this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
