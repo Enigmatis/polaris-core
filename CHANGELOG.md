@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/Enigmatis/polaris-core/compare/v1.1.1...v1.2.0) (2020-02-10)
+
+
+### Bug Fixes
+
+* using realities holder ([287c9d2](https://github.com/Enigmatis/polaris-core/commit/287c9d237dcbaa4b870f5dda1e1d7fb753ba6d83))
+
+
+### Features
+
+* fixed reviews ([c25698e](https://github.com/Enigmatis/polaris-core/commit/c25698e6f7716d4be4c67bfc0898a863270c5633))
+
 ## [1.1.1](https://github.com/Enigmatis/polaris-core/compare/v1.1.0...v1.1.1) (2020-02-05)
 
 
