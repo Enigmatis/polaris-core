@@ -42,7 +42,7 @@ export class PolarisServer {
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
-        if (this.isPolarisGraphQLLogger(this.polarisServerConfig.logger)) {
+        if (this.polarisServerConfig.logger instanceof PolarisGraphQLLogger) {
             this.polarisGraphQLLogger = this.polarisServerConfig.logger;
         } else {
             this.polarisGraphQLLogger = new PolarisGraphQLLogger(
@@ -82,16 +82,6 @@ export class PolarisServer {
             await server.close();
         }
         this.polarisGraphQLLogger.info('Server stopped');
-    }
-
-    private isPolarisGraphQLLogger(
-        logger: LoggerConfiguration | PolarisGraphQLLogger | undefined,
-    ): logger is PolarisGraphQLLogger {
-        if (logger as PolarisGraphQLLogger) {
-            return (logger as PolarisGraphQLLogger).polarisLogger !== undefined;
-        } else {
-            return false;
-        }
     }
 
     private getApolloServerConfigurations(
