@@ -2,7 +2,7 @@ import { getConnectionManager } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { initializeDatabase } from './data-initalizer';
-import { polarisGraphQLLogger } from "./logger";
+import { polarisGraphQLLogger } from './logger';
 import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
