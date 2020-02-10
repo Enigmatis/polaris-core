@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/Enigmatis/polaris-core/compare/v1.2.0...v1.3.0) (2020-02-10)
+
+
+### Bug Fixes
+
+* prettify ([c4d4ca5](https://github.com/Enigmatis/polaris-core/commit/c4d4ca55d7c0f988ff790ef2ac30aa38def3f807))
+
+
+### Features
+
+* polarisgraphqllogger implements polarislogger ([11464d4](https://github.com/Enigmatis/polaris-core/commit/11464d42dd2330541ed5bdd0cb8a530f1a9a0447))
+
 # [1.2.0](https://github.com/Enigmatis/polaris-core/compare/v1.1.1...v1.2.0) (2020-02-10)
 
 
