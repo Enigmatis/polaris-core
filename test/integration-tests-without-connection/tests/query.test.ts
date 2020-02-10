@@ -9,7 +9,7 @@ beforeEach(async () => {
     polarisServer = await startTestServer();
 });
 
-afterEach(() => {
+afterEach(async () => {
     return stopTestServer(polarisServer);
 });
 
