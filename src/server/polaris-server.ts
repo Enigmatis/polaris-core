@@ -1,3 +1,4 @@
+import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { LoggerPlugin } from '@enigmatis/polaris-middlewares';
@@ -104,6 +105,7 @@ export class PolarisServer {
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
         }
+
         return {
             ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
@@ -115,6 +117,22 @@ export class PolarisServer {
                 version: '',
             },
         };
+    }
+
+    private getSupportedRealities() {
+        if (!this.polarisServerConfig.supportedRealities) {
+            this.polarisServerConfig.supportedRealities = new RealitiesHolder();
+        }
+
+        if (!this.polarisServerConfig.supportedRealities.hasReality(0)) {
+            this.polarisServerConfig.supportedRealities.addReality({
+                id: 0,
+                type: 'real',
+                name: 'default',
+            });
+        }
+
+        return this.polarisServerConfig.supportedRealities;
     }
 
     private getSchemaWithMiddlewares(): GraphQLSchema {
@@ -134,6 +152,7 @@ export class PolarisServer {
         const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
             this.polarisGraphQLLogger,
+            this.getSupportedRealities(),
             this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {

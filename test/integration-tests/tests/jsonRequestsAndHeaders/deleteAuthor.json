@@ -1,4 +1,4 @@
 {
-  "request": "mutation($id:String!){\n  deleteAuthor(id:$id)\n}",
-  "headers": { "reality-id": 0 }
+    "request": "mutation($id:String!){\n  deleteAuthor(id:$id)\n}",
+    "headers": { "reality-id": 0 }
 }
