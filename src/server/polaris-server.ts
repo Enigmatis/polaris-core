@@ -111,6 +111,9 @@ export class PolarisServer {
                 version: '',
             },
             formatError,
+            subscriptions: {
+                path: `/${this.polarisServerConfig.applicationProperties.version}/subscription`,
+            },
         };
     }
 
