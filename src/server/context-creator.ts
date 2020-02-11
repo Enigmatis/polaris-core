@@ -11,20 +11,22 @@ import {
 import { address as getIpAddress } from 'ip';
 import { v4 as uuid } from 'uuid';
 
-export const getPolarisContext = (context: any): PolarisGraphQLContext => {
-    const httpHeaders = context.req.headers;
-    const requestId = httpHeaders[REQUEST_ID] || uuid();
-    const upn = httpHeaders[OICD_CLAIM_UPN];
-    const realityId = +httpHeaders[REALITY_ID] || 0;
+export const getPolarisContext = ({ req, res, connection }: any): PolarisGraphQLContext => {
+    const headers = req ? req.headers : connection.context;
+    const body = req ? req.body : connection;
+
+    const requestId = headers[REQUEST_ID] || uuid();
+    const upn = headers[OICD_CLAIM_UPN];
+    const realityId = +headers[REALITY_ID] || 0;
     return {
         requestHeaders: {
             upn,
             requestId,
             realityId,
-            dataVersion: +httpHeaders[DATA_VERSION],
-            includeLinkedOper: httpHeaders[INCLUDE_LINKED_OPER] === 'true',
-            requestingSystemId: httpHeaders[REQUESTING_SYS],
-            requestingSystemName: httpHeaders[REQUESTING_SYS_NAME],
+            dataVersion: +headers[DATA_VERSION],
+            includeLinkedOper: headers[INCLUDE_LINKED_OPER] === 'true',
+            requestingSystemId: headers[REQUESTING_SYS],
+            requestingSystemName: headers[REQUESTING_SYS_NAME],
         },
         responseHeaders: {
             upn,
@@ -33,11 +35,11 @@ export const getPolarisContext = (context: any): PolarisGraphQLContext => {
         },
         clientIp: getIpAddress(),
         request: {
-            query: context.req.body.query,
-            operationName: context.req.body.operationName,
-            polarisVariables: context.req.body.variables,
+            query: body.query,
+            operationName: body.operationName,
+            polarisVariables: body.variables,
         },
-        response: context.res,
+        response: res,
         returnedExtensions: {} as any,
     };
 };
