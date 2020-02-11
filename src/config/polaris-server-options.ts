@@ -14,6 +14,7 @@ export interface PolarisServerOptions extends ApolloServerExpressConfig {
     applicationProperties?: ApplicationProperties;
     logger?: LoggerConfiguration | PolarisGraphQLLogger;
     middlewareConfiguration?: MiddlewareConfiguration;
+    allowSubscription?: boolean;
     customMiddlewares?: any[];
     customContext?: (context: any) => any;
     connection?: Connection;

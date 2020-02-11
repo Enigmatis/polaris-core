@@ -32,6 +32,7 @@ export class PolarisServer {
                 config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
             logger: config.logger || getDefaultLoggerConfiguration(),
             applicationProperties: config.applicationProperties || { version: 'v1' },
+            allowSubscription: config.allowSubscription || false,
         };
     }
 
@@ -70,7 +71,11 @@ export class PolarisServer {
     }
 
     public async start(): Promise<void> {
-        server = await app.listen({ port: this.polarisServerConfig.port });
+        server = http.createServer(app);
+        if (this.polarisServerConfig.allowSubscription) {
+            this.apolloServer.installSubscriptionHandlers(server);
+        }
+        await server.listen({ port: this.polarisServerConfig.port });
         this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
@@ -99,13 +104,13 @@ export class PolarisServer {
         return {
             ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
-            formatError,
             context: (ctx: any) => serverContext(ctx),
             plugins,
             playground: {
                 cdnUrl: '',
                 version: '',
             },
+            formatError,
         };
     }
 
