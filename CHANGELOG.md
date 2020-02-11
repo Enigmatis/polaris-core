@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/Enigmatis/polaris-core/compare/v1.3.0...v1.4.0) (2020-02-11)
+
+
+### Features
+
+* **subscription:** added support for subscription ([8b6ba4f](https://github.com/Enigmatis/polaris-core/commit/8b6ba4f39e5b47d143c10564ed57710a4f1e1ab8))
+
 # [1.3.0](https://github.com/Enigmatis/polaris-core/compare/v1.2.0...v1.3.0) (2020-02-10)
 
 
