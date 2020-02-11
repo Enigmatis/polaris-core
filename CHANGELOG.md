@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.0...v1.4.1) (2020-02-11)
+
+
+### Bug Fixes
+
+* **subscription:** fixed subscription path ([47518f0](https://github.com/Enigmatis/polaris-core/commit/47518f0302595f49649d004202120a75451188c0))
+
 # [1.4.0](https://github.com/Enigmatis/polaris-core/compare/v1.3.0...v1.4.0) (2020-02-11)
 
 
