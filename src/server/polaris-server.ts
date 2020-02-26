@@ -1,15 +1,30 @@
-import { RealitiesHolder } from '@enigmatis/polaris-common';
+import {
+    DATA_VERSION,
+    INCLUDE_LINKED_OPER,
+    OICD_CLAIM_UPN,
+    PolarisGraphQLContext,
+    RealitiesHolder,
+    Reality,
+    REALITY_ID,
+    REQUEST_ID,
+    REQUESTING_SYS,
+    REQUESTING_SYS_NAME,
+} from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { LoggerPlugin } from '@enigmatis/polaris-middlewares';
+import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
+import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
+import * as deepMerge from 'deepmerge';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import * as http from 'http';
+import { address as getIpAddress } from 'ip';
+import * as os from 'os';
 import * as path from 'path';
+import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
@@ -19,7 +34,7 @@ import {
     getDefaultLoggerConfiguration,
     getDefaultMiddlewareConfiguration,
 } from './configurations-manager';
-import { getPolarisContext } from './context-creator';
+import { ExpressContext } from './express-context';
 
 const app = express();
 let server: http.Server;
@@ -38,26 +53,21 @@ export class PolarisServer {
 
     private readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
-    private readonly polarisGraphQLLogger: PolarisGraphQLLogger;
+    private readonly polarisLogger: AbstractPolarisLogger;
 
     constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
 
         if (this.polarisServerConfig.logger instanceof PolarisGraphQLLogger) {
-            this.polarisGraphQLLogger = this.polarisServerConfig.logger;
+            this.polarisLogger = this.polarisServerConfig.logger;
         } else {
-            this.polarisGraphQLLogger = new PolarisGraphQLLogger(
+            this.polarisLogger = new PolarisGraphQLLogger(
                 this.polarisServerConfig.logger as LoggerConfiguration,
                 this.polarisServerConfig.applicationProperties,
             );
         }
 
-        const serverContext: (context: any) => any = (ctx: any) =>
-            this.polarisServerConfig.customContext
-                ? this.polarisServerConfig.customContext(ctx)
-                : getPolarisContext(ctx);
-
-        this.apolloServer = new ApolloServer(this.getApolloServerConfigurations(serverContext));
+        this.apolloServer = new ApolloServer(this.getApolloServerConfigurations());
 
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
@@ -76,7 +86,7 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
-        this.polarisGraphQLLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
+        this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
@@ -86,16 +96,14 @@ export class PolarisServer {
         if (server) {
             await server.close();
         }
-        this.polarisGraphQLLogger.info('Server stopped');
+        this.polarisLogger.info('Server stopped');
     }
 
-    private getApolloServerConfigurations(
-        serverContext: (context: any) => any,
-    ): ApolloServerExpressConfig {
+    private getApolloServerConfigurations(): ApolloServerExpressConfig {
         const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
-            new ExtensionsPlugin(this.polarisGraphQLLogger),
-            new ResponseHeadersPlugin(this.polarisGraphQLLogger),
-            new LoggerPlugin(this.polarisGraphQLLogger),
+            new ExtensionsPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
@@ -104,7 +112,7 @@ export class PolarisServer {
         return {
             ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
-            context: (ctx: any) => serverContext(ctx),
+            context: (ctx: ExpressContext) => this.getPolarisContext(ctx),
             plugins,
             playground: {
                 cdnUrl: '',
@@ -149,7 +157,7 @@ export class PolarisServer {
         const allowedMiddlewares: any = [];
         const middlewareConfiguration = this.polarisServerConfig.middlewareConfiguration;
         const middlewaresMap = getMiddlewaresMap(
-            this.polarisGraphQLLogger,
+            this.polarisLogger as PolarisGraphQLLogger,
             this.getSupportedRealities(),
             this.polarisServerConfig.connection,
         );
@@ -163,4 +171,53 @@ export class PolarisServer {
         }
         return allowedMiddlewares;
     }
+
+    private getPolarisContext = (context: ExpressContext): PolarisGraphQLContext => {
+        const { req, connection } = context;
+        const headers = req ? req.headers : connection?.context;
+        const body = req ? req.body : connection;
+
+        const requestId = headers[REQUEST_ID] || uuid();
+        const upn = headers[OICD_CLAIM_UPN];
+        const realityId = +headers[REALITY_ID] || 0;
+
+        const supportedRealities = this.getSupportedRealities();
+        const reality: Reality | undefined = supportedRealities.getReality(realityId);
+        if (!reality) {
+            throw new Error('Requested reality is not supported!');
+        }
+
+        const baseContext = {
+            reality,
+            requestHeaders: {
+                upn,
+                requestId,
+                realityId,
+                dataVersion: +headers[DATA_VERSION],
+                includeLinkedOper: headers[INCLUDE_LINKED_OPER] === 'true',
+                requestingSystemId: headers[REQUESTING_SYS],
+                requestingSystemName: headers[REQUESTING_SYS_NAME],
+            },
+            responseHeaders: {
+                upn,
+                requestId,
+                realityId,
+            },
+            host: os.hostname(),
+            clientIp: getIpAddress(),
+            request: {
+                query: body.query,
+                operationName: body.operationName,
+                variables: body.variables,
+            },
+            returnedExtensions: {} as any,
+        };
+
+        if (this.polarisServerConfig.customContext) {
+            const customContext = this.polarisServerConfig.customContext(context);
+            return deepMerge(customContext, baseContext);
+        } else {
+            return baseContext;
+        }
+    };
 }

@@ -1,18 +1,13 @@
 import { getConnectionManager, PolarisSaveOptions } from '@enigmatis/polaris-typeorm';
 import { Author } from './dal/author';
 import { Book } from './dal/book';
-import { polarisGraphQLLogger } from './logger';
 
 export async function deleteTables() {
     const connection = getConnectionManager().get();
     const tables = ['book', 'author', 'dataVersion'];
     for (const table of tables) {
         if (connection) {
-            try {
-                await connection.getRepository(table).query('DELETE FROM "' + table + '";');
-            } catch (e) {
-                polarisGraphQLLogger.debug("Couldn't delete table (might never existed)");
-            }
+            await connection.getRepository(table).query('DELETE FROM "' + table + '";');
         }
     }
 }

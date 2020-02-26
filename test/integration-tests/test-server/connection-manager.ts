@@ -2,5 +2,5 @@ import { ConnectionOptions, createPolarisConnection } from '@enigmatis/polaris-t
 import { polarisGraphQLLogger } from './logger';
 
 export async function initConnection(connectionOptions: ConnectionOptions) {
-    await createPolarisConnection(connectionOptions, polarisGraphQLLogger);
+    await createPolarisConnection(connectionOptions, polarisGraphQLLogger as any);
 }

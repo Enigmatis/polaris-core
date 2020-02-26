@@ -5,7 +5,7 @@ import { Connection } from '@enigmatis/polaris-typeorm';
 import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
-import { MiddlewareConfiguration } from '../index';
+import { ExpressContext, MiddlewareConfiguration } from '..';
 
 export interface PolarisServerOptions extends ApolloServerExpressConfig {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
@@ -16,7 +16,7 @@ export interface PolarisServerOptions extends ApolloServerExpressConfig {
     middlewareConfiguration?: MiddlewareConfiguration;
     allowSubscription?: boolean;
     customMiddlewares?: any[];
-    customContext?: (context: any) => any;
+    customContext?: (context: ExpressContext) => any;
     connection?: Connection;
     supportedRealities?: RealitiesHolder;
 }

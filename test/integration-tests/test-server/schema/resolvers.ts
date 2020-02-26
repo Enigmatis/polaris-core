@@ -20,7 +20,7 @@ export const resolvers = {
             context: PolarisGraphQLContext,
         ): Promise<Book[]> => {
             const connection = getConnectionManager().get();
-            polarisGraphQLLogger.debug("I'm the resolver of all books");
+            polarisGraphQLLogger.debug("I'm the resolver of all books", context);
             return connection
                 .getRepository(Book)
                 .find(new PolarisFindManyOptions({ relations: ['author'] }, context) as any);
