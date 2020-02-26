@@ -71,7 +71,6 @@
         "graphql": "^14.6.0",
         "graphql-middleware": "^4.0.2",
         "http-status": "^1.4.2",
-        "ip": "^1.1.5",
         "subscriptions-transport-ws": "^0.9.16",
         "ts-node": "^8.6.2",
         "uuid": "^3.4.0"

@@ -21,8 +21,6 @@ import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import * as http from 'http';
-import { address as getIpAddress } from 'ip';
-import * as os from 'os';
 import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
@@ -203,8 +201,7 @@ export class PolarisServer {
                 requestId,
                 realityId,
             },
-            host: os.hostname(),
-            clientIp: getIpAddress(),
+            clientIp: req.ip,
             request: {
                 query: body.query,
                 operationName: body.operationName,
