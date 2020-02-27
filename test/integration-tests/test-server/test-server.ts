@@ -1,5 +1,5 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
-import { ConnectionOptions, getConnectionManager } from '@enigmatis/polaris-typeorm';
+import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { loggerConfig } from './logger';
@@ -26,7 +26,7 @@ export async function startTestServer(): Promise<PolarisServer> {
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
-        connection: getConnectionManager().get(),
+        connection: getPolarisConnectionManager().get(),
     });
     await server.start();
     return server;
@@ -34,7 +34,9 @@ export async function startTestServer(): Promise<PolarisServer> {
 
 export async function stopTestServer(server: PolarisServer) {
     await server.stop();
-    await getConnectionManager()
-        .get()
-        .close();
+    if (getPolarisConnectionManager().connections.length > 0) {
+        await getPolarisConnectionManager()
+            .get()
+            .close();
+    }
 }

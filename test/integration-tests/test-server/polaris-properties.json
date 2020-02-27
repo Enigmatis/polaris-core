@@ -1,5 +1,5 @@
 {
-    "port": 8082,
+    "port": 8080,
     "id": "p0laris-ex5mpl3",
     "name": "polaris-example",
     "version": "v1",

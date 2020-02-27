@@ -1,9 +1,9 @@
-import { getConnectionManager, PolarisSaveOptions } from '@enigmatis/polaris-typeorm';
+import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { Author } from './dal/author';
 import { Book } from './dal/book';
 
 export async function deleteTables() {
-    const connection = getConnectionManager().get();
+    const connection = getPolarisConnectionManager().get();
     const tables = ['book', 'author', 'dataVersion'];
     for (const table of tables) {
         if (connection) {
@@ -27,26 +27,26 @@ function getBooks(authors: Author[]): Book[] {
 }
 
 async function createExampleData(authors: Author[], books: Book[]) {
-    const connection = getConnectionManager().get();
+    const connection = getPolarisConnectionManager().get();
     const authorRepo = connection.getRepository(Author);
     const bookRepo = connection.getRepository(Book);
     const context = {
         requestHeaders: { realityId: 0 },
         returnedExtensions: {},
     } as any;
-    await authorRepo.save(new PolarisSaveOptions(authors, context) as any);
-    await bookRepo.save(new PolarisSaveOptions([books[0], books[1]], context) as any);
+    await authorRepo.save(context, authors);
+    await bookRepo.save(context, [books[0], books[1]]);
     context.requestHeaders.realityId = 3;
     delete context.returnedExtensions.globalDataVersion;
-    await bookRepo.save(new PolarisSaveOptions(books[2], context) as any);
+    await bookRepo.save(context, books[2]);
     delete context.returnedExtensions.globalDataVersion;
-    await bookRepo.save(new PolarisSaveOptions(books[3], context) as any);
+    await bookRepo.save(context, books[3]);
     books[4].setDeleted(true);
-    await bookRepo.save(new PolarisSaveOptions(books[4], context) as any);
+    await bookRepo.save(context, books[4]);
 }
 
 export async function initializeDatabase() {
-    const connection = getConnectionManager().get();
+    const connection = getPolarisConnectionManager().get();
     await deleteTables();
     await connection.synchronize();
     const authors: Author[] = getAuthors();

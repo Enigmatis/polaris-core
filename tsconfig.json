@@ -12,7 +12,8 @@
         "allowSyntheticDefaultImports": true,
         "types": ["jest", "ip", "uuid"],
         "declaration": true,
-        "lib": ["es6", "es2017", "esnext", "dom"]
+        "lib": ["es6", "es2017", "esnext", "dom"],
+        "skipLibCheck": true
     },
     "exclude": ["node_modules", "dist"]
 }
