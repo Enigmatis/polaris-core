@@ -50,10 +50,54 @@ As mentioned above, this interface defines what core middlewares should be activ
 -   **allowSoftDeleteMiddleware** (_boolean_) - Determine if `SoftDeleteMiddleware` should be applied to the request.
 -   **allowRealityMiddleware** (_boolean_) - Determine if `RealityMiddleware` should be applied to the request.
 
+### Custom context
+
+First we will define the new context type, pay attention that we just added a new field in the root of the context,
+and a new header in the request headers object.
+
+```typescript
+import { PolarisGraphQLContext, PolarisRequestHeaders } from '@enigmatis/polaris-core';
+
+interface CustomRequestHeaders extends PolarisRequestHeaders {
+    customHeader: string;
+}
+
+export interface CustomContext extends PolarisGraphQLContext {
+    customField: number;
+    requestHeaders: CustomRequestHeaders;
+}
+```
+
+Then we will pass the custom context like this:
+
+```typescript
+import { ExpressContext, PolarisServer } from '@enigmatis/polaris-core';
+
+const typeDefs = `...`;
+const resolvers = { ... };
+
+const customContext = (context: ExpressContext): Partial<CustomContext> => {
+    const { req } = context;
+
+    return {
+        customField: 1000,
+        requestHeaders: {
+            customHeader: req.headers.customHeader,
+        },
+    };
+};
+
+const server = new PolarisServer({
+    typeDefs,
+    resolvers,
+    port: 8082,
+    customContext,
+});
+```
+
 ### Example
 
-```Typescript
-
+```typescript
 import { ApplicationProperties, PolarisServer } from '@enigmatis/polaris-core';
 
 const typeDefs = `
@@ -96,7 +140,6 @@ const server = new PolarisServer({
     applicationProperties,
 });
 server.start();
-
 ```
 
 For any additional help and requests, feel free to contact us :smile:
