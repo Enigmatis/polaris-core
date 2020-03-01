@@ -59,7 +59,7 @@ and a new header in the request headers object.
 import { PolarisGraphQLContext, PolarisRequestHeaders } from '@enigmatis/polaris-core';
 
 interface CustomRequestHeaders extends PolarisRequestHeaders {
-    customHeader: string;
+    customHeader?: string | string[];
 }
 
 export interface CustomContext extends PolarisGraphQLContext {

@@ -182,7 +182,9 @@ export class PolarisServer {
         const supportedRealities = this.getSupportedRealities();
         const reality: Reality | undefined = supportedRealities.getReality(realityId);
         if (!reality) {
-            throw new Error('Requested reality is not supported!');
+            const error = new Error('Requested reality is not supported!');
+            this.polarisLogger.error(error.message);
+            throw error;
         }
 
         const baseContext = {
