@@ -1,4 +1,4 @@
-import { getConnectionManager } from '@enigmatis/polaris-typeorm';
+import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { initializeDatabase } from './data-initalizer';
@@ -17,7 +17,7 @@ const startApp = async () => {
         resolvers,
         port: polarisProperties.port,
         logger: polarisGraphQLLogger,
-        connection: getConnectionManager().get(),
+        connection: getPolarisConnectionManager().get(),
     });
     await server.start();
 };

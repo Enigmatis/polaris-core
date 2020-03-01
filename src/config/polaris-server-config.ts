@@ -4,7 +4,7 @@ import {
     ApplicationProperties,
     LoggerConfiguration,
 } from '@enigmatis/polaris-logs';
-import { Connection } from '@enigmatis/polaris-typeorm';
+import { PolarisConnection } from '@enigmatis/polaris-typeorm';
 import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
@@ -21,6 +21,6 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     allowSubscription: boolean;
     customMiddlewares?: any[];
     customContext?: (context: ExpressContext) => any;
-    connection?: Connection;
+    connection?: PolarisConnection;
     supportedRealities?: RealitiesHolder;
 }
