@@ -20,9 +20,9 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     const { req } = context;
 
     return {
-        testField: 1000,
+        customField: 1000,
         requestHeaders: {
-            testHeader: req.headers.customHeader,
+            customHeader: req.headers['custom-header'],
         },
     };
 };

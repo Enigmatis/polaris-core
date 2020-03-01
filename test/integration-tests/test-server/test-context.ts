@@ -1,10 +1,10 @@
 import { PolarisGraphQLContext, PolarisRequestHeaders } from '../../../src';
 
 interface TestRequestHeaders extends PolarisRequestHeaders {
-    testHeader?: string | string[];
+    customHeader?: string | string[];
 }
 
 export interface TestContext extends PolarisGraphQLContext {
-    testField: number;
+    customField: number;
     requestHeaders: TestRequestHeaders;
 }
