@@ -4,7 +4,7 @@ import * as status from 'http-status';
 import { formatError } from '../../src';
 
 describe('formatError tests', () => {
-    test('calling formatError with UserInputError, bad request status code is inside the extensions', () => {
+    test('calling formatError with UserInputError, bad request status code is inside the extensions ', () => {
         const error = {
             originalError: new UserInputError('test'),
             extensions: {},

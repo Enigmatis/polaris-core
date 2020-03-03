@@ -10,7 +10,7 @@
         "rebuild": "npm run clean && npm run build",
         "test": "jest --runInBand --detectOpenHandles",
         "coverage": "jest --runInBand --detectOpenHandles --coverage",
-        "semantic-release": "semantic-release",
+        "semantic-release": "npx semantic-release",
         "travis-deploy-once": "travis-deploy-once",
         "prepare": "npm run lint:fix && npm run build",
         "lint": "npm run tslint-check && tslint -p .",
@@ -47,9 +47,9 @@
         ],
         "branches": [
             {
-                "name": "beta",
-                "channel": "beta",
-                "prerelease": "beta"
+                "name": "development",
+                "channel": "development",
+                "prerelease": "development"
             },
             {
                 "name": "master"
