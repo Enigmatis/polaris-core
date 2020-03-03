@@ -14,3 +14,8 @@ jobs:
               provider: script
               skip_cleanup: true
               script: npm run semantic-release
+              on:
+                branches:
+                  only:
+                    - master
+                    - beta
