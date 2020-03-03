@@ -1,3 +1,31 @@
+# [2.0.0-development.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.1...v2.0.0-development.1) (2020-03-03)
+
+
+### Bug Fixes
+
+* space ([4d9a911](https://github.com/Enigmatis/polaris-core/commit/4d9a9114f2f39c0d484ef01b5f39843be0448cb7))
+* space ([94553b1](https://github.com/Enigmatis/polaris-core/commit/94553b11c081ced7ad299f7390ae474356dfc91a))
+* **extensions:** fixed extensions being overridden ([2335e0a](https://github.com/Enigmatis/polaris-core/commit/2335e0a46e43a999699cf374f0014ebf26b1ec94))
+* **extensions:** fixed extensions being overridden ([f836b07](https://github.com/Enigmatis/polaris-core/commit/f836b078e33f88ca1d4aa1028de7776f7d0e8cbe))
+* ip in context is now taken from the request ([f287d54](https://github.com/Enigmatis/polaris-core/commit/f287d541120001b12f429e46dc7af61bfa528c9c))
+
+
+### Features
+
+* new types ([c73f624](https://github.com/Enigmatis/polaris-core/commit/c73f624fb563d554f5c770e00361da99b0c53b5d))
+* new types ([f1ef79e](https://github.com/Enigmatis/polaris-core/commit/f1ef79e01dcfa8b23df14e692b6adfe724a7b6af))
+* new types ([dde9000](https://github.com/Enigmatis/polaris-core/commit/dde9000ffcfba24a1e235b567f4b78ac44b4cef3))
+* new types ([342a37d](https://github.com/Enigmatis/polaris-core/commit/342a37d7f36db1f63e80678bfa5f260411584650))
+* refactored the way custom context was handled ([db272a4](https://github.com/Enigmatis/polaris-core/commit/db272a41c9333268134990472c0e933ab8016bde))
+
+
+* refactor: ([726f4f8](https://github.com/Enigmatis/polaris-core/commit/726f4f8d78d31c2b21855f7e5ddd5f91c732b725))
+
+
+### BREAKING CHANGES
+
+* polaris types
+
 ## [1.4.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.0...v1.4.1) (2020-02-11)
 
 
