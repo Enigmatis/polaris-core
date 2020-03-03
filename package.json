@@ -47,9 +47,9 @@
         ],
         "branches": [
             {
-                "name": "beta",
-                "channel": "beta",
-                "prerelease": "beta"
+                "name": "development",
+                "channel": "development",
+                "prerelease": "development"
             },
             {
                 "name": "master"
