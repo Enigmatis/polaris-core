@@ -4,6 +4,7 @@ export const typeDefs = `
         authorById(id: String!): Author
         bookByTitle(title: String!): [Book]!
         authorsByName(name: String!): [Author]!
+        authorsByFirstNameFromCustomHeader: [Author]!
     }
 
     type Mutation{

@@ -1,5 +1,5 @@
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration } from '../config/middleware-configuration';
+import { MiddlewareConfiguration } from '..';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
     return {

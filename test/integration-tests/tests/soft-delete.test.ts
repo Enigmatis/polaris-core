@@ -20,23 +20,23 @@ afterEach(async () => {
 
 describe('soft delete tests', () => {
     it('should filter deleted entities', async () => {
-        const bookDeleteionCriteria = {
+        const bookDeletionCriteria = {
             title: '4',
         };
         const bookToDelete = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
-            bookDeleteionCriteria,
+            bookDeletionCriteria,
         );
         await graphQLRequest(deleteBook.request, deleteBook.headers, {
             id: bookToDelete.bookByTitle[0].id,
         });
-        const afterBookDeleteionResponse = await graphQLRequest(
+        const afterBookDeletionResponse = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
-            bookDeleteionCriteria,
+            bookDeletionCriteria,
         );
-        expect(afterBookDeleteionResponse.bookByTitle.length).toBe(0);
+        expect(afterBookDeletionResponse.bookByTitle.length).toBe(0);
     });
 
     it('should delete linked entities to deleted entities', async () => {
@@ -44,7 +44,7 @@ describe('soft delete tests', () => {
             name: '1',
         };
 
-        const bookDeleteionCriteria = {
+        const bookDeletionCriteria = {
             title: '1',
         };
 
@@ -56,11 +56,11 @@ describe('soft delete tests', () => {
         await graphQLRequest(deleteAuthor.request, deleteAuthor.headers, {
             id: authorToDelete.authorsByName[0].id,
         });
-        const afterBookDeleteionResponse = await graphQLRequest(
+        const afterBookDeletionResponse = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
-            bookDeleteionCriteria,
+            bookDeletionCriteria,
         );
-        expect(afterBookDeleteionResponse.bookByTitle.length).toBe(0);
+        expect(afterBookDeletionResponse.bookByTitle.length).toBe(0);
     });
 });

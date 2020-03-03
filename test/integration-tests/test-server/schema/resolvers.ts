@@ -3,6 +3,7 @@ import { DeleteResult, getPolarisConnectionManager, Like } from '../../../../src
 import { Author } from '../dal/author';
 import { Book } from '../dal/book';
 import { polarisGraphQLLogger } from '../logger';
+import { TestContext } from '../test-context';
 
 export const resolvers = {
     Query: {
@@ -41,6 +42,16 @@ export const resolvers = {
             return connection
                 .getRepository(Author)
                 .findOne(context, { where: { id: args.id } }, {});
+        },
+        authorsByFirstNameFromCustomHeader: async (
+            parent: any,
+            args: any,
+            context: TestContext,
+        ): Promise<Author[]> => {
+            const connection = getPolarisConnectionManager().get();
+            return connection.getRepository(Author).find(context, {
+                where: { firstName: Like(`%${context.requestHeaders.customHeader}%`) },
+            });
         },
     },
     Mutation: {
