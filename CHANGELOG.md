@@ -1,3 +1,10 @@
+# [2.0.0-development.2](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-development.1...v2.0.0-development.2) (2020-03-04)
+
+
+### Features
+
+* new types ([7c50343](https://github.com/Enigmatis/polaris-core/commit/7c503431a23f7e9c23c38c4a53cc4fb7bd102cbb))
+
 # [2.0.0-development.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.1...v2.0.0-development.1) (2020-03-03)
 
 
