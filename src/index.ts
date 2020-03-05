@@ -3,6 +3,7 @@ export { PolarisServer } from './server/polaris-server';
 export { PolarisServerOptions } from './config/polaris-server-options';
 export { MiddlewareConfiguration } from './config/middleware-configuration';
 export { formatError } from './errors/error-formatter';
+export * from 'apollo-server-errors';
 export { PubSub, gql } from 'apollo-server-express';
 export * from '@enigmatis/polaris-common';
 export { Reality } from '@enigmatis/polaris-common';
