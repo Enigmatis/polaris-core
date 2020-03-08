@@ -1,3 +1,10 @@
+# [2.0.0-beta.2](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2020-03-08)
+
+
+### Bug Fixes
+
+* disabled playground when environment is set to prod ([a6da83f](https://github.com/Enigmatis/polaris-core/commit/a6da83fb9d1535b87f50a93ff523eb93a7e3229a))
+
 # [2.0.0-beta.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.1...v2.0.0-beta.1) (2020-03-04)
 
 
