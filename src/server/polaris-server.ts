@@ -14,7 +14,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
+import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as deepMerge from 'deepmerge';
 import * as express from 'express';
@@ -112,10 +112,8 @@ export class PolarisServer {
             schema: this.getSchemaWithMiddlewares(),
             context: (ctx: ExpressContext) => this.getPolarisContext(ctx),
             plugins,
-            playground: {
-                cdnUrl: '',
-                version: '',
-            },
+            playground: this.getPlaygroundConfig(),
+            introspection: this.getIntrospectionConfig(),
             formatError,
             subscriptions: {
                 path: `/${this.polarisServerConfig.applicationProperties.version}/subscription`,
@@ -168,6 +166,20 @@ export class PolarisServer {
             }
         }
         return allowedMiddlewares;
+    }
+
+    private getPlaygroundConfig(): PlaygroundConfig {
+        return this.isProduction() ? false : { cdnUrl: '', version: '' };
+    }
+
+    private getIntrospectionConfig(): boolean | undefined {
+        return this.isProduction() ? false : undefined;
+    }
+
+    private isProduction(): boolean {
+        const environment: string | undefined = this.polarisServerConfig.applicationProperties
+            .environment;
+        return environment === 'prod' || environment === 'production';
     }
 
     private getPolarisContext = (context: ExpressContext): PolarisGraphQLContext => {
