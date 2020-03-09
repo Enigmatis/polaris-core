@@ -1,3 +1,12 @@
+# [2.0.0-beta.3](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-03-09)
+
+
+### Bug Fixes
+
+* **package:** update dependencies ([aabed46](https://github.com/Enigmatis/polaris-core/commit/aabed463e8e3378649a0998e87d2c670ac511bf1))
+* **package:** update dependencies ([13219cc](https://github.com/Enigmatis/polaris-core/commit/13219cc612978d49cd17f3952f270b73550b3aae))
+* updated dependencies ([587a4c4](https://github.com/Enigmatis/polaris-core/commit/587a4c40c0cf0522b7f1f0afcac238a304c3a2d6))
+
 # [2.0.0-beta.2](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2020-03-08)
 
 
