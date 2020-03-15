@@ -1,9 +1,13 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
+import { PubSub } from 'apollo-server-express';
 import { DeleteResult, getPolarisConnectionManager, Like } from '../../../../src/index';
 import { Author } from '../dal/author';
 import { Book } from '../dal/book';
 import { polarisGraphQLLogger } from '../logger';
 import { TestContext } from '../test-context';
+
+const pubsub = new PubSub();
+const BOOK_UPDATED = 'BOOK_UPDATED';
 
 export const resolvers = {
     Query: {
@@ -66,21 +70,21 @@ export const resolvers = {
             await authorRepo.save(context, newAuthor);
             return newAuthor;
         },
-        updateBook: async (
+        updateBooksByTitle: async (
             parent: any,
             args: any,
             context: PolarisGraphQLContext,
-        ): Promise<Book | undefined> => {
+        ): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
-            const result = await bookRepo.find(context, {
+            const result: Book[] = await bookRepo.find(context, {
                 where: { title: Like(`%${args.title}%`) },
             });
-            const bookToUpdate = result.length > 0 ? result[0] : undefined;
-            if (bookToUpdate) {
-                await bookRepo.update(context, { title: args.newTitle }, bookToUpdate);
-            }
-            return bookToUpdate;
+
+            result.forEach(book => (book.title = args.newTitle));
+            await bookRepo.save(context, result);
+            result.forEach(book => pubsub.publish(BOOK_UPDATED, { bookUpdated: book }));
+            return result;
         },
         deleteBook: async (
             parent: any,
@@ -106,6 +110,11 @@ export const resolvers = {
             const authorRepos = connection.getRepository(Author);
             await authorRepos.delete(context, args.id);
             return true;
+        },
+    },
+    Subscription: {
+        bookUpdated: {
+            subscribe: () => pubsub.asyncIterator([BOOK_UPDATED]),
         },
     },
 };
