@@ -1,4 +1,0 @@
-{
-    "mutation": "mutation($title:String!, $newTitle:String!){ updateBooksByTitle(title:$title, newTitle:$newTitle){ id title} }",
-    "subscription": "subscription { bookUpdated { id title } }"
-}

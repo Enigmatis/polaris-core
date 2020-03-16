@@ -1,19 +1,27 @@
-import * as Websocket from 'ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+import * as ws from 'ws';
 
-export const initializeWebsocket = async (url: string): Promise<Websocket> => {
-    const ws = new Websocket(url);
+export class WebsocketClient {
+    public readonly receivedMessages: any[] = [];
+    public readonly subscriptionClient: SubscriptionClient;
 
-    ws.onopen = () => {
-        const onopen = 'WebSocket is open now.';
+    constructor(url: string) {
+        this.subscriptionClient = new SubscriptionClient(url, { reconnect: true }, ws);
+
+        this.subscriptionClient.client.onmessage = (event: { data: any }) => {
+            const data = JSON.parse(event.data);
+            if (data.payload) {
+                this.receivedMessages.push(data.payload.data);
+            }
+        };
+    }
+
+    public close = async (): Promise<void> => {
+        await this.subscriptionClient.close();
     };
 
-    ws.onmessage = event => {
-        const onmessage = `WebSocket message received: ${event}`;
+    public send = async (query: string): Promise<void> => {
+        const body = { type: 'start', payload: { query } };
+        await this.subscriptionClient.client.send(JSON.stringify(body));
     };
-
-    ws.onerror = event => {
-        const onerror = `WebSocket error observed: ${event}`;
-    };
-
-    return ws;
-};
+}
