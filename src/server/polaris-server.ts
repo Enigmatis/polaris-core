@@ -98,8 +98,16 @@ export class PolarisServer {
     }
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
+        const shouldAddWarningsToExtensions: boolean =
+            this.polarisServerConfig.shouldAddWarningsToExtensions === undefined
+                ? false
+                : this.polarisServerConfig.shouldAddWarningsToExtensions;
+
         const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
-            new ExtensionsPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new ExtensionsPlugin(
+                this.polarisLogger as PolarisGraphQLLogger,
+                shouldAddWarningsToExtensions,
+            ),
             new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
             new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
         ];

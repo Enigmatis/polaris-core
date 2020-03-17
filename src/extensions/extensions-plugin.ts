@@ -9,14 +9,16 @@ import { ExtensionsListener } from './extensions-listener';
 
 export class ExtensionsPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
     public readonly logger: any;
+    public readonly shouldAddWarningsToExtensions: boolean;
 
-    constructor(logger: PolarisGraphQLLogger) {
+    constructor(logger: PolarisGraphQLLogger, shouldAddWarningsToExtensions: boolean) {
         this.logger = logger;
+        this.shouldAddWarningsToExtensions = shouldAddWarningsToExtensions;
     }
 
     public requestDidStart(
         requestContext: GraphQLRequestContext<PolarisGraphQLContext>,
     ): GraphQLRequestListener<PolarisGraphQLContext> | void {
-        return new ExtensionsListener(this.logger);
+        return new ExtensionsListener(this.logger, this.shouldAddWarningsToExtensions);
     }
 }
