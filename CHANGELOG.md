@@ -1,3 +1,10 @@
+# [2.0.0-beta.4](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2020-03-17)
+
+
+### Bug Fixes
+
+* **subscription:** subscription context fix ([3f0edf6](https://github.com/Enigmatis/polaris-core/commit/3f0edf65b238ae3eb87ca113c5225f2310f1ee02))
+
 # [2.0.0-beta.3](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-03-09)
 
 

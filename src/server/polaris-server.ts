@@ -223,7 +223,7 @@ export class PolarisServer {
                 requestId,
                 realityId,
             },
-            clientIp: req.ip,
+            clientIp: req?.ip,
             request: {
                 query: body.query,
                 operationName: body.operationName,

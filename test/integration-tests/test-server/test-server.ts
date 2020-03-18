@@ -17,11 +17,13 @@ export const connectionOptions: ConnectionOptions = {
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
-    const { req } = context;
+    const { req, connection } = context;
+    const headers = req ? req.headers : connection?.context;
+
     return {
         customField: 1000,
         requestHeaders: {
-            customHeader: req.headers['custom-header'],
+            customHeader: headers['custom-header'],
         },
     };
 };
@@ -54,12 +56,13 @@ export async function startTestServer(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
         connection: getPolarisConnectionManager().get(),
+        allowSubscription: true,
     });
     await server.start();
     return server;
 }
 
-export async function stopTestServer(server: PolarisServer) {
+export async function stopTestServer(server: PolarisServer): Promise<void> {
     await server.stop();
     if (getPolarisConnectionManager().connections.length > 0) {
         await getPolarisConnectionManager()

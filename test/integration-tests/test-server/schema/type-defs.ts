@@ -7,13 +7,17 @@ export const typeDefs = `
         authorsByFirstNameFromCustomHeader: [Author]!
     }
 
-    type Mutation{
+    type Mutation {
         createAuthor(firstName: String!, lastName: String!): Author!
-        updateBook(title: String!, newTitle: String!): Book
-        deleteBook(id:String!): Boolean
-        deleteAuthor(id:String!): Boolean
+        updateBooksByTitle(title: String!, newTitle: String!): [Book]!
+        deleteBook(id: String!): Boolean
+        deleteAuthor(id: String!): Boolean
     }
-    
+
+    type Subscription {
+        bookUpdated: Book
+    }
+
     type Book implements RepositoryEntity {
         id: String!
         deleted: Boolean!
@@ -25,8 +29,8 @@ export const typeDefs = `
         title: String
         author: Author
     }
-    
-    type Author implements RepositoryEntity{
+
+    type Author implements RepositoryEntity {
         id: String!
         deleted: Boolean!
         createdBy: String!
