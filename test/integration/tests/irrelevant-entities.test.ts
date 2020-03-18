@@ -1,7 +1,7 @@
 import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
-import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
 import { startTestServer, stopTestServer } from '../server/test-server';
+import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
 import * as simpleQuery from './jsonRequestsAndHeaders/includeLinkedOperDisabled.json';
 import * as irrelevantEntities from './jsonRequestsAndHeaders/irrelevantEntities.json';
 import * as multipleIrrelevantEntities from './jsonRequestsAndHeaders/multipleQueries.json';

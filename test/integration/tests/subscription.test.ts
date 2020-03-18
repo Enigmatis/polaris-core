@@ -1,12 +1,8 @@
 import { PolarisServer, PolarisServerOptions } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
-import { graphQLRequest } from '../server/utils/graphql-client';
 import * as polarisProperties from '../server/resources/polaris-properties.json';
-import {
-    defaultTestServerConfig,
-    startTestServer,
-    stopTestServer,
-} from '../server/test-server';
+import { defaultTestServerConfig, startTestServer, stopTestServer } from '../server/test-server';
+import { graphQLRequest } from '../server/utils/graphql-client';
 import { WebsocketClient } from '../server/utils/websocket-client';
 
 const SUBSCRIPTION_ENDPOINT = `ws://localhost:${polarisProperties.port}/${polarisProperties.version}/subscription`;

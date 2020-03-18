@@ -1,12 +1,12 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
+import { TestContext } from './context/test-context';
 import { initConnection } from './dal/connection-manager';
-import { loggerConfig } from './utils/logger';
 import * as polarisProperties from './resources/polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
-import { TestContext } from './context/test-context';
+import { loggerConfig } from './utils/logger';
 
 export const connectionOptions: ConnectionOptions = {
     type: 'postgres',

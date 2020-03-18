@@ -1,7 +1,7 @@
 import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
-import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
 import { startTestServer, stopTestServer } from '../server/test-server';
+import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
 import * as dataVersionFiltering from './jsonRequestsAndHeaders/dataVersionFiltering.json';
 import * as mutation from './jsonRequestsAndHeaders/mutation.json';
 import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';

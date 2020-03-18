@@ -1,7 +1,7 @@
 import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
-import { graphQLRequest } from '../server/utils/graphql-client';
 import { startTestServer, stopTestServer } from '../server/test-server';
+import { graphQLRequest } from '../server/utils/graphql-client';
 import * as includeLinkedOperDisabled from './jsonRequestsAndHeaders/includeLinkedOperDisabled.json';
 import * as includeLinkedOperEnabled from './jsonRequestsAndHeaders/includeLinkedOperEnabled.json';
 import * as mutation from './jsonRequestsAndHeaders/mutation.json';

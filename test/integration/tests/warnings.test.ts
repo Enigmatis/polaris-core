@@ -1,11 +1,7 @@
 import { PolarisServer, PolarisServerOptions } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
+import { defaultTestServerConfig, startTestServer, stopTestServer } from '../server/test-server';
 import { graphqlRawRequest } from '../server/utils/graphql-client';
-import {
-    defaultTestServerConfig,
-    startTestServer,
-    stopTestServer,
-} from '../server/test-server';
 import * as booksWithWarnings from './jsonRequestsAndHeaders/queryForBooksWithWarnings.json';
 
 let polarisServer: PolarisServer;
