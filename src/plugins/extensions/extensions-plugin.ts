@@ -8,7 +8,7 @@ import {
 import { ExtensionsListener } from './extensions-listener';
 
 export class ExtensionsPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
-    public readonly logger: any;
+    public readonly logger: PolarisGraphQLLogger;
     public readonly shouldAddWarningsToExtensions: boolean;
 
     constructor(logger: PolarisGraphQLLogger, shouldAddWarningsToExtensions: boolean) {

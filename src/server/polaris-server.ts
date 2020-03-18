@@ -25,9 +25,9 @@ import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
-import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
+import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
