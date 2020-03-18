@@ -1,6 +1,6 @@
 import { PolarisServer, PolarisServerOptions } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
-import { defaultTestServerConfig, startTestServer, stopTestServer } from '../server/test-server';
+import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphqlRawRequest } from '../server/utils/graphql-client';
 import * as booksWithWarnings from './jsonRequestsAndHeaders/queryForBooksWithWarnings.json';
 
@@ -9,8 +9,7 @@ let polarisServer: PolarisServer;
 describe('warnings tests', () => {
     describe('shouldAddWarningsToExtensions is true', () => {
         beforeEach(async () => {
-            const warningConfig: PolarisServerOptions = {
-                ...defaultTestServerConfig,
+            const warningConfig: Partial<PolarisServerOptions> = {
                 shouldAddWarningsToExtensions: true,
             };
             polarisServer = await startTestServer(warningConfig);
@@ -42,8 +41,7 @@ describe('warnings tests', () => {
 
     describe('shouldAddWarningsToExtensions is false', () => {
         beforeEach(async () => {
-            const warningConfig: PolarisServerOptions = {
-                ...defaultTestServerConfig,
+            const warningConfig: Partial<PolarisServerOptions> = {
                 shouldAddWarningsToExtensions: false,
             };
             polarisServer = await startTestServer(warningConfig);

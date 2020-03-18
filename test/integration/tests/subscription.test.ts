@@ -1,7 +1,7 @@
 import { PolarisServer, PolarisServerOptions } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import * as polarisProperties from '../server/resources/polaris-properties.json';
-import { defaultTestServerConfig, startTestServer, stopTestServer } from '../server/test-server';
+import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphQLRequest } from '../server/utils/graphql-client';
 import { WebsocketClient } from '../server/utils/websocket-client';
 
@@ -11,8 +11,7 @@ let polarisServer: PolarisServer;
 let wsClient: WebsocketClient;
 
 beforeEach(async () => {
-    const subscriptionConfig: PolarisServerOptions = {
-        ...defaultTestServerConfig,
+    const subscriptionConfig: Partial<PolarisServerOptions> = {
         allowSubscription: true,
     };
     polarisServer = await startTestServer(subscriptionConfig);

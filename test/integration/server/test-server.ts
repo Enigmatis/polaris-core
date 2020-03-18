@@ -11,7 +11,7 @@ import { loggerConfig } from './utils/logger';
 export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
-    entities: [__dirname + '/dal/*.ts'],
+    entities: [__dirname + '/dal/entities/*.ts'],
     synchronize: true,
     logging: true,
 };
@@ -28,9 +28,11 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     };
 };
 
-export async function startTestServer(config?: PolarisServerOptions): Promise<PolarisServer> {
+export async function startTestServer(
+    config?: Partial<PolarisServerOptions>,
+): Promise<PolarisServer> {
     await initConnection(connectionOptions);
-    const options = config || defaultTestServerConfig;
+    const options = { ...getDefaultTestServerConfig(), ...config };
     const server = new PolarisServer(options);
     await server.start();
     return server;
@@ -45,28 +47,16 @@ export async function stopTestServer(server: PolarisServer): Promise<void> {
     }
 }
 
-export async function startTestServerWithoutConnection(): Promise<PolarisServer> {
-    const server = new PolarisServer({
+const getDefaultTestServerConfig = (): PolarisServerOptions => {
+    return {
         typeDefs,
         resolvers,
+        customContext,
         port: polarisProperties.port,
-    });
-    await server.start();
-    return server;
-}
-
-export async function stopTestServerWithoutConnection(server: PolarisServer): Promise<void> {
-    await server.stop();
-}
-
-export const defaultTestServerConfig: PolarisServerOptions = {
-    typeDefs,
-    resolvers,
-    customContext,
-    port: polarisProperties.port,
-    logger: loggerConfig,
-    supportedRealities: new RealitiesHolder(
-        new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
-    ),
-    connection: getPolarisConnectionManager().get(),
+        logger: loggerConfig,
+        supportedRealities: new RealitiesHolder(
+            new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
+        ),
+        connection: getPolarisConnectionManager().get(),
+    };
 };
