@@ -1,15 +1,18 @@
 import { PolarisServer } from '../../../src';
-import { graphQLRequest } from '../../integration-tests/test-server/graphql-client';
-import { startTestServer, stopTestServer } from '../server/test-server-without-connection';
-import * as argsQuery from './jsonRequestsAndHeaders/queryWithArgs.json';
+import { initializeDatabase } from '../server/dal/data-initalizer';
+import { graphQLRequest } from '../server/utils/graphql-client';
+import { startTestServer, stopTestServer } from '../server/test-server';
+import * as argsQuery from './jsonRequestsAndHeaders/irrelevantEntities.json';
 import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
+
 let polarisServer: PolarisServer;
 
 beforeEach(async () => {
     polarisServer = await startTestServer();
+    await initializeDatabase();
 });
 
-afterEach(async () => {
+afterEach(() => {
     return stopTestServer(polarisServer);
 });
 

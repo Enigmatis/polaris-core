@@ -1,5 +1,5 @@
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { LoggerConfiguration } from '../../../src/index';
+import { LoggerConfiguration } from '../../../../src';
 
 export const loggerConfig: LoggerConfiguration = {
     loggerLevel: 'info',

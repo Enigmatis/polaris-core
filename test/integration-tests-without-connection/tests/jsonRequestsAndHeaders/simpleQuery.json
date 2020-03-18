@@ -1,6 +1,0 @@
-{
-    "request": "{\n  allBooks {\n    id\n    title\n    }\n}\n",
-    "headers": {
-        "reality-id": 0
-    }
-}

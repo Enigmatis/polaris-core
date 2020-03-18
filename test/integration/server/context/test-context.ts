@@ -1,4 +1,4 @@
-import { PolarisGraphQLContext, PolarisRequestHeaders } from '../../../src';
+import { PolarisGraphQLContext, PolarisRequestHeaders } from '../../../../src';
 
 interface TestRequestHeaders extends PolarisRequestHeaders {
     customHeader?: string | string[];

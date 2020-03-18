@@ -1,7 +1,7 @@
 import { PolarisServer } from '../../../src';
-import { initializeDatabase } from '../test-server/data-initalizer';
-import { graphQLRequest } from '../test-server/graphql-client';
-import { startTestServer, stopTestServer } from '../test-server/test-server';
+import { initializeDatabase } from '../server/dal/data-initalizer';
+import { graphQLRequest } from '../server/utils/graphql-client';
+import { startTestServer, stopTestServer } from '../server/test-server';
 import * as deleteAuthor from './jsonRequestsAndHeaders/deleteAuthor.json';
 import * as deleteBook from './jsonRequestsAndHeaders/deleteBook.json';
 import * as authorsByName from './jsonRequestsAndHeaders/queryAuthorsByName.json';

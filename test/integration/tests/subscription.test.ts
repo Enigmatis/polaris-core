@@ -1,9 +1,13 @@
-import { PolarisServer } from '../../../src';
-import { initializeDatabase } from '../test-server/data-initalizer';
-import { graphQLRequest } from '../test-server/graphql-client';
-import * as polarisProperties from '../test-server/polaris-properties.json';
-import { startTestServer, stopTestServer } from '../test-server/test-server';
-import { WebsocketClient } from '../test-server/websocket-client';
+import { PolarisServer, PolarisServerOptions } from '../../../src';
+import { initializeDatabase } from '../server/dal/data-initalizer';
+import { graphQLRequest } from '../server/utils/graphql-client';
+import * as polarisProperties from '../server/resources/polaris-properties.json';
+import {
+    defaultTestServerConfig,
+    startTestServer,
+    stopTestServer,
+} from '../server/test-server';
+import { WebsocketClient } from '../server/utils/websocket-client';
 
 const SUBSCRIPTION_ENDPOINT = `ws://localhost:${polarisProperties.port}/${polarisProperties.version}/subscription`;
 
@@ -11,7 +15,11 @@ let polarisServer: PolarisServer;
 let wsClient: WebsocketClient;
 
 beforeEach(async () => {
-    polarisServer = await startTestServer();
+    const subscriptionConfig: PolarisServerOptions = {
+        ...defaultTestServerConfig,
+        allowSubscription: true,
+    };
+    polarisServer = await startTestServer(subscriptionConfig);
     wsClient = new WebsocketClient(SUBSCRIPTION_ENDPOINT);
     await initializeDatabase();
 });

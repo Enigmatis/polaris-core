@@ -1,10 +1,9 @@
 import { PolarisServer } from '../../../src';
-import * as polarisProperties from './polaris-properties.json';
+import * as polarisProperties from './resources/polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
 
 export async function startTestServer(): Promise<PolarisServer> {
-    jest.setTimeout(150000);
     const server = new PolarisServer({
         typeDefs,
         resolvers,

@@ -1,10 +1,10 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PubSub } from 'apollo-server-express';
 import { DeleteResult, getPolarisConnectionManager, Like } from '../../../../src/index';
-import { Author } from '../dal/author';
-import { Book } from '../dal/book';
-import { polarisGraphQLLogger } from '../logger';
-import { TestContext } from '../test-context';
+import { Author } from '../dal/entities/author';
+import { Book } from '../dal/entities/book';
+import { polarisGraphQLLogger } from '../utils/logger';
+import { TestContext } from '../context/test-context';
 
 const pubsub = new PubSub();
 const BOOK_UPDATED = 'BOOK_UPDATED';

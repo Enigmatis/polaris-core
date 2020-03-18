@@ -1,22 +1,20 @@
 import { PolarisServer } from '../../../src';
-import { initializeDatabase } from '../test-server/data-initalizer';
-import { graphQLRequest } from '../test-server/graphql-client';
-import { startTestServer, stopTestServer } from '../test-server/test-server';
-import * as argsQuery from './jsonRequestsAndHeaders/irrelevantEntities.json';
+import * as argsQuery from './jsonRequestsAndHeaders/queryWithArgs.json';
 import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
+import { startTestServer, stopTestServer } from '../server-without-connection/test-server';
+import { graphQLRequest } from '../server/utils/graphql-client';
 
 let polarisServer: PolarisServer;
 
 beforeEach(async () => {
     polarisServer = await startTestServer();
-    await initializeDatabase();
 });
 
-afterEach(() => {
+afterEach(async () => {
     return stopTestServer(polarisServer);
 });
 
-describe('simple queries', () => {
+describe('simple queries without connection', () => {
     it('all entities query', async () => {
         const result = await graphQLRequest(simpleQuery.request, simpleQuery.headers);
         expect(result.allBooks[0].title).toEqual('Book1');

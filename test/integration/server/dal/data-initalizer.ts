@@ -1,6 +1,6 @@
 import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
-import { Author } from './dal/author';
-import { Book } from './dal/book';
+import { Author } from './entities/author';
+import { Book } from './entities/book';
 
 export async function deleteTables() {
     const connection = getPolarisConnectionManager().get();
