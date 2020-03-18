@@ -8,7 +8,7 @@ let polarisServer: PolarisServer;
 
 describe('warnings tests - shouldAddWarningsToExtensions is true', () => {
     beforeEach(async () => {
-        polarisServer = await startTestServerWithWarnings({ shouldAddWarningsToExtensions: true });
+        polarisServer = await startTestServerWithWarnings(true);
         await initializeDatabase();
     });
 
@@ -37,7 +37,7 @@ describe('warnings tests - shouldAddWarningsToExtensions is true', () => {
 
 describe('warnings tests - shouldAddWarningsToExtensions is false', () => {
     beforeEach(async () => {
-        polarisServer = await startTestServerWithWarnings({ shouldAddWarningsToExtensions: false });
+        polarisServer = await startTestServerWithWarnings(false);
         await initializeDatabase();
     });
 

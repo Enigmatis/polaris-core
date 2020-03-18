@@ -1,6 +1,6 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
-import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
+import { ExpressContext, PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
 import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
@@ -47,7 +47,7 @@ export async function startTestServer(): Promise<PolarisServer> {
 }
 
 export async function startTestServerWithWarnings(
-    config?: Partial<PolarisServerOptions>,
+    shouldAddWarningsToExtensions?: boolean,
 ): Promise<PolarisServer> {
     await initConnection(connectionOptions);
     const server = new PolarisServer({
@@ -56,7 +56,7 @@ export async function startTestServerWithWarnings(
         customContext,
         port: polarisProperties.port,
         logger: loggerConfig,
-        shouldAddWarningsToExtensions: config?.shouldAddWarningsToExtensions,
+        shouldAddWarningsToExtensions,
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
