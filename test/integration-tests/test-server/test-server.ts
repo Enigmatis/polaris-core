@@ -18,7 +18,6 @@ export const connectionOptions: ConnectionOptions = {
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
     const { req } = context;
-
     return {
         customField: 1000,
         requestHeaders: {
@@ -27,15 +26,30 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     };
 };
 
-export async function startTestServer(): Promise<PolarisServer> {
+const getCustomContext = (
+    context: ExpressContext,
+    customCtx?: Partial<TestContext>,
+): Partial<TestContext> => {
+    if (customCtx) {
+        return customCtx;
+    } else {
+        return customContext(context);
+    }
+};
+
+export async function startTestServer(
+    customCtx?: Partial<TestContext>,
+    shouldAddWarningsToExtensions?: boolean,
+): Promise<PolarisServer> {
     jest.setTimeout(150000);
     await initConnection(connectionOptions);
     const server = new PolarisServer({
         typeDefs,
         resolvers,
-        customContext,
+        customContext: (context: ExpressContext) => getCustomContext(context, customCtx),
         port: polarisProperties.port,
         logger: loggerConfig,
+        shouldAddWarningsToExtensions,
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
