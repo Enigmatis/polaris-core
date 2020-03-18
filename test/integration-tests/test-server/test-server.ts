@@ -2,11 +2,12 @@ import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ExpressContext, PolarisServer } from '../../../src';
 import { initConnection } from './connection-manager';
+import * as customContextFields from './constants/custom-context-fields.json';
 import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
-import { TestContext } from './test-context';
+import { TestClassInContext, TestContext } from './test-context';
 
 export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
@@ -21,7 +22,10 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     const headers = req ? req.headers : connection?.context;
 
     return {
-        customField: 1000,
+        customField: customContextFields.customField,
+        instanceInContext: new TestClassInContext(
+            customContextFields.instanceInContext.someProperty,
+        ),
         requestHeaders: {
             customHeader: headers['custom-header'],
         },
