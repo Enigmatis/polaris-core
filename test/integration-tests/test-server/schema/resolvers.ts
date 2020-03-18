@@ -17,7 +17,16 @@ export const resolvers = {
             context: PolarisGraphQLContext,
         ): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
-            polarisGraphQLLogger.debug("I'm the resolver of all books", context);
+            polarisGraphQLLogger.debug('I\'m the resolver of all books', context);
+            return connection.getRepository(Book).find(context, { relations: ['author'] });
+        },
+        allBooksWithWarnings: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Book[]> => {
+            const connection = getPolarisConnectionManager().get();
+            context.returnedExtensions.warnings = ['warning 1', 'warning 2'];
             return connection.getRepository(Book).find(context, { relations: ['author'] });
         },
         bookByTitle: (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
