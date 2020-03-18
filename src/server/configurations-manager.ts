@@ -28,6 +28,10 @@ export const getPolarisServerConfigFromOptions = (
         logger: options.logger || getDefaultLoggerConfiguration(),
         applicationProperties: options.applicationProperties || { version: 'v1' },
         allowSubscription: options.allowSubscription || false,
+        shouldAddWarningsToExtensions:
+            options.shouldAddWarningsToExtensions === undefined
+                ? true
+                : options.shouldAddWarningsToExtensions,
         allowMandatoryHeaders: options.allowMandatoryHeaders || false,
     };
 };
