@@ -34,6 +34,7 @@ Through this interface you should set the following configurations which will be
 -   **port** (_number_) - Specify a port the `PolarisServer` should start the server on.
 -   **applicationProperties** (_ApplicationProperties - optional_) - Properties that describe your repository.
     If you don't provide those properties, the core will put 'v1' in the version.
+-   **allowSubscription** (boolean - optional) - Responsible for creating a websocket endpoint for graphql subscriptions.
 -   **customMiddlewares** (_any[] - optional_) - Custom middlewares that can be provided the `PolarisServer` with.
 -   **customContext** (_(context: any, connection?: Connection) => any - optional_) - You can provide the `PolarisServer` your own custom context.
     If you do not set your custom context, the core will use a default context.
@@ -41,7 +42,7 @@ Through this interface you should set the following configurations which will be
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
 -   **connection** (_Connection - optional_) - This class represents your connection with the database. Used in the core middlewares.
--   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: false._ Specifies whether to return the warnings in the response extensions or not. 
+-   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: true._ Specifies whether to return the warnings in the response extensions or not. 
 
 ### MiddlewareConfiguration
 
@@ -182,10 +183,16 @@ In order to have the ability of warnings, which returned in the extensions of th
 polaris. you can supply the warnings through the `customContext` - when you create the `customContext`(of type `PolarisGraphQLContext`),
 set the `returnedExtensions` with the relevant warnings. let's see an example:
 
-```typescript
-const warnings: PolarisWarning[] = ['warning 1', 'warning 2'];
-const extensions: PolarisExtensions = { warnings: warnings };
-const customContext: PolarisGraphQLContext = { returnedExtensions: extensions };
+```
+allBooksWithWarnings: async (
+    parent: any,
+    args: any,
+    context: PolarisGraphQLContext,
+): Promise<Book[]> => {
+    const connection = getPolarisConnectionManager().get();
+    context.returnedExtensions.warnings = ['warning 1', 'warning 2'];
+    return connection.getRepository(Book).find(context, { relations: ['author'] });
+}
 ```
 
 And let's see an example of response with the warnings:

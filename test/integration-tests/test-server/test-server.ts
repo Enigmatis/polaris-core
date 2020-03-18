@@ -1,6 +1,6 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
-import { ExpressContext, PolarisServer } from '../../../src';
+import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
 import { initConnection } from './connection-manager';
 import { loggerConfig } from './logger';
 import * as polarisProperties from './polaris-properties.json';
@@ -28,30 +28,35 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     };
 };
 
-const getCustomContext = (
-    context: ExpressContext,
-    customCtx?: Partial<TestContext>,
-): Partial<TestContext> => {
-    if (customCtx) {
-        return customCtx;
-    } else {
-        return customContext(context);
-    }
-};
-
-export async function startTestServer(
-    customCtx?: Partial<TestContext>,
-    shouldAddWarningsToExtensions?: boolean,
-): Promise<PolarisServer> {
-    jest.setTimeout(150000);
+export async function startTestServer(): Promise<PolarisServer> {
     await initConnection(connectionOptions);
     const server = new PolarisServer({
         typeDefs,
         resolvers,
-        customContext: (context: ExpressContext) => getCustomContext(context, customCtx),
+        customContext,
         port: polarisProperties.port,
         logger: loggerConfig,
-        shouldAddWarningsToExtensions,
+        supportedRealities: new RealitiesHolder(
+            new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
+        ),
+        connection: getPolarisConnectionManager().get(),
+        allowSubscription: true,
+    });
+    await server.start();
+    return server;
+}
+
+export async function startTestServerWithWarnings(
+    config?: Partial<PolarisServerOptions>,
+): Promise<PolarisServer> {
+    await initConnection(connectionOptions);
+    const server = new PolarisServer({
+        typeDefs,
+        resolvers,
+        customContext,
+        port: polarisProperties.port,
+        logger: loggerConfig,
+        shouldAddWarningsToExtensions: config?.shouldAddWarningsToExtensions,
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
