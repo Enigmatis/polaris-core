@@ -1,7 +1,7 @@
-import { PolarisServer } from '../../../src';
-import { startTestServer, stopTestServer } from '../server-without-connection/test-server';
-import * as polarisProperties from '../server-without-connection/resources/polaris-properties.json';
 import axios from 'axios';
+import { PolarisServer } from '../../../src';
+import * as polarisProperties from '../server-without-connection/resources/polaris-properties.json';
+import { startTestServer, stopTestServer } from '../server-without-connection/test-server';
 
 let polarisServer: PolarisServer;
 
