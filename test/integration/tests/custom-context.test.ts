@@ -9,12 +9,12 @@ import * as customHeadersRequest from './jsonRequestsAndHeaders/customHeaders.js
 
 let polarisServer: PolarisServer;
 
-beforeAll(async () => {
+beforeEach(async () => {
     polarisServer = await startTestServer();
     await initializeDatabase();
 });
 
-afterAll(async () => {
+afterEach(async () => {
     await stopTestServer(polarisServer);
 });
 

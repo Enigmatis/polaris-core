@@ -1,16 +1,5 @@
 import { PolarisGraphQLContext, PolarisRequestHeaders } from '../../../../src';
-
-export class TestClassInContext {
-    public someProperty?: number;
-
-    constructor(somePropertyInitialValue: number) {
-        this.someProperty = somePropertyInitialValue;
-    }
-
-    public doSomething(): string {
-        return `did something successfully with someProperty of ${this.someProperty}`;
-    }
-}
+import { TestClassInContext } from './test-class-in-context';
 
 interface TestRequestHeaders extends PolarisRequestHeaders {
     customHeader?: string | string[];
