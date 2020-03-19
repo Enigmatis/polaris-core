@@ -7,7 +7,7 @@ import {
 } from 'graphql';
 
 export class UpperCaseDirective extends SchemaDirectiveVisitor {
-    visitFieldDefinition(
+    public visitFieldDefinition(
         field: GraphQLField<any, any>,
         details: { objectType: GraphQLObjectType | GraphQLInterfaceType },
     ): GraphQLField<any, any> | void | null {
