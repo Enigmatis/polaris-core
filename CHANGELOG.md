@@ -1,3 +1,10 @@
+# [2.0.0-beta.6](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2020-03-19)
+
+
+### Features
+
+* **headers:** added mandatory headers feature ([6d020c1](https://github.com/Enigmatis/polaris-core/commit/6d020c1db8fffd143ad935b92c5a6c9739040011))
+
 # [2.0.0-beta.5](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2020-03-19)
 
 
