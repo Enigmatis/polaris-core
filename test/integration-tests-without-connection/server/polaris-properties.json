@@ -1,8 +1,0 @@
-{
-    "port": 8080,
-    "id": "p0laris-s33d",
-    "name": "polaris-seed",
-    "version": "v1",
-    "environment": "environment",
-    "component": "component"
-}
