@@ -1,3 +1,25 @@
+# [2.0.0-beta.6](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2020-03-19)
+
+
+### Features
+
+* **headers:** added mandatory headers feature ([6d020c1](https://github.com/Enigmatis/polaris-core/commit/6d020c1db8fffd143ad935b92c5a6c9739040011))
+
+# [2.0.0-beta.5](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2020-03-19)
+
+
+### Features
+
+* **warnings:** add warnings to extensions. ([4ce390a](https://github.com/Enigmatis/polaris-core/commit/4ce390a2187427a045f84bcd59dde373f1ad63d2))
+* **warnings:** add warnings to extensions. ([e3d52c8](https://github.com/Enigmatis/polaris-core/commit/e3d52c8722bd37600c9be3bf22f9437d65cf2745))
+
+# [2.0.0-beta.4](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2020-03-17)
+
+
+### Bug Fixes
+
+* **subscription:** subscription context fix ([3f0edf6](https://github.com/Enigmatis/polaris-core/commit/3f0edf65b238ae3eb87ca113c5225f2310f1ee02))
+
 # [2.0.0-beta.3](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-03-09)
 
 
