@@ -1,3 +1,15 @@
+# [2.0.0-beta.7](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2020-03-19)
+
+
+### Bug Fixes
+
+* **ci:** apply changes after merge of mandatory-headers branch ([f9f831b](https://github.com/Enigmatis/polaris-core/commit/f9f831b5f6aa3593970a58a6b5269d4e6666ee1e))
+* **ci:** restored dotenv in package-lock.json ([7b8091b](https://github.com/Enigmatis/polaris-core/commit/7b8091b57f70f5731b239fce24e53d361412ee46))
+* **cr:** resolved comments from cr ([a84f4f2](https://github.com/Enigmatis/polaris-core/commit/a84f4f2ad05973df72af3c92d5319b0c00bc60d4))
+* **cr:** resolved comments from cr ([0fe92be](https://github.com/Enigmatis/polaris-core/commit/0fe92beecffa7967a1beafae15bbe0a9c55a196b))
+* **custom-context:** replace deep merge with lodash.merge and add tests ([baf41d5](https://github.com/Enigmatis/polaris-core/commit/baf41d568327c04d5716fd396ca610c6c280bf16))
+* **prettier:** prettier on my json files ey boss ([1776e41](https://github.com/Enigmatis/polaris-core/commit/1776e41444d66699d7ef497d57e0c219a793467b))
+
 # [2.0.0-beta.6](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2020-03-19)
 
 
