@@ -1,4 +1,6 @@
 export const typeDefs = `
+    directive @upper on FIELD_DEFINITION
+
     type Query {
         allBooks: [Book]!
         bookByTitle(title: String!): [Book]!
@@ -13,5 +15,6 @@ export const typeDefs = `
         lastUpdateTime: DateTime
         realityId: Int!
         title: String
+        coverColor: String @upper
     }
 `;
