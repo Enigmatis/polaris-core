@@ -1,6 +1,8 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
+import * as customContextFields from './constants/custom-context-fields.json';
+import { TestClassInContext } from './context/test-class-in-context';
 import { TestContext } from './context/test-context';
 import { initConnection } from './dal/connection-manager';
 import * as polarisProperties from './resources/polaris-properties.json';
@@ -21,7 +23,10 @@ const customContext = (context: ExpressContext): Partial<TestContext> => {
     const headers = req ? req.headers : connection?.context;
 
     return {
-        customField: 1000,
+        customField: customContextFields.customField,
+        instanceInContext: new TestClassInContext(
+            customContextFields.instanceInContext.someProperty,
+        ),
         requestHeaders: {
             customHeader: headers['custom-header'],
         },

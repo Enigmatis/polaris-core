@@ -16,11 +16,11 @@ import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
-import * as deepMerge from 'deepmerge';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
 import * as http from 'http';
+import { merge } from 'lodash';
 import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
@@ -224,7 +224,7 @@ export class PolarisServer {
 
         if (this.polarisServerConfig.customContext) {
             const customContext = this.polarisServerConfig.customContext(context);
-            return deepMerge(customContext, baseContext);
+            return merge(customContext, baseContext);
         } else {
             return baseContext;
         }

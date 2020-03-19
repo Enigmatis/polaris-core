@@ -66,6 +66,10 @@ export const resolvers = {
                 where: { firstName: Like(`%${context.requestHeaders.customHeader}%`) },
             });
         },
+        customContextCustomField: (parent: any, args: any, context: TestContext): number =>
+            context.customField,
+        customContextInstanceMethod: (parent: any, args: any, context: TestContext): string =>
+            context.instanceInContext.doSomething(),
     },
     Mutation: {
         createAuthor: async (

@@ -6,6 +6,8 @@ export const typeDefs = `
         bookByTitle(title: String!): [Book]!
         authorsByName(name: String!): [Author]!
         authorsByFirstNameFromCustomHeader: [Author]!
+        customContextCustomField: Int!
+        customContextInstanceMethod: String!
     }
 
     type Mutation {
