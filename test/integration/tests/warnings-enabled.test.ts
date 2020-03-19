@@ -6,7 +6,7 @@ import * as booksWithWarnings from './jsonRequestsAndHeaders/queryForBooksWithWa
 
 let polarisServer: PolarisServer;
 
-describe('warnings tests', () => {
+describe('warnings enabled tests', () => {
     describe('shouldAddWarningsToExtensions is true', () => {
         beforeEach(async () => {
             const warningConfig: Partial<PolarisServerOptions> = {
@@ -36,47 +36,6 @@ describe('warnings tests', () => {
             expect(result.extensions.warnings.length).toBe(2);
             expect(result.extensions.warnings[0]).toEqual('warning 1');
             expect(result.extensions.warnings[1]).toEqual('warning 2');
-        });
-    });
-
-    describe('shouldAddWarningsToExtensions is false', () => {
-        beforeEach(async () => {
-            const warningConfig: Partial<PolarisServerOptions> = {
-                shouldAddWarningsToExtensions: false,
-            };
-            polarisServer = await startTestServer(warningConfig);
-            await initializeDatabase();
-        });
-
-        afterEach(async () => {
-            await stopTestServer(polarisServer);
-        });
-
-        it('should not return warnings in the extensions of the response', async () => {
-            const result = await graphqlRawRequest(
-                booksWithWarnings.request,
-                booksWithWarnings.headers,
-            );
-            expect(result.extensions.warnings).toBeUndefined();
-        });
-    });
-
-    describe('shouldAddWarningsToExtensions is undefined', () => {
-        beforeEach(async () => {
-            polarisServer = await startTestServer();
-            await initializeDatabase();
-        });
-
-        afterEach(async () => {
-            await stopTestServer(polarisServer);
-        });
-
-        it('should not return warnings in the extensions of the response', async () => {
-            const result = await graphqlRawRequest(
-                booksWithWarnings.request,
-                booksWithWarnings.headers,
-            );
-            expect(result.extensions.warnings).toBeDefined();
         });
     });
 });
