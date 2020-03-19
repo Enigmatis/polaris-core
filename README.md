@@ -34,6 +34,7 @@ Through this interface you should set the following configurations which will be
 -   **port** (_number_) - Specify a port the `PolarisServer` should start the server on.
 -   **applicationProperties** (_ApplicationProperties - optional_) - Properties that describe your repository.
     If you don't provide those properties, the core will put 'v1' in the version.
+-   **allowSubscription** (boolean - optional) - Responsible for creating a websocket endpoint for graphql subscriptions.
 -   **customMiddlewares** (_any[] - optional_) - Custom middlewares that can be provided the `PolarisServer` with.
 -   **customContext** (_(context: any, connection?: Connection) => any - optional_) - You can provide the `PolarisServer` your own custom context.
     If you do not set your custom context, the core will use a default context.
@@ -41,6 +42,7 @@ Through this interface you should set the following configurations which will be
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
 -   **connection** (_Connection - optional_) - This class represents your connection with the database. Used in the core middlewares.
+-   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: true._ Specifies whether to return the warnings in the response extensions or not. 
 
 ### MiddlewareConfiguration
 
@@ -174,6 +176,57 @@ const customContext = (context: ExpressContext): Partial<CustomContext> => {
     };
 };
 ```
+
+### Warnings
+
+In order to have the ability of warnings, which returned in the extensions of the response, you will need to supply them to
+polaris. you can supply the warnings through the context. let's see an example:
+
+```
+allBooksWithWarnings: async (
+    parent: any,
+    args: any,
+    context: PolarisGraphQLContext,
+): Promise<Book[]> => {
+    const connection = getPolarisConnectionManager().get();
+    context.returnedExtensions.warnings = ['warning 1', 'warning 2'];
+    return connection.getRepository(Book).find(context, { relations: ['author'] });
+}
+```
+
+And let's see an example of response with the warnings:
+```json{
+    "data": {
+        "allBooks": [
+            {
+                "id": "53afd7e5-bf59-4408-acbc-1c5ebb5ff146",
+                "title": "Book1",
+                "author": {
+                    "firstName": "Author1",
+                    "lastName": "First"
+                }
+            },
+            {
+                "id": "4fab24e4-f584-4077-bb93-09cdfc88b202",
+                "title": "Book2",
+                "author": {
+                    "firstName": "Author2",
+                    "lastName": "Two"
+                }
+            }
+        ]
+    },
+    "extensions": {
+        "globalDataVersion": 2,
+        "warnings": [
+            "warning 1",
+            "warning 2"
+        ]
+    }
+}
+```
+
+You can see inside the `extensions` that we have the warnings we defined earlier.
 
 ### Example
 

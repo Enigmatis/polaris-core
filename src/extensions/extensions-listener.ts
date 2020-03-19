@@ -4,9 +4,11 @@ import { GraphQLRequestContext, GraphQLRequestListener } from 'apollo-server-plu
 
 export class ExtensionsListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     public readonly logger: any;
+    public readonly shouldAddWarningsToExtensions: boolean;
 
-    constructor(logger: PolarisGraphQLLogger) {
+    constructor(logger: PolarisGraphQLLogger, shouldAddWarningsToExtensions: boolean) {
         this.logger = logger;
+        this.shouldAddWarningsToExtensions = shouldAddWarningsToExtensions;
     }
 
     public async willSendResponse(
@@ -17,6 +19,9 @@ export class ExtensionsListener implements GraphQLRequestListener<PolarisGraphQL
 
         if (context.returnedExtensions) {
             this.logger.debug('extensions were set to response');
+            if (!this.shouldAddWarningsToExtensions) {
+                context.returnedExtensions.warnings = undefined;
+            }
             response.extensions = { ...response.extensions, ...context.returnedExtensions };
         }
     }

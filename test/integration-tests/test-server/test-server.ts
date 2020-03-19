@@ -46,6 +46,27 @@ export async function startTestServer(): Promise<PolarisServer> {
     return server;
 }
 
+export async function startTestServerWithWarnings(
+    shouldAddWarningsToExtensions?: boolean,
+): Promise<PolarisServer> {
+    await initConnection(connectionOptions);
+    const server = new PolarisServer({
+        typeDefs,
+        resolvers,
+        customContext,
+        port: polarisProperties.port,
+        logger: loggerConfig,
+        shouldAddWarningsToExtensions,
+        supportedRealities: new RealitiesHolder(
+            new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
+        ),
+        connection: getPolarisConnectionManager().get(),
+        allowSubscription: true,
+    });
+    await server.start();
+    return server;
+}
+
 export async function stopTestServer(server: PolarisServer): Promise<void> {
     await server.stop();
     if (getPolarisConnectionManager().connections.length > 0) {

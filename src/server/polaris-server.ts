@@ -28,10 +28,7 @@ import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
-import {
-    getDefaultLoggerConfiguration,
-    getDefaultMiddlewareConfiguration,
-} from './configurations-manager';
+import { getDefaultLoggerConfiguration, getDefaultMiddlewareConfiguration } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
 const app = express();
@@ -46,6 +43,10 @@ export class PolarisServer {
             logger: config.logger || getDefaultLoggerConfiguration(),
             applicationProperties: config.applicationProperties || { version: 'v1' },
             allowSubscription: config.allowSubscription || false,
+            shouldAddWarningsToExtensions:
+                config.shouldAddWarningsToExtensions === undefined
+                    ? true
+                    : config.shouldAddWarningsToExtensions,
         };
     }
 
@@ -99,7 +100,10 @@ export class PolarisServer {
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
         const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
-            new ExtensionsPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new ExtensionsPlugin(
+                this.polarisLogger as PolarisGraphQLLogger,
+                this.polarisServerConfig.shouldAddWarningsToExtensions,
+            ),
             new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
             new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
         ];
