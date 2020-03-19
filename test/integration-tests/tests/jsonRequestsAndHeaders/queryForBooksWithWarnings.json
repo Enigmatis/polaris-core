@@ -1,6 +1,0 @@
-{
-  "request": "{\n  allBooksWithWarnings {\n    id\n    title\n    author {\n      firstName\n      lastName\n    }\n  }\n}\n",
-  "headers": {
-    "reality-id": 0
-  }
-}

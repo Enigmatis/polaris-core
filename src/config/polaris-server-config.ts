@@ -1,5 +1,9 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
-import { AbstractPolarisLogger, ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
+import {
+    AbstractPolarisLogger,
+    ApplicationProperties,
+    LoggerConfiguration,
+} from '@enigmatis/polaris-logs';
 import { PolarisConnection } from '@enigmatis/polaris-typeorm';
 import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
@@ -20,4 +24,5 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     connection?: PolarisConnection;
     supportedRealities?: RealitiesHolder;
     shouldAddWarningsToExtensions: boolean;
+    allowMandatoryHeaders: boolean;
 }

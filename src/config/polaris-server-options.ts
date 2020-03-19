@@ -20,4 +20,5 @@ export interface PolarisServerOptions extends ApolloServerExpressConfig {
     connection?: PolarisConnection;
     supportedRealities?: RealitiesHolder;
     shouldAddWarningsToExtensions?: boolean;
+    allowMandatoryHeaders?: boolean;
 }

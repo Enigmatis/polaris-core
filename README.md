@@ -23,7 +23,7 @@ polaris-core organizes all of the libraries for you, and let you create your gra
 This is the server that you will use in order to create your own standardized GraphQL server.\
 `PolarisServer` uses `ApolloServer` and starts the server with `Express`.
 
-### PolarisServerConfig
+### PolarisServerOptions
 
 Through this interface you should set the following configurations which will be supplied to the `PolarisServer`:
 
@@ -42,7 +42,9 @@ Through this interface you should set the following configurations which will be
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
 -   **connection** (_Connection - optional_) - This class represents your connection with the database. Used in the core middlewares.
--   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: true._ Specifies whether to return the warnings in the response extensions or not. 
+-   **allowSubscription** (_boolean - optional_) - _Default: false._ Responsible for creating a websocket endpoint for graphql subscriptions.
+-   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: true._ Specifies whether to return the warnings in the response extensions or not.
+-   **allowMandatoryHeaders** (_boolean - optional_) - _Default: false._ When set to true, every request must have `reality-id` and `requesting-sys` headers.
 
 ### MiddlewareConfiguration
 
@@ -195,7 +197,9 @@ allBooksWithWarnings: async (
 ```
 
 And let's see an example of response with the warnings:
-```json{
+
+```json
+{
     "data": {
         "allBooks": [
             {
@@ -218,10 +222,7 @@ And let's see an example of response with the warnings:
     },
     "extensions": {
         "globalDataVersion": 2,
-        "warnings": [
-            "warning 1",
-            "warning 2"
-        ]
+        "warnings": ["warning 1", "warning 2"]
     }
 }
 ```

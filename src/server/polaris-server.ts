@@ -25,37 +25,22 @@ import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
-import { ExtensionsPlugin } from '../extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
-import { getDefaultLoggerConfiguration, getDefaultMiddlewareConfiguration } from './configurations-manager';
+import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
+import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
 const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    private static getActualConfiguration(config: PolarisServerOptions): PolarisServerConfig {
-        return {
-            ...config,
-            middlewareConfiguration:
-                config.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
-            logger: config.logger || getDefaultLoggerConfiguration(),
-            applicationProperties: config.applicationProperties || { version: 'v1' },
-            allowSubscription: config.allowSubscription || false,
-            shouldAddWarningsToExtensions:
-                config.shouldAddWarningsToExtensions === undefined
-                    ? true
-                    : config.shouldAddWarningsToExtensions,
-        };
-    }
-
     private readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
 
     constructor(config: PolarisServerOptions) {
-        this.polarisServerConfig = PolarisServer.getActualConfiguration(config);
+        this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
 
         if (this.polarisServerConfig.logger instanceof PolarisGraphQLLogger) {
             this.polarisLogger = this.polarisServerConfig.logger;
@@ -190,6 +175,15 @@ export class PolarisServer {
         const { req, connection } = context;
         const headers = req ? req.headers : connection?.context;
         const body = req ? req.body : connection;
+
+        if (
+            this.polarisServerConfig.allowMandatoryHeaders &&
+            (headers[REALITY_ID] === undefined || headers[REQUESTING_SYS] === undefined)
+        ) {
+            const error = new Error('Mandatory headers were not set!');
+            this.polarisLogger.error(error.message);
+            throw error;
+        }
 
         const requestId = headers[REQUEST_ID] || uuid();
         const upn = headers[OICD_CLAIM_UPN];
