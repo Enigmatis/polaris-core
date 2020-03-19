@@ -1,3 +1,11 @@
+# [2.0.0-beta.5](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2020-03-19)
+
+
+### Features
+
+* **warnings:** add warnings to extensions. ([4ce390a](https://github.com/Enigmatis/polaris-core/commit/4ce390a2187427a045f84bcd59dde373f1ad63d2))
+* **warnings:** add warnings to extensions. ([e3d52c8](https://github.com/Enigmatis/polaris-core/commit/e3d52c8722bd37600c9be3bf22f9437d65cf2745))
+
 # [2.0.0-beta.4](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2020-03-17)
 
 
