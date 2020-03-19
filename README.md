@@ -182,8 +182,7 @@ const customContext = (context: ExpressContext): Partial<CustomContext> => {
 ### Warnings
 
 In order to have the ability of warnings, which returned in the extensions of the response, you will need to supply them to
-polaris. you can supply the warnings through the `customContext` - when you create the `customContext`(of type `PolarisGraphQLContext`),
-set the `returnedExtensions` with the relevant warnings. let's see an example:
+polaris. you can supply the warnings through the context. let's see an example:
 
 ```
 allBooksWithWarnings: async (
