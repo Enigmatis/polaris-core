@@ -1,6 +1,6 @@
 {
-  "customField": 1000,
-  "instanceInContext": {
-    "someProperty": 31
-  }
+    "customField": 1000,
+    "instanceInContext": {
+        "someProperty": 31
+    }
 }
