@@ -13,7 +13,7 @@ import { loggerConfig } from './utils/logger';
 export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
-    entities: [__dirname + '/dal/entities/*.ts'],
+    entities: [__dirname + '/dal/entities/*.{ts,js}'],
     synchronize: true,
     logging: true,
 };

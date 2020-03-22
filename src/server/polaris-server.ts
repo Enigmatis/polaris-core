@@ -31,7 +31,7 @@ import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
-const app = express();
+export const app = express();
 let server: http.Server;
 
 export class PolarisServer {
