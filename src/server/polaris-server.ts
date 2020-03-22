@@ -62,6 +62,11 @@ export class PolarisServer {
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
         });
+        app.get('/whoami', (req: express.Request, res: express.Response) => {
+            const appProps = this.polarisServerConfig.applicationProperties;
+            const whoami = { service: appProps.name, version: appProps.version };
+            res.send(whoami);
+        });
     }
 
     public async start(): Promise<void> {
