@@ -1,3 +1,15 @@
+# [2.0.0-beta.8](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2020-03-22)
+
+
+### Bug Fixes
+
+* **directives:** polaris server now creates a schema with directives ([8798dba](https://github.com/Enigmatis/polaris-core/commit/8798dbabe1fbdd87d0a91b67475a219b19d81931))
+
+
+### Features
+
+* added whoami endpoint ([34641e8](https://github.com/Enigmatis/polaris-core/commit/34641e87da07f853010c67eaa38acd299557caf6))
+
 # [2.0.0-beta.7](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2020-03-19)
 
 
