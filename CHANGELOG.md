@@ -1,3 +1,10 @@
+# [2.0.0-beta.9](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2020-03-22)
+
+
+### Features
+
+* exported express app for custom endpoints ([1a08f7a](https://github.com/Enigmatis/polaris-core/commit/1a08f7a73ad472ec9768f3a7faf60d4d682c1f8b))
+
 # [2.0.0-beta.8](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2020-03-22)
 
 
