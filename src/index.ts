@@ -1,5 +1,5 @@
 export { ExpressContext } from './server/express-context';
-export { PolarisServer } from './server/polaris-server';
+export { PolarisServer, app } from './server/polaris-server';
 export { PolarisServerOptions } from './config/polaris-server-options';
 export { MiddlewareConfiguration } from './config/middleware-configuration';
 export { formatError } from './errors/error-formatter';
