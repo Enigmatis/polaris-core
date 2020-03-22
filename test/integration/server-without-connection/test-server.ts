@@ -2,6 +2,7 @@ import { PolarisServer } from '../../../src';
 import * as polarisProperties from './resources/polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
+import { UpperCaseDirective } from './schema/upper-case-directive';
 
 export async function startTestServer(): Promise<PolarisServer> {
     const server = new PolarisServer({
@@ -14,6 +15,9 @@ export async function startTestServer(): Promise<PolarisServer> {
             version: polarisProperties.version,
             environment: polarisProperties.environment,
             component: polarisProperties.component,
+        },
+        schemaDirectives: {
+            upper: UpperCaseDirective,
         },
     });
 

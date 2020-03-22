@@ -130,6 +130,7 @@ export class PolarisServer {
         const schema = makeExecutablePolarisSchema(
             this.polarisServerConfig.typeDefs,
             this.polarisServerConfig.resolvers,
+            this.polarisServerConfig.schemaDirectives,
         );
         const middlewares = this.getAllowedPolarisMiddlewares();
         if (this.polarisServerConfig.customMiddlewares) {
