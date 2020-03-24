@@ -27,6 +27,7 @@ import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
+import { PaginationPlugin } from '../plugins/pagination/pagination-plugin';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
@@ -52,7 +53,6 @@ export class PolarisServer {
         }
 
         this.apolloServer = new ApolloServer(this.getApolloServerConfigurations());
-
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
@@ -96,6 +96,7 @@ export class PolarisServer {
             ),
             new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
             new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new PaginationPlugin(this.polarisLogger as PolarisGraphQLLogger, this.apolloServer),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
