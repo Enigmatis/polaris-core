@@ -27,8 +27,8 @@ import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
-import { PaginationPlugin } from '../plugins/pagination/pagination-plugin';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
+import { PaginationPlugin } from '../plugins/pagination/pagination-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
@@ -36,8 +36,8 @@ export const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    private readonly apolloServer: ApolloServer;
-    private readonly polarisServerConfig: PolarisServerConfig;
+    public readonly apolloServer: ApolloServer;
+    public readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
 
     constructor(config: PolarisServerOptions) {
@@ -96,7 +96,7 @@ export class PolarisServer {
             ),
             new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
             new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
-            new PaginationPlugin(this.polarisLogger as PolarisGraphQLLogger, this.apolloServer),
+            new PaginationPlugin(this.polarisLogger as PolarisGraphQLLogger, this),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);

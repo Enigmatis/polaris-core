@@ -1,51 +1,48 @@
 import {PolarisGraphQLContext} from '@enigmatis/polaris-common';
 import {PolarisGraphQLLogger} from '@enigmatis/polaris-graphql-logger';
-import {GraphQLRequestContext, GraphQLRequestListener} from 'apollo-server-plugin-base';
-import {ApolloServer} from "apollo-server-express";
 import {
-    getPolarisConnectionManager,
-    PolarisEntityManager,
-    Transaction,
-    TransactionManager
-} from '@enigmatis/polaris-typeorm';
+    ApolloServerPlugin,
+    GraphQLRequestContext,
+    GraphQLRequestListener,
+    GraphQLResponse
+} from 'apollo-server-plugin-base';
+import {PolarisServer} from "../..";
+import {runHttpQuery} from "apollo-server-core"
+import {makeExecutablePolarisSchema} from "@enigmatis/polaris-schema";
+import {GraphQLOptions} from 'apollo-server-express';
+import {cloneDeep, remove} from 'lodash';
+import {PaginationPlugin} from "./pagination-plugin";
+import {GraphQLSchema} from 'graphql';
 
 export class PaginationListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private logger: PolarisGraphQLLogger;
-    private apolloServer: ApolloServer;
+    private polarisServer: PolarisServer;
+    private optionsToSend: Partial<GraphQLOptions>;
+    private graphQLSchema: GraphQLSchema;
 
-    constructor(logger: PolarisGraphQLLogger, apollo: ApolloServer) {
+    constructor(logger: PolarisGraphQLLogger, apollo: PolarisServer) {
         this.logger = logger;
-        this.apolloServer = apollo;
+        this.polarisServer = apollo;
+        this.optionsToSend = cloneDeep(this.polarisServer.apolloServer.requestOptions);
+        remove(this.optionsToSend.plugins!, (x: ApolloServerPlugin) => x instanceof PaginationPlugin);
+        this.graphQLSchema = makeExecutablePolarisSchema(this.polarisServer.polarisServerConfig.typeDefs, this.polarisServer.polarisServerConfig.resolvers);
     }
 
-    public parsingDidStart(
-        requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
-            Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, 'metrics' | 'source'>>,
-    ): ((err?: Error) => void) | void {
-        const request = requestContext;
+    responseForOperation(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source" | "document" | "operationName" | "operation">>): Promise<GraphQLResponse | null> | GraphQLResponse | null {
+        const request = requestContext.request;
+        return new Promise( async () => {
+                const result = await runHttpQuery([], {
+                    method: request.http?.method!,
+                    query: {...request},
+                    options: {
+                        ...this.optionsToSend,
+                        schema: this.graphQLSchema,
+                        context: requestContext
+                    },
+                    request: requestContext.request.http!
+                });
+                return result;
+            }
+        );
     }
-
-    public validationDidStart(
-        requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
-            Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>,
-                'metrics' | 'source' | 'document'>>,
-    ): ((err?: ReadonlyArray<Error>) => void) | void {
-        const request = requestContext;
-    }
-
-    public executionDidStart(
-        requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
-            Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>,
-                'metrics' | 'source' | 'document' | 'operationName' | 'operation'>>,
-    ): ((err?: Error) => void) | void {
-        const request = requestContext;
-        // if( no pagination header)
-        // if(request.context?.returnedExtensions?.globalDataVersion === 69) return;
-        // requestContext.context.returnedExtensions = {globalDataVersion: 69};
-        //
-        // for excutes{
-        //     const result = this.apolloServer.executeOperation(requestContext.request + headers).then (current page logic);
-        // }
-    }
-
 }
