@@ -6,8 +6,8 @@ import {
     GraphQLRequestContext,
     GraphQLRequestListener,
 } from 'apollo-server-plugin-base';
+import { PolarisServer } from '../..';
 import { PaginationListener } from './pagination-listener';
-import {PolarisServer} from "../..";
 
 export class PaginationPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
     private logger: PolarisGraphQLLogger;
