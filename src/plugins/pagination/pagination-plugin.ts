@@ -1,26 +1,23 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { ApolloServer } from 'apollo-server-express';
+import { GraphQLOptions } from 'apollo-server-express';
 import {
     ApolloServerPlugin,
     GraphQLRequestContext,
     GraphQLRequestListener,
 } from 'apollo-server-plugin-base';
-import { PolarisServer } from '../..';
 import { PaginationListener } from './pagination-listener';
 
 export class PaginationPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
-    private logger: PolarisGraphQLLogger;
-    private apolloServer: PolarisServer;
+    private readonly paginationListener: PaginationListener;
 
-    constructor(logger: PolarisGraphQLLogger, apollo: PolarisServer) {
-        this.logger = logger;
-        this.apolloServer = apollo;
+    constructor(logger: PolarisGraphQLLogger, httpQueryOptions: GraphQLOptions) {
+        this.paginationListener = new PaginationListener(logger, httpQueryOptions);
     }
 
     public requestDidStart(
         requestContext: GraphQLRequestContext<PolarisGraphQLContext>,
     ): GraphQLRequestListener<PolarisGraphQLContext> | void {
-        return new PaginationListener(this.logger, this.apolloServer);
+        return this.paginationListener;
     }
 }

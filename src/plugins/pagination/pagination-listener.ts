@@ -1,6 +1,5 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { runHttpQuery } from 'apollo-server-core';
 import { GraphQLOptions } from 'apollo-server-express';
 import {
@@ -9,30 +8,21 @@ import {
     GraphQLRequestListener,
     GraphQLResponse,
 } from 'apollo-server-plugin-base';
-import { GraphQLSchema } from 'graphql';
-import { cloneDeep, remove } from 'lodash';
-import { PolarisServer } from '../..';
+import { remove } from 'lodash';
 import { PaginationPlugin } from './pagination-plugin';
 
 export class PaginationListener implements GraphQLRequestListener<PolarisGraphQLContext> {
-    private logger: PolarisGraphQLLogger;
-    private polarisServer: PolarisServer;
-    private optionsToSend: Partial<GraphQLOptions>;
-    private graphQLSchema: GraphQLSchema;
+    private readonly logger: PolarisGraphQLLogger;
+    private readonly httpQueryOptions: GraphQLOptions;
     private dataWaited: any;
 
-    constructor(logger: PolarisGraphQLLogger, apollo: PolarisServer) {
+    public constructor(logger: PolarisGraphQLLogger, httpQueryOptions: GraphQLOptions) {
         this.logger = logger;
-        this.polarisServer = apollo;
-        this.optionsToSend = cloneDeep(this.polarisServer.apolloServer.requestOptions);
-
-        this.optionsToSend.plugins = this.polarisServer.getApolloServerConfigurations()
-            .plugins as ApolloServerPlugin[];
+        this.httpQueryOptions = httpQueryOptions;
         remove(
-            this.optionsToSend.plugins!,
+            this.httpQueryOptions.plugins!,
             (x: ApolloServerPlugin) => x instanceof PaginationPlugin,
         );
-        this.graphQLSchema = this.polarisServer.getSchemaWithMiddlewares();
     }
 
     public didResolveOperation(
@@ -49,8 +39,7 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
                 method: requestContext.request.http?.method!,
                 query: { ...requestContext.request },
                 options: {
-                    ...this.optionsToSend,
-                    schema: this.graphQLSchema,
+                    ...this.httpQueryOptions,
                     context: requestContext.context,
                 },
                 request: requestContext.request.http!,
@@ -76,6 +65,4 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
             data: null,
         };
     }
-
-    // );
 }

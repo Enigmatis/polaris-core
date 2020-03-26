@@ -16,6 +16,8 @@ export const connectionOptions: ConnectionOptions = {
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
     synchronize: true,
     logging: true,
+    schema: 'osher',
+    dropSchema: true,
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {

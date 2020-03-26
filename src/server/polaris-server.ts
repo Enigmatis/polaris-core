@@ -36,11 +36,11 @@ export const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    public readonly apolloServer: ApolloServer;
-    public readonly polarisServerConfig: PolarisServerConfig;
+    private readonly apolloServer: ApolloServer;
+    private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
 
-    constructor(config: PolarisServerOptions) {
+    public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
 
         if (this.polarisServerConfig.logger instanceof PolarisGraphQLLogger) {
@@ -88,25 +88,12 @@ export class PolarisServer {
         this.polarisLogger.info('Server stopped');
     }
 
-    public getApolloServerConfigurations(): ApolloServerExpressConfig {
-        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
-            new ExtensionsPlugin(
-                this.polarisLogger as PolarisGraphQLLogger,
-                this.polarisServerConfig.shouldAddWarningsToExtensions,
-            ),
-            // new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
-            // new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
-            new PaginationPlugin(this.polarisLogger as PolarisGraphQLLogger, this),
-        ];
-        if (this.polarisServerConfig.plugins) {
-            // plugins.push(...this.polarisServerConfig.plugins);
-        }
-
+    private getApolloServerConfigurations(): ApolloServerExpressConfig {
         return {
             ...this.polarisServerConfig,
             schema: this.getSchemaWithMiddlewares(),
             context: (ctx: ExpressContext) => this.getPolarisContext(ctx),
-            plugins,
+            plugins: this.getPlugins(),
             playground: this.getPlaygroundConfig(),
             introspection: this.getIntrospectionConfig(),
             formatError,
@@ -116,7 +103,27 @@ export class PolarisServer {
         };
     }
 
-    public getSchemaWithMiddlewares(): GraphQLSchema {
+    private getPlugins(): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
+        const polarisGraphQLLogger = this.polarisLogger as PolarisGraphQLLogger;
+        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+            new ExtensionsPlugin(
+                polarisGraphQLLogger,
+                this.polarisServerConfig.shouldAddWarningsToExtensions,
+            ),
+            new ResponseHeadersPlugin(polarisGraphQLLogger),
+            new PolarisLoggerPlugin(polarisGraphQLLogger),
+            new PaginationPlugin(polarisGraphQLLogger, {
+                ...this.apolloServer.requestOptions,
+                schema: this.getSchemaWithMiddlewares(),
+            }),
+        ];
+        if (this.polarisServerConfig.plugins) {
+            plugins.push(...this.polarisServerConfig.plugins);
+        }
+        return plugins;
+    }
+
+    private getSchemaWithMiddlewares(): GraphQLSchema {
         const schema = makeExecutablePolarisSchema(
             this.polarisServerConfig.typeDefs,
             this.polarisServerConfig.resolvers,
