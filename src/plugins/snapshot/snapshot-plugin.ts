@@ -7,9 +7,9 @@ import {
 } from 'apollo-server-plugin-base';
 import { GraphQLSchema } from 'graphql';
 import { PolarisServer } from '../..';
-import { PaginationListener } from './pagination-listener';
+import { SnapshotListener } from './snapshot-listener';
 
-export class PaginationPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
+export class SnapshotPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
     private readonly polarisServer: PolarisServer;
     private readonly graphQLSchema: GraphQLSchema;
@@ -27,6 +27,6 @@ export class PaginationPlugin implements ApolloServerPlugin<PolarisGraphQLContex
     public requestDidStart(
         requestContext: GraphQLRequestContext<PolarisGraphQLContext>,
     ): GraphQLRequestListener<PolarisGraphQLContext> | void {
-        return new PaginationListener(this.logger, this.polarisServer, this.graphQLSchema);
+        return new SnapshotListener(this.logger, this.polarisServer, this.graphQLSchema);
     }
 }

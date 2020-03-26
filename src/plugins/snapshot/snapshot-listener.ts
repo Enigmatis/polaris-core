@@ -11,9 +11,9 @@ import {
 import { GraphQLSchema } from 'graphql';
 import { remove } from 'lodash';
 import { PolarisServer } from '../..';
-import { PaginationPlugin } from './pagination-plugin';
+import { SnapshotPlugin } from './snapshot-plugin';
 
-export class PaginationListener implements GraphQLRequestListener<PolarisGraphQLContext> {
+export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
     private readonly httpQueryOptions: GraphQLOptions;
     private dataWaited: any;
@@ -30,7 +30,7 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
         };
         remove(
             this.httpQueryOptions.plugins!,
-            (x: ApolloServerPlugin) => x instanceof PaginationPlugin,
+            (x: ApolloServerPlugin) => x instanceof SnapshotPlugin,
         );
     }
 

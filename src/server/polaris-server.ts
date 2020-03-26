@@ -28,7 +28,7 @@ import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
-import { PaginationPlugin } from '../plugins/pagination/pagination-plugin';
+import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
@@ -112,7 +112,7 @@ export class PolarisServer {
             ),
             new ResponseHeadersPlugin(polarisGraphQLLogger),
             new PolarisLoggerPlugin(polarisGraphQLLogger),
-            new PaginationPlugin(polarisGraphQLLogger, this, this.getSchemaWithMiddlewares()),
+            new SnapshotPlugin(polarisGraphQLLogger, this, this.getSchemaWithMiddlewares()),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
