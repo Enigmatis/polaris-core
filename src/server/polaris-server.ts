@@ -88,18 +88,18 @@ export class PolarisServer {
         this.polarisLogger.info('Server stopped');
     }
 
-    private getApolloServerConfigurations(): ApolloServerExpressConfig {
+    public getApolloServerConfigurations(): ApolloServerExpressConfig {
         const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
             new ExtensionsPlugin(
                 this.polarisLogger as PolarisGraphQLLogger,
                 this.polarisServerConfig.shouldAddWarningsToExtensions,
             ),
-            new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
-            new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            // new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            // new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
             new PaginationPlugin(this.polarisLogger as PolarisGraphQLLogger, this),
         ];
         if (this.polarisServerConfig.plugins) {
-            plugins.push(...this.polarisServerConfig.plugins);
+            // plugins.push(...this.polarisServerConfig.plugins);
         }
 
         return {
@@ -116,6 +116,19 @@ export class PolarisServer {
         };
     }
 
+    public getSchemaWithMiddlewares(): GraphQLSchema {
+        const schema = makeExecutablePolarisSchema(
+            this.polarisServerConfig.typeDefs,
+            this.polarisServerConfig.resolvers,
+            this.polarisServerConfig.schemaDirectives,
+        );
+        const middlewares = this.getAllowedPolarisMiddlewares();
+        if (this.polarisServerConfig.customMiddlewares) {
+            middlewares.push(...this.polarisServerConfig.customMiddlewares);
+        }
+        return applyMiddleware(schema, ...middlewares);
+    }
+
     private getSupportedRealities() {
         if (!this.polarisServerConfig.supportedRealities) {
             this.polarisServerConfig.supportedRealities = new RealitiesHolder();
@@ -130,19 +143,6 @@ export class PolarisServer {
         }
 
         return this.polarisServerConfig.supportedRealities;
-    }
-
-    private getSchemaWithMiddlewares(): GraphQLSchema {
-        const schema = makeExecutablePolarisSchema(
-            this.polarisServerConfig.typeDefs,
-            this.polarisServerConfig.resolvers,
-            this.polarisServerConfig.schemaDirectives,
-        );
-        const middlewares = this.getAllowedPolarisMiddlewares();
-        if (this.polarisServerConfig.customMiddlewares) {
-            middlewares.push(...this.polarisServerConfig.customMiddlewares);
-        }
-        return applyMiddleware(schema, ...middlewares);
     }
 
     private getAllowedPolarisMiddlewares(): any[] {

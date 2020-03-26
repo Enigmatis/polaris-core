@@ -19,19 +19,44 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
     private polarisServer: PolarisServer;
     private optionsToSend: Partial<GraphQLOptions>;
     private graphQLSchema: GraphQLSchema;
+    private dataWaited: any;
 
     constructor(logger: PolarisGraphQLLogger, apollo: PolarisServer) {
         this.logger = logger;
         this.polarisServer = apollo;
         this.optionsToSend = cloneDeep(this.polarisServer.apolloServer.requestOptions);
+
+        this.optionsToSend.plugins = this.polarisServer.getApolloServerConfigurations()
+            .plugins as ApolloServerPlugin[];
         remove(
             this.optionsToSend.plugins!,
             (x: ApolloServerPlugin) => x instanceof PaginationPlugin,
         );
-        this.graphQLSchema = makeExecutablePolarisSchema(
-            this.polarisServer.polarisServerConfig.typeDefs,
-            this.polarisServer.polarisServerConfig.resolvers,
-        );
+        this.graphQLSchema = this.polarisServer.getSchemaWithMiddlewares();
+    }
+
+    public didResolveOperation(
+        requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
+            Required<
+                Pick<
+                    GraphQLRequestContext<PolarisGraphQLContext>,
+                    'metrics' | 'source' | 'document' | 'operationName' | 'operation'
+                >
+            >,
+    ): Promise<void> | void {
+        return (async (): Promise<void> => {
+            const result = await runHttpQuery([], {
+                method: requestContext.request.http?.method!,
+                query: { ...requestContext.request },
+                options: {
+                    ...this.optionsToSend,
+                    schema: this.graphQLSchema,
+                    context: requestContext.context,
+                },
+                request: requestContext.request.http!,
+            });
+            this.dataWaited = result;
+        })();
     }
 
     public responseForOperation(
@@ -40,48 +65,17 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
                 Pick<
                     GraphQLRequestContext<PolarisGraphQLContext>,
                     'metrics' | 'source' | 'document' | 'operationName' | 'operation'
-                    >
-                >,
+                >
+            >,
     ): Promise<GraphQLResponse | null> | GraphQLResponse | null {
         const request = requestContext.request;
-        return new Promise(async () => {
-            const result = await runHttpQuery([], {
-                method: request.http?.method!,
-                query: { ...request },
-                options: {
-                    ...this.optionsToSend,
-                    schema: this.graphQLSchema,
-                    context: requestContext,
-                },
-                request: requestContext.request.http!,
-            });
-            return result.graphqlResponse;
-        });
+        const headersToSend: { [name: string]: string } = {};
+        headersToSend.lol = 'shit';
+        const datato = this.dataWaited;
+        return {
+            data: null,
+        };
     }
 
-    validationDidStart(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source" | "document">>): ((err?: ReadonlyArray<Error>) => void) | void {
-        return undefined;
-    }
-
-    parsingDidStart(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source">>): ((err?: Error) => void) | void {
-        return undefined;
-    }
-
-    didResolveOperation(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source" | "document" | "operationName" | "operation">>): Promise<void> | void {
-        return undefined;
-    }
-
-    didEncounterErrors(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source" | "errors">>): Promise<void> | void {
-        return undefined;
-    }
-
-    executionDidStart(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "source" | "document" | "operationName" | "operation">>): ((err?: Error) => void) | void {
-        return undefined;
-    }
-
-    willSendResponse(requestContext: GraphQLRequestContext<PolarisGraphQLContext> & Required<Pick<GraphQLRequestContext<PolarisGraphQLContext>, "metrics" | "response">>): Promise<void> | void {
-        return undefined;
-    }
-    
-    
+    // );
 }
