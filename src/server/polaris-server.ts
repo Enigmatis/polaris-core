@@ -36,7 +36,7 @@ export const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    private readonly apolloServer: ApolloServer;
+    public readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
 
@@ -112,10 +112,7 @@ export class PolarisServer {
             ),
             new ResponseHeadersPlugin(polarisGraphQLLogger),
             new PolarisLoggerPlugin(polarisGraphQLLogger),
-            new PaginationPlugin(polarisGraphQLLogger, {
-                ...this.apolloServer.requestOptions,
-                schema: this.getSchemaWithMiddlewares(),
-            }),
+            new PaginationPlugin(polarisGraphQLLogger, this, this.getSchemaWithMiddlewares()),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);

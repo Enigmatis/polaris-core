@@ -10,15 +10,21 @@ import {
 } from 'apollo-server-plugin-base';
 import { remove } from 'lodash';
 import { PaginationPlugin } from './pagination-plugin';
+import { GraphQLSchema } from 'graphql';
+import { PolarisServer } from '../..';
 
 export class PaginationListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
     private readonly httpQueryOptions: GraphQLOptions;
     private dataWaited: any;
 
-    public constructor(logger: PolarisGraphQLLogger, httpQueryOptions: GraphQLOptions) {
+    public constructor(
+        logger: PolarisGraphQLLogger,
+        polarisServer: PolarisServer,
+        graphQLSchema: GraphQLSchema,
+    ) {
         this.logger = logger;
-        this.httpQueryOptions = httpQueryOptions;
+        this.httpQueryOptions = { ...polarisServer.apolloServer.requestOptions, schema: graphQLSchema };
         remove(
             this.httpQueryOptions.plugins!,
             (x: ApolloServerPlugin) => x instanceof PaginationPlugin,
