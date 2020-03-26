@@ -103,9 +103,9 @@ export class PolarisServer {
         };
     }
 
-    private getPlugins(): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
+    public getPlugins(): ApolloServerPlugin[] {
         const polarisGraphQLLogger = this.polarisLogger as PolarisGraphQLLogger;
-        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+        const plugins: ApolloServerPlugin[] = [
             new ExtensionsPlugin(
                 polarisGraphQLLogger,
                 this.polarisServerConfig.shouldAddWarningsToExtensions,
@@ -115,7 +115,7 @@ export class PolarisServer {
             new SnapshotPlugin(polarisGraphQLLogger, this, this.getSchemaWithMiddlewares()),
         ];
         if (this.polarisServerConfig.plugins) {
-            plugins.push(...this.polarisServerConfig.plugins);
+            plugins.push(...this.polarisServerConfig.plugins as ApolloServerPlugin[]);
         }
         return plugins;
     }
