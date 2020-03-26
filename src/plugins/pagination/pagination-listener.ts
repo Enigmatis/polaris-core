@@ -8,10 +8,10 @@ import {
     GraphQLRequestListener,
     GraphQLResponse,
 } from 'apollo-server-plugin-base';
-import { remove } from 'lodash';
-import { PaginationPlugin } from './pagination-plugin';
 import { GraphQLSchema } from 'graphql';
+import { remove } from 'lodash';
 import { PolarisServer } from '../..';
+import { PaginationPlugin } from './pagination-plugin';
 
 export class PaginationListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
@@ -24,7 +24,10 @@ export class PaginationListener implements GraphQLRequestListener<PolarisGraphQL
         graphQLSchema: GraphQLSchema,
     ) {
         this.logger = logger;
-        this.httpQueryOptions = { ...polarisServer.apolloServer.requestOptions, schema: graphQLSchema };
+        this.httpQueryOptions = {
+            ...polarisServer.apolloServer.requestOptions,
+            schema: graphQLSchema,
+        };
         remove(
             this.httpQueryOptions.plugins!,
             (x: ApolloServerPlugin) => x instanceof PaginationPlugin,
