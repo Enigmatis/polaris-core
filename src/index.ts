@@ -14,3 +14,12 @@ export * from '@enigmatis/polaris-middlewares';
 export * from '@enigmatis/polaris-schema';
 export * from '@enigmatis/polaris-typeorm';
 export { Entity } from '@enigmatis/polaris-typeorm';
+export {
+    IResolvers,
+    IResolverObject,
+    IResolverOptions,
+    IResolversParameter,
+    IResolverValidationOptions,
+    IFieldResolver,
+} from 'graphql-tools';
+export * from './plugins/snapshot/paginated-resolver';

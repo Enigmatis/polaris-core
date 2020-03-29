@@ -9,6 +9,8 @@ import {
     REQUEST_ID,
     REQUESTING_SYS,
     REQUESTING_SYS_NAME,
+    SNAP_PAGE_SIZE,
+    SNAP_REQUEST,
 } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
@@ -27,6 +29,7 @@ import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
+import { PaginationMiddleware } from '../middlewares/paginations-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
@@ -130,7 +133,11 @@ export class PolarisServer {
         if (this.polarisServerConfig.customMiddlewares) {
             middlewares.push(...this.polarisServerConfig.customMiddlewares);
         }
-        return applyMiddleware(schema, ...middlewares);
+
+        return applyMiddleware(
+            applyMiddleware(schema, new PaginationMiddleware().getMiddleware()),
+            ...middlewares,
+        );
     }
 
     private getSupportedRealities() {
@@ -199,6 +206,8 @@ export class PolarisServer {
         const requestId = headers[REQUEST_ID] || uuid();
         const upn = headers[OICD_CLAIM_UPN];
         const realityId = +headers[REALITY_ID] || 0;
+        const snapRequest = headers[SNAP_REQUEST] || false;
+        const snapPageSize = +headers[SNAP_PAGE_SIZE] || 0;
 
         const supportedRealities = this.getSupportedRealities();
         const reality: Reality | undefined = supportedRealities.getReality(realityId);
@@ -214,6 +223,8 @@ export class PolarisServer {
                 upn,
                 requestId,
                 realityId,
+                snapRequest,
+                snapPageSize,
                 dataVersion: +headers[DATA_VERSION],
                 includeLinkedOper: headers[INCLUDE_LINKED_OPER] === 'true',
                 requestingSystemId: headers[REQUESTING_SYS],

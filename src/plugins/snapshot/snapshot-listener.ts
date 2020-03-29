@@ -45,16 +45,19 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             >,
     ): Promise<void> | void {
         return (async (): Promise<void> => {
-            const result = await runHttpQuery([], {
-                method: requestContext.request.http?.method!,
-                query: { ...requestContext.request },
-                options: {
-                    ...this.httpQueryOptions,
-                    context: requestContext.context,
-                },
-                request: requestContext.request.http!,
-            });
-            this.dataWaited = result;
+            do {
+                const result = await runHttpQuery([], {
+                    method: requestContext.request.http?.method!,
+                    query: { ...requestContext.request },
+                    options: {
+                        ...this.httpQueryOptions,
+                        context: requestContext.context,
+                    },
+                    request: requestContext.request.http!,
+                });
+
+                this.dataWaited = result;
+            } while (false);
         })();
     }
 
