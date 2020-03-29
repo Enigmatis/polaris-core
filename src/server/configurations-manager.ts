@@ -1,5 +1,5 @@
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration, SnapshotConfiguration, PolarisServerOptions } from '..';
+import { MiddlewareConfiguration, PolarisServerOptions, SnapshotConfiguration } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
