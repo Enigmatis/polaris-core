@@ -13,6 +13,7 @@ import {
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
+import { TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares/dist/src/transactional-mutations-plugin/transactional-mutations-plugin';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
@@ -89,14 +90,7 @@ export class PolarisServer {
     }
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
-        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
-            new ExtensionsPlugin(
-                this.polarisLogger as PolarisGraphQLLogger,
-                this.polarisServerConfig.shouldAddWarningsToExtensions,
-            ),
-            new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
-            new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
-        ];
+        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = this.getAllowedPolarisPlugins();
         if (this.polarisServerConfig.plugins) {
             plugins.push(...this.polarisServerConfig.plugins);
         }
@@ -113,6 +107,24 @@ export class PolarisServer {
                 path: `/${this.polarisServerConfig.applicationProperties.version}/subscription`,
             },
         };
+    }
+
+    private getAllowedPolarisPlugins(): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
+        const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+            new ExtensionsPlugin(
+                this.polarisLogger as PolarisGraphQLLogger,
+                this.polarisServerConfig.shouldAddWarningsToExtensions,
+            ),
+            new ResponseHeadersPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            new PolarisLoggerPlugin(this.polarisLogger as PolarisGraphQLLogger),
+        ];
+
+        if (this.polarisServerConfig.middlewareConfiguration.allowTransactionalMutations) {
+            plugins.push(
+                new TransactionalMutationsPlugin(this.polarisLogger as PolarisGraphQLLogger),
+            );
+        }
+        return plugins;
     }
 
     private getSupportedRealities() {

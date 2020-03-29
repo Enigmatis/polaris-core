@@ -14,8 +14,10 @@ export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
+    dropSchema: true,
     synchronize: true,
     logging: true,
+    schema: 'vulcan',
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
