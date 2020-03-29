@@ -2,6 +2,7 @@ export { ExpressContext } from './server/express-context';
 export { PolarisServer, app } from './server/polaris-server';
 export { PolarisServerOptions } from './config/polaris-server-options';
 export { MiddlewareConfiguration } from './config/middleware-configuration';
+export { SnapshotConfiguration } from './config/snapshot-configuration';
 export { formatError } from './errors/error-formatter';
 export * from 'apollo-server-errors';
 export { PubSub, gql } from 'apollo-server-express';

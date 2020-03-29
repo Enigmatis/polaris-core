@@ -4,5 +4,4 @@ export interface SnapshotConfiguration {
     pageSize: number;
     entitiesAmountPerFetch: number;
     autoSnapshot: boolean;
-
 }
