@@ -16,6 +16,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
+import { getPolarisConnectionManager, SnapshotPage } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as express from 'express';
@@ -29,7 +30,7 @@ import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
-import { PaginationMiddleware } from '../middlewares/paginations-middleware';
+import { PaginationMiddleware } from '../middlewares/pagination-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
@@ -64,6 +65,14 @@ export class PolarisServer {
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
+        });
+        app.get('/snapshot', async (req: express.Request, res: express.Response) => {
+            const id = req.query.id;
+            const result = await getPolarisConnectionManager()
+                .get()
+                .getRepository(SnapshotPage)
+                .find({} as any, { where: { id } });
+            res.send(result[0]?.getData());
         });
         app.get('/whoami', (req: express.Request, res: express.Response) => {
             const appProps = this.polarisServerConfig.applicationProperties;
