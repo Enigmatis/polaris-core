@@ -17,7 +17,7 @@ export const connectionOptions: ConnectionOptions = {
     dropSchema: true,
     synchronize: true,
     logging: true,
-    schema: 'vulcan',
+    schema: 'itay',
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
