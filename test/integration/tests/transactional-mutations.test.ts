@@ -1,12 +1,13 @@
 import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import { startTestServer, stopTestServer } from '../server/test-server';
-import { graphQLRequest } from '../server/utils/graphql-client';
-import * as mutation from './jsonRequestsAndHeaders/mutation.json';
+import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
+import * as multipleMutationsWithBrokenOne from './jsonRequestsAndHeaders/multipleMutationsWithBrokenOne.json';
+import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
 
 let polarisServer: PolarisServer;
 
-describe('transactional mutations integration tests', () => {
+describe('transactional mutations enabled integration tests', () => {
     beforeEach(async () => {
         polarisServer = await startTestServer();
         await initializeDatabase();
@@ -16,23 +17,40 @@ describe('transactional mutations integration tests', () => {
         await stopTestServer(polarisServer);
     });
 
-    it('execute multiple mutations concurrently', async done => {
-        let firstDone = false;
-        let secondDone = false;
-        const firstResult = graphQLRequest(mutation.request, mutation.headers).then(value => {
-            // tslint:disable-next-line:no-console
-            console.log(value);
-            firstDone = true;
-        });
-        const secondResult = graphQLRequest(mutation.requestTwo, mutation.headers).then(value => {
-            // tslint:disable-next-line:no-console
-            console.log(value);
-            secondDone = true;
-        });
-        if (firstDone && secondDone) {
-            done();
+    it('execute multiple mutations in one request and one of the mutations is broken, the data version wasn\'t changed', async () => {
+        let dataVersionBeforeUpdate;
+        try {
+            dataVersionBeforeUpdate = (
+                await graphqlRawRequest(simpleQuery.request, simpleQuery.headers)
+            ).extensions.globalDataVersion;
+            await graphQLRequest(
+                multipleMutationsWithBrokenOne.request,
+                undefined,
+                multipleMutationsWithBrokenOne.variables,
+            );
+        } catch (err) {
+            const dataVersionAfterUpdate = (
+                await graphqlRawRequest(simpleQuery.request, simpleQuery.headers)
+            ).extensions.globalDataVersion;
+            expect(dataVersionAfterUpdate).toEqual(dataVersionBeforeUpdate);
         }
-        // expect(result.allBooks[0].title).toEqual('Book1');
-        // expect(result.allBooks[1].title).toEqual('Book2');
+    });
+
+    it('execute multiple mutations in one request and one of the mutations is broken, the data in db wasn\'t changed', async () => {
+        try {
+            await graphQLRequest(
+                multipleMutationsWithBrokenOne.request,
+                undefined,
+                multipleMutationsWithBrokenOne.variables,
+            );
+        } catch (err) {
+            const result = await graphqlRawRequest(
+                multipleMutationsWithBrokenOne.dataValidateRequest,
+                undefined,
+                multipleMutationsWithBrokenOne.variables,
+            );
+            expect(result.data.a.length).toEqual(0);
+            expect(result.data.b.length).toEqual(0);
+        }
     });
 });

@@ -12,8 +12,7 @@ import {
 } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
-import { TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares/dist/src/transactional-mutations-plugin/transactional-mutations-plugin';
+import { PolarisLoggerPlugin, TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
