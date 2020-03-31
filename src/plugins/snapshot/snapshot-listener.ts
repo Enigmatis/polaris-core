@@ -28,14 +28,12 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         this.logger = logger;
         this.snapshotConfiguration = snapshotConfiguration;
 
-        const pluginsWithoutSnapshot = remove(
-            polarisServer.getPlugins(),
-            (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin,
-        );
+        const plugins = polarisServer.getPlugins();
+        remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
 
         this.httpQueryOptions = {
             ...polarisServer.apolloServer.requestOptions,
-            plugins: pluginsWithoutSnapshot,
+            plugins,
             schema: graphQLSchema,
         };
     }

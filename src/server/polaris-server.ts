@@ -218,8 +218,8 @@ export class PolarisServer {
         const requestId = headers[REQUEST_ID] || uuid();
         const upn = headers[OICD_CLAIM_UPN];
         const realityId = +headers[REALITY_ID] || 0;
-        const snapRequest = headers[SNAP_REQUEST] || false;
-        const snapPageSize = +headers[SNAP_PAGE_SIZE] || 0;
+        const snapRequest = headers[SNAP_REQUEST] === 'true';
+        const snapPageSize = +headers[SNAP_PAGE_SIZE];
 
         const supportedRealities = this.getSupportedRealities();
         const reality: Reality | undefined = supportedRealities.getReality(realityId);
