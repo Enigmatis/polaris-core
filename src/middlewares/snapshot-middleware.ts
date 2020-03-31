@@ -1,6 +1,6 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 
-export class PaginationMiddleware {
+export class SnapshotMiddleware {
     public getMiddleware() {
         return async (
             resolve: any,
@@ -9,10 +9,10 @@ export class PaginationMiddleware {
             context: PolarisGraphQLContext,
             info: any,
         ) => {
-            let startIndex
+            let startIndex;
             let countPerPage;
             const result = await resolve(root, args, context, info);
-            if (!result || !(result.totalCount && result.getData) || root) {
+            if (!(result && result.totalCount && result.getData && !root)) {
                 return result;
             }
 

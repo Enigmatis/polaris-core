@@ -1,7 +1,7 @@
 export interface SnapshotConfiguration {
     snapshotCleaningInterval: number;
     secondsToBeOutdated: number;
-    pageSize: number;
+    maxPageSize: number;
     entitiesAmountPerFetch: number;
     autoSnapshot: boolean;
 }

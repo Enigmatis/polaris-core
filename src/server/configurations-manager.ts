@@ -22,7 +22,7 @@ export const getDefaultSnapshotConfiguration = (): SnapshotConfiguration => {
     return {
         snapshotCleaningInterval: 60,
         secondsToBeOutdated: 60,
-        pageSize: 50,
+        maxPageSize: 50,
         entitiesAmountPerFetch: 50,
         autoSnapshot: true,
     };

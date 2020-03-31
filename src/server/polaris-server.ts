@@ -30,7 +30,7 @@ import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
-import { PaginationMiddleware } from '../middlewares/pagination-middleware';
+import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
@@ -68,11 +68,11 @@ export class PolarisServer {
         });
         app.get('/snapshot', async (req: express.Request, res: express.Response) => {
             const id = req.query.id;
-            const result = await getPolarisConnectionManager()
+            const snapshotRepository = getPolarisConnectionManager()
                 .get()
-                .getRepository(SnapshotPage)
-                .find({} as any, { where: { id } });
-            res.send(result[0]?.getData());
+                .getRepository(SnapshotPage);
+            const result = await snapshotRepository.findOne({} as any, id);
+            res.send(result?.getData());
         });
         app.get('/whoami', (req: express.Request, res: express.Response) => {
             const appProps = this.polarisServerConfig.applicationProperties;
@@ -109,7 +109,12 @@ export class PolarisServer {
             ),
             new ResponseHeadersPlugin(polarisGraphQLLogger),
             new PolarisLoggerPlugin(polarisGraphQLLogger),
-            new SnapshotPlugin(polarisGraphQLLogger, this, this.getSchemaWithMiddlewares()),
+            new SnapshotPlugin(
+                polarisGraphQLLogger,
+                this.polarisServerConfig.snapshotConfig,
+                this,
+                this.getSchemaWithMiddlewares(),
+            ),
         ];
         if (this.polarisServerConfig.plugins) {
             plugins.push(...(this.polarisServerConfig.plugins as ApolloServerPlugin[]));
@@ -143,10 +148,8 @@ export class PolarisServer {
             middlewares.push(...this.polarisServerConfig.customMiddlewares);
         }
 
-        return applyMiddleware(
-            applyMiddleware(schema, new PaginationMiddleware().getMiddleware()),
-            ...middlewares,
-        );
+        applyMiddleware(schema, new SnapshotMiddleware().getMiddleware());
+        return applyMiddleware(schema, ...middlewares);
     }
 
     private getSupportedRealities() {

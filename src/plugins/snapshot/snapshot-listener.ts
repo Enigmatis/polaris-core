@@ -11,28 +11,33 @@ import {
 } from 'apollo-server-plugin-base';
 import { GraphQLSchema } from 'graphql';
 import { remove } from 'lodash';
-import { PolarisServer } from '../..';
+import { PolarisServer, SnapshotConfiguration } from '../..';
 import { SnapshotPlugin } from './snapshot-plugin';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
+    private readonly snapshotConfiguration: SnapshotConfiguration;
     private readonly httpQueryOptions: GraphQLOptions;
 
     public constructor(
         logger: PolarisGraphQLLogger,
+        snapshotConfiguration: SnapshotConfiguration,
         polarisServer: PolarisServer,
         graphQLSchema: GraphQLSchema,
     ) {
         this.logger = logger;
+        this.snapshotConfiguration = snapshotConfiguration;
+
+        const pluginsWithoutSnapshot = remove(
+            polarisServer.getPlugins(),
+            (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin,
+        );
+
         this.httpQueryOptions = {
             ...polarisServer.apolloServer.requestOptions,
-            plugins: polarisServer.getPlugins(),
+            plugins: pluginsWithoutSnapshot,
             schema: graphQLSchema,
         };
-        remove(
-            this.httpQueryOptions.plugins!,
-            (x: ApolloServerPlugin) => x instanceof SnapshotPlugin,
-        );
     }
 
     public didResolveOperation(
@@ -44,39 +49,42 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 >
             >,
     ): Promise<void> | void {
-        if (
-            !requestContext.context.requestHeaders.snapRequest ||
-            requestContext.request.operationName === 'IntrospectionQuery'
-        ) {
+        const { context } = requestContext;
+
+        if (!context.requestHeaders.snapRequest) {
             return;
         }
         return (async (): Promise<void> => {
-            const { context } = requestContext;
             const { requestHeaders } = context;
             const snapshotRepository = getPolarisConnectionManager()
                 .get()
                 .getRepository(SnapshotPage);
-            const pagesIds = [];
+            const pagesIds: string[] = [];
 
             do {
+                const httpRequest = requestContext.request.http!;
                 const currentPageResult = await runHttpQuery([], {
-                    method: requestContext.request.http?.method!,
-                    query: { ...requestContext.request },
+                    method: httpRequest.method,
+                    request: httpRequest,
+                    query: requestContext.request,
                     options: {
                         ...this.httpQueryOptions,
                         context,
                     },
-                    request: requestContext.request.http!,
                 });
 
                 if (!context.snapshotContext) {
                     const totalCount = JSON.parse(currentPageResult.graphqlResponse).extensions
                         .totalCount;
-
                     context.snapshotContext = {
                         totalCount,
                         startIndex: 0,
-                        countPerPage: requestHeaders.snapPageSize!,
+                        countPerPage: requestHeaders.snapPageSize
+                            ? Math.min(
+                                  this.snapshotConfiguration.maxPageSize,
+                                  requestHeaders.snapPageSize,
+                              )
+                            : this.snapshotConfiguration.maxPageSize,
                     };
                 }
 
@@ -84,8 +92,8 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 await snapshotRepository.save({} as any, snapshotPage);
                 pagesIds.push(snapshotPage.getId());
 
-                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
-            } while (context.snapshotContext?.startIndex! < context.snapshotContext?.totalCount!);
+                context.snapshotContext.startIndex! += context.snapshotContext.countPerPage!;
+            } while (context.snapshotContext.startIndex! < context.snapshotContext.totalCount!);
 
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
@@ -100,14 +108,14 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 >
             >,
     ): Promise<GraphQLResponse | null> | GraphQLResponse | null {
-        if (
-            !requestContext.context.requestHeaders.snapRequest ||
-            requestContext.request.operationName === 'IntrospectionQuery'
-        ) {
-            return null;
+        const { context } = requestContext;
+
+        if (context.requestHeaders.snapRequest) {
+            return {
+                data: null,
+            };
         }
-        return {
-            data: null,
-        };
+
+        return null;
     }
 }
