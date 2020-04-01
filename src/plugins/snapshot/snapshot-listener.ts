@@ -1,6 +1,6 @@
-import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
+import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
-import { getPolarisConnectionManager, SnapshotPage } from '@enigmatis/polaris-typeorm';
+import { getConnectionForReality, SnapshotPage } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
 import { GraphQLOptions } from 'apollo-server-express';
 import {
@@ -16,17 +16,20 @@ import { SnapshotPlugin } from './snapshot-plugin';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     private readonly logger: PolarisGraphQLLogger;
+    private readonly realitiesHolder: RealitiesHolder;
     private readonly snapshotConfiguration: SnapshotConfiguration;
     private readonly httpQueryOptions: GraphQLOptions;
 
     public constructor(
         logger: PolarisGraphQLLogger,
+        realitiesHolder: RealitiesHolder,
         snapshotConfiguration: SnapshotConfiguration,
         polarisServer: PolarisServer,
         graphQLSchema: GraphQLSchema,
     ) {
         this.logger = logger;
         this.snapshotConfiguration = snapshotConfiguration;
+        this.realitiesHolder = realitiesHolder;
 
         const plugins = polarisServer.getPlugins();
         remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
@@ -49,14 +52,15 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
     ): Promise<void> | void {
         const { context } = requestContext;
 
-        if (!context.requestHeaders.snapRequest) {
+        if (!context.requestHeaders.snapRequest || !context.requestHeaders.realityId) {
             return;
         }
         return (async (): Promise<void> => {
             const { requestHeaders } = context;
-            const snapshotRepository = getPolarisConnectionManager()
-                .get()
-                .getRepository(SnapshotPage);
+            const snapshotRepository = getConnectionForReality(
+                requestHeaders.realityId!,
+                this.realitiesHolder,
+            ).getRepository(SnapshotPage);
             const pagesIds: string[] = [];
 
             do {

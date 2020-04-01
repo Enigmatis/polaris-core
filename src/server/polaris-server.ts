@@ -16,7 +16,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { getPolarisConnectionManager, SnapshotPage } from '@enigmatis/polaris-typeorm';
+import { getConnectionForReality, SnapshotPage } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as express from 'express';
@@ -68,9 +68,12 @@ export class PolarisServer {
         });
         app.get('/snapshot', async (req: express.Request, res: express.Response) => {
             const id = req.query.id;
-            const snapshotRepository = getPolarisConnectionManager()
-                .get()
-                .getRepository(SnapshotPage);
+            const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
+            const realityId: number = realityHeader ? +realityHeader : 0;
+            const snapshotRepository = getConnectionForReality(
+                realityId,
+                this.getSupportedRealities(),
+            ).getRepository(SnapshotPage);
             const result = await snapshotRepository.findOne({} as any, id);
             res.send(result?.getData());
         });
@@ -111,6 +114,7 @@ export class PolarisServer {
             new PolarisLoggerPlugin(polarisGraphQLLogger),
             new SnapshotPlugin(
                 polarisGraphQLLogger,
+                this.getSupportedRealities(),
                 this.polarisServerConfig.snapshotConfig,
                 this,
                 this.getSchemaWithMiddlewares(),
