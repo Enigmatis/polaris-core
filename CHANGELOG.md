@@ -1,3 +1,19 @@
+# [2.0.0-beta.10](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2020-04-02)
+
+
+### Bug Fixes
+
+* added snapshot configuration ([e3294bd](https://github.com/Enigmatis/polaris-core/commit/e3294bd4dbf40a5914ab44586de6b3cb300e47e9))
+* count per page can not be bigger than configured max page size ([98a8bdf](https://github.com/Enigmatis/polaris-core/commit/98a8bdf4a247d1438ae5355076c056bb960f6f51))
+* fixed plugins that were sent in a snap request ([2aa5b82](https://github.com/Enigmatis/polaris-core/commit/2aa5b82242ce242042d89bae8e25a7b8e8cb22d9))
+* fixed stuff ([6bac41b](https://github.com/Enigmatis/polaris-core/commit/6bac41b5815ef82a4f5bfe2c82d1e040b2551018))
+* kinda working ([cb99e90](https://github.com/Enigmatis/polaris-core/commit/cb99e900a7df750d284b39889774c41b82ccb3f2))
+* pagination ([7fdfc3d](https://github.com/Enigmatis/polaris-core/commit/7fdfc3d0a0853a09265c728d9a83a46c649f3544))
+* pagination plugin ([b3ea012](https://github.com/Enigmatis/polaris-core/commit/b3ea012ab6c786b24ce8744cf89e4ee0c02d602e))
+* pagination works kinda! ([0eda19b](https://github.com/Enigmatis/polaris-core/commit/0eda19bfe6720d6fb41866f3bd7b0fc71abacc81))
+* plugins ([6717735](https://github.com/Enigmatis/polaris-core/commit/67177350b3160568ec45856859f10939f3661c2b))
+* started doing stuff ([2618252](https://github.com/Enigmatis/polaris-core/commit/2618252c08c66470191dfbff50911df4ee473ef3))
+
 # [2.0.0-beta.9](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2020-03-22)
 
 
