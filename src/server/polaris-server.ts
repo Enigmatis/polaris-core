@@ -82,6 +82,20 @@ export class PolarisServer {
             const whoami = { service: appProps.name, version: appProps.version };
             res.send(whoami);
         });
+
+        // setInterval(() => {
+        //     this.getSupportedRealities()
+        //         .getRealitiesMap()
+        //         .forEach(async (reality: Reality) => {
+        //             const snapshotRepository = getConnectionForReality(
+        //                 reality.id,
+        //                 this.getSupportedRealities(),
+        //             ).getRepository(SnapshotPage);
+        //
+        //             await snapshotRepository.query(`DELETE FROM "snapshot_page" sp
+        //                                             WHERE (SELECT DATEDIFF(second, creationDate, NOW()) > ${this.polarisServerConfig.snapshotConfig.secondsToBeOutdated};`);
+        //         });
+        // }, this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval * 1000);
     }
 
     public async start(): Promise<void> {
