@@ -152,7 +152,10 @@ export class PolarisServer {
             middlewares.push(...this.polarisServerConfig.customMiddlewares);
         }
 
-        applyMiddleware(schema, new SnapshotMiddleware().getMiddleware());
+        applyMiddleware(
+            schema,
+            new SnapshotMiddleware(this.polarisLogger as PolarisGraphQLLogger).getMiddleware(),
+        );
         return applyMiddleware(schema, ...middlewares);
     }
 
