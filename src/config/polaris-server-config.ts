@@ -10,6 +10,7 @@ import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
 import { ExpressContext } from '..';
 import { MiddlewareConfiguration } from '../index';
+import { SnapshotConfiguration } from './snapshot-configuration';
 
 export interface PolarisServerConfig extends ApolloServerExpressConfig {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
@@ -25,4 +26,5 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     supportedRealities?: RealitiesHolder;
     shouldAddWarningsToExtensions: boolean;
     allowMandatoryHeaders: boolean;
+    snapshotConfig: SnapshotConfiguration;
 }
