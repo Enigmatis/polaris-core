@@ -52,7 +52,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
     ): Promise<void> | void {
         const { context } = requestContext;
 
-        if (!context.requestHeaders.snapRequest || !context.requestHeaders.realityId) {
+        if (!context.requestHeaders.snapRequest) {
             return;
         }
         return (async (): Promise<void> => {
