@@ -3,6 +3,7 @@
 # polaris-core
 
 [![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
+[![Npm Beta](https://img.shields.io/npm/v/@enigmatis/polaris-core/beta)](https://www.npmjs.com/package/@enigmatis/polaris-core)
 [![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
 
 Polaris is a set of libraries that help you create the perfect graphql service, integrated with type orm and the hottest API standards.
