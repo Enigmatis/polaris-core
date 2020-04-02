@@ -33,9 +33,9 @@ import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
+import { deleteOutdatedSnapshotPages } from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
-import { deleteOutdatedSnapshotPages } from '../snapshot/snapshot-cleaner';
 
 export const app = express();
 let server: http.Server;
