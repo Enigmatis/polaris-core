@@ -120,6 +120,16 @@ export class PolarisServer {
                 this.getSchemaWithMiddlewares(),
             ),
         ];
+
+        if (this.polarisServerConfig.middlewareConfiguration.allowTransactionalMutations) {
+            plugins.push(
+                new TransactionalMutationsPlugin(
+                    polarisGraphQLLogger,
+                    this.getSupportedRealities(),
+                ),
+            );
+        }
+
         if (this.polarisServerConfig.plugins) {
             plugins.push(...(this.polarisServerConfig.plugins as ApolloServerPlugin[]));
         }
