@@ -36,8 +36,6 @@ async function createExampleData(authors: Author[], books: Book[]) {
 }
 
 export async function initializeDatabase() {
-    const connection = getPolarisConnectionManager().get();
-    await connection.synchronize();
     const authors: Author[] = getAuthors();
     const books: Book[] = getBooks(authors);
     await createExampleData(authors, books);

@@ -1,5 +1,5 @@
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration, PolarisServerOptions } from '..';
+import { MiddlewareConfiguration, PolarisServerOptions, SnapshotConfiguration } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
@@ -19,6 +19,16 @@ export const getDefaultLoggerConfiguration = (): LoggerConfiguration => {
     };
 };
 
+export const getDefaultSnapshotConfiguration = (): SnapshotConfiguration => {
+    return {
+        snapshotCleaningInterval: 60,
+        secondsToBeOutdated: 60,
+        maxPageSize: 50,
+        entitiesAmountPerFetch: 50,
+        autoSnapshot: true,
+    };
+};
+
 export const getPolarisServerConfigFromOptions = (
     options: PolarisServerOptions,
 ): PolarisServerConfig => {
@@ -34,5 +44,6 @@ export const getPolarisServerConfigFromOptions = (
                 ? true
                 : options.shouldAddWarningsToExtensions,
         allowMandatoryHeaders: options.allowMandatoryHeaders || false,
+        snapshotConfig: options.snapshotConfig || getDefaultSnapshotConfiguration(),
     };
 };
