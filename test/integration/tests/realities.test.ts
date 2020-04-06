@@ -8,16 +8,16 @@ import * as mutation from './jsonRequestsAndHeaders/mutation.json';
 
 let polarisServer: PolarisServer;
 
-beforeEach(async () => {
-    polarisServer = await startTestServer();
-    await initializeDatabase();
-});
-
-afterEach(() => {
-    return stopTestServer(polarisServer);
-});
-
 describe('reality is specified in the headers', () => {
+    beforeEach(async () => {
+        polarisServer = await startTestServer();
+        await initializeDatabase();
+    });
+
+    afterEach(() => {
+        return stopTestServer(polarisServer);
+    });
+
     it('should set reality of the entity from the header', async () => {
         const result = await graphQLRequest(
             mutation.request,
