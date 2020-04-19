@@ -279,6 +279,7 @@ export class PolarisServer {
                 deleteOutdatedSnapshotPages(
                     this.getSupportedRealities(),
                     this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+                    this.polarisLogger,
                 ),
             this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval * 1000,
         );
