@@ -1,6 +1,6 @@
 import { RealitiesHolder, Reality } from '@enigmatis/polaris-common';
-import { getConnectionForReality, SnapshotPage } from '@enigmatis/polaris-typeorm';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
+import { getConnectionForReality, SnapshotPage } from '@enigmatis/polaris-typeorm';
 
 export const deleteOutdatedSnapshotPages = (
     realitiesHolder: RealitiesHolder,

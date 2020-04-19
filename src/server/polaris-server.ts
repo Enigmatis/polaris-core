@@ -44,6 +44,7 @@ export class PolarisServer {
     public readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
+    private snapshotCleanerInterval?: NodeJS.Timeout;
 
     public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
@@ -96,6 +97,7 @@ export class PolarisServer {
     }
 
     public async stop(): Promise<void> {
+        this.clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }
@@ -274,7 +276,7 @@ export class PolarisServer {
     };
 
     private setSnapshotCleanerInterval(): void {
-        setInterval(
+        this.snapshotCleanerInterval = setInterval(
             () =>
                 deleteOutdatedSnapshotPages(
                     this.getSupportedRealities(),
@@ -283,5 +285,11 @@ export class PolarisServer {
                 ),
             this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval * 1000,
         );
+    }
+
+    private clearSnapshotCleanerInterval(): void {
+        if (this.snapshotCleanerInterval) {
+            clearInterval(this.snapshotCleanerInterval);
+        }
     }
 }
