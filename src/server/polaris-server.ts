@@ -33,7 +33,10 @@ import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
-import { deleteOutdatedSnapshotPages } from '../snapshot/snapshot-cleaner';
+import {
+    setSnapshotCleanerInterval,
+    clearSnapshotCleanerInterval,
+} from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
@@ -44,7 +47,6 @@ export class PolarisServer {
     public readonly apolloServer: ApolloServer;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
-    private snapshotCleanerInterval?: NodeJS.Timeout;
 
     public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
@@ -92,12 +94,17 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
-        this.setSnapshotCleanerInterval();
+        setSnapshotCleanerInterval(
+            this.getSupportedRealities(),
+            this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
+            this.polarisLogger,
+        );
         this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
-        this.clearSnapshotCleanerInterval();
+        clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }
@@ -163,7 +170,7 @@ export class PolarisServer {
         return applyMiddleware(schema, ...middlewares);
     }
 
-    private getSupportedRealities() {
+    private getSupportedRealities(): RealitiesHolder {
         if (!this.polarisServerConfig.supportedRealities) {
             this.polarisServerConfig.supportedRealities = new RealitiesHolder();
         }
@@ -274,22 +281,4 @@ export class PolarisServer {
             return baseContext;
         }
     };
-
-    private setSnapshotCleanerInterval(): void {
-        this.snapshotCleanerInterval = setInterval(
-            () =>
-                deleteOutdatedSnapshotPages(
-                    this.getSupportedRealities(),
-                    this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
-                    this.polarisLogger,
-                ),
-            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval * 1000,
-        );
-    }
-
-    private clearSnapshotCleanerInterval(): void {
-        if (this.snapshotCleanerInterval) {
-            clearInterval(this.snapshotCleanerInterval);
-        }
-    }
 }
