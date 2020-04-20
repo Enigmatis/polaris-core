@@ -34,8 +34,8 @@ import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import {
-    setSnapshotCleanerInterval,
     clearSnapshotCleanerInterval,
+    setSnapshotCleanerInterval,
 } from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
