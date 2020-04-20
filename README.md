@@ -1,6 +1,6 @@
 <p align="center">
     <img height="190" src="https://github.com/Enigmatis/polaris-nest-logger/raw/master/polarisen.png" alt="polaris logo" /><br><br>
-    Create a graphql service easily, integrated with typeorm, middleware, standard logs, and more!<br><br>
+    Create a graphql service easily, integrated with typeorm, middlewares, standard logs, and more!<br><br>
     <img alt="npm (scoped)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core">
     <img alt="npm (scoped with tag)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core/beta">
     <img alt="Travis (.org) branch" src="https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master">
