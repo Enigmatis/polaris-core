@@ -1,4 +1,11 @@
-![Polaris-logo](static/img/polariscoolsm.png)
+<p align="center">
+    <img height="190" src="https://github.com/Enigmatis/polaris-nest-logger/raw/master/polarisen.png" alt="polaris logo" /><br><br>
+    Use <a href="https://github.com/Enigmatis/polaris-logs">polaris-logs</a> easily in nestjs apps!<br><br>
+    <img alt="npm (scoped)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core">
+    <img alt="npm (scoped with tag)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core/beta">
+    <img alt="Travis (.org) branch" src="https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master">
+    <a href="https://www.codacy.com/gh/Enigmatis/polaris-core?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Enigmatis/polaris-core&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/6a403edb43684b2382728837f58bbfbb"/></a>
+</p>
 
 # polaris-core
 
