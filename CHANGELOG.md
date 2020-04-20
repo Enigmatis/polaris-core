@@ -1,3 +1,10 @@
+# [2.0.0-beta.11](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2020-04-20)
+
+
+### Features
+
+* **snapshot:** added snapshot cleaner logic ([1bf7143](https://github.com/Enigmatis/polaris-core/commit/1bf714332a3d3209ffc0e97c5db0b7df94643783))
+
 # [2.0.0-beta.10](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2020-04-02)
 
 
