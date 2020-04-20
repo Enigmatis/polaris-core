@@ -33,6 +33,10 @@ import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
+import {
+    clearSnapshotCleanerInterval,
+    setSnapshotCleanerInterval,
+} from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
@@ -90,10 +94,17 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
+        setSnapshotCleanerInterval(
+            this.getSupportedRealities(),
+            this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
+            this.polarisLogger,
+        );
         this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
+        clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }
@@ -159,7 +170,7 @@ export class PolarisServer {
         return applyMiddleware(schema, ...middlewares);
     }
 
-    private getSupportedRealities() {
+    private getSupportedRealities(): RealitiesHolder {
         if (!this.polarisServerConfig.supportedRealities) {
             this.polarisServerConfig.supportedRealities = new RealitiesHolder();
         }
