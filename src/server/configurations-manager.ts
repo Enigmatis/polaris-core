@@ -1,3 +1,4 @@
+import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { MiddlewareConfiguration, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
@@ -18,6 +19,22 @@ export const getDefaultLoggerConfiguration = (): LoggerConfiguration => {
     };
 };
 
+export function getSupportedRealities(options: PolarisServerOptions): RealitiesHolder {
+    if (!options.supportedRealities) {
+        options.supportedRealities = new RealitiesHolder();
+    }
+
+    if (!options.supportedRealities.hasReality(0)) {
+        options.supportedRealities.addReality({
+            id: 0,
+            type: 'real',
+            name: 'default',
+        });
+    }
+
+    return options.supportedRealities;
+}
+
 export const getPolarisServerConfigFromOptions = (
     options: PolarisServerOptions,
 ): PolarisServerConfig => {
@@ -33,5 +50,6 @@ export const getPolarisServerConfigFromOptions = (
                 ? true
                 : options.shouldAddWarningsToExtensions,
         allowMandatoryHeaders: options.allowMandatoryHeaders || false,
+        supportedRealities: getSupportedRealities(options),
     };
 };
