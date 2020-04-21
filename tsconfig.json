@@ -10,9 +10,10 @@
         "resolveJsonModule": true,
         "emitDecoratorMetadata": true,
         "allowSyntheticDefaultImports": true,
-        "types": ["jest", "ip", "uuid"],
+        "types": ["jest", "uuid"],
         "declaration": true,
-        "lib": ["es6", "es2017", "esnext", "dom"]
+        "lib": ["es6", "es2017", "esnext", "dom"],
+        "skipLibCheck": true
     },
     "exclude": ["node_modules", "dist"]
 }

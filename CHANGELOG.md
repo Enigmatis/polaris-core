@@ -1,3 +1,169 @@
+# [2.0.0-beta.12](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2020-04-21)
+
+
+### Bug Fixes
+
+* dependency to middlewares ([9bdb009](https://github.com/Enigmatis/polaris-core/commit/9bdb009900a9819d73bf8eb29f7621f70beb5b59))
+* upgrade polaris typeorm ([bcfd6de](https://github.com/Enigmatis/polaris-core/commit/bcfd6de9283b07fdd0463ca79aa04d8f6f5055c0))
+* upgrade polaris typeorm ([aeecaaa](https://github.com/Enigmatis/polaris-core/commit/aeecaaa4338e35d7d1d4904d76ea9142f812931d))
+
+# [2.0.0-beta.11](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2020-04-20)
+
+
+### Features
+
+* **snapshot:** added snapshot cleaner logic ([1bf7143](https://github.com/Enigmatis/polaris-core/commit/1bf714332a3d3209ffc0e97c5db0b7df94643783))
+
+# [2.0.0-beta.10](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2020-04-02)
+
+
+### Bug Fixes
+
+* added snapshot configuration ([e3294bd](https://github.com/Enigmatis/polaris-core/commit/e3294bd4dbf40a5914ab44586de6b3cb300e47e9))
+* count per page can not be bigger than configured max page size ([98a8bdf](https://github.com/Enigmatis/polaris-core/commit/98a8bdf4a247d1438ae5355076c056bb960f6f51))
+* fixed plugins that were sent in a snap request ([2aa5b82](https://github.com/Enigmatis/polaris-core/commit/2aa5b82242ce242042d89bae8e25a7b8e8cb22d9))
+* fixed stuff ([6bac41b](https://github.com/Enigmatis/polaris-core/commit/6bac41b5815ef82a4f5bfe2c82d1e040b2551018))
+* kinda working ([cb99e90](https://github.com/Enigmatis/polaris-core/commit/cb99e900a7df750d284b39889774c41b82ccb3f2))
+* pagination ([7fdfc3d](https://github.com/Enigmatis/polaris-core/commit/7fdfc3d0a0853a09265c728d9a83a46c649f3544))
+* pagination plugin ([b3ea012](https://github.com/Enigmatis/polaris-core/commit/b3ea012ab6c786b24ce8744cf89e4ee0c02d602e))
+* pagination works kinda! ([0eda19b](https://github.com/Enigmatis/polaris-core/commit/0eda19bfe6720d6fb41866f3bd7b0fc71abacc81))
+* plugins ([6717735](https://github.com/Enigmatis/polaris-core/commit/67177350b3160568ec45856859f10939f3661c2b))
+* started doing stuff ([2618252](https://github.com/Enigmatis/polaris-core/commit/2618252c08c66470191dfbff50911df4ee473ef3))
+
+# [2.0.0-beta.9](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2020-03-22)
+
+
+### Features
+
+* exported express app for custom endpoints ([1a08f7a](https://github.com/Enigmatis/polaris-core/commit/1a08f7a73ad472ec9768f3a7faf60d4d682c1f8b))
+
+# [2.0.0-beta.8](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2020-03-22)
+
+
+### Bug Fixes
+
+* **directives:** polaris server now creates a schema with directives ([8798dba](https://github.com/Enigmatis/polaris-core/commit/8798dbabe1fbdd87d0a91b67475a219b19d81931))
+
+
+### Features
+
+* added whoami endpoint ([34641e8](https://github.com/Enigmatis/polaris-core/commit/34641e87da07f853010c67eaa38acd299557caf6))
+
+# [2.0.0-beta.7](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2020-03-19)
+
+
+### Bug Fixes
+
+* **ci:** apply changes after merge of mandatory-headers branch ([f9f831b](https://github.com/Enigmatis/polaris-core/commit/f9f831b5f6aa3593970a58a6b5269d4e6666ee1e))
+* **ci:** restored dotenv in package-lock.json ([7b8091b](https://github.com/Enigmatis/polaris-core/commit/7b8091b57f70f5731b239fce24e53d361412ee46))
+* **cr:** resolved comments from cr ([a84f4f2](https://github.com/Enigmatis/polaris-core/commit/a84f4f2ad05973df72af3c92d5319b0c00bc60d4))
+* **cr:** resolved comments from cr ([0fe92be](https://github.com/Enigmatis/polaris-core/commit/0fe92beecffa7967a1beafae15bbe0a9c55a196b))
+* **custom-context:** replace deep merge with lodash.merge and add tests ([baf41d5](https://github.com/Enigmatis/polaris-core/commit/baf41d568327c04d5716fd396ca610c6c280bf16))
+* **prettier:** prettier on my json files ey boss ([1776e41](https://github.com/Enigmatis/polaris-core/commit/1776e41444d66699d7ef497d57e0c219a793467b))
+
+# [2.0.0-beta.6](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2020-03-19)
+
+
+### Features
+
+* **headers:** added mandatory headers feature ([6d020c1](https://github.com/Enigmatis/polaris-core/commit/6d020c1db8fffd143ad935b92c5a6c9739040011))
+
+# [2.0.0-beta.5](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2020-03-19)
+
+
+### Features
+
+* **warnings:** add warnings to extensions. ([4ce390a](https://github.com/Enigmatis/polaris-core/commit/4ce390a2187427a045f84bcd59dde373f1ad63d2))
+* **warnings:** add warnings to extensions. ([e3d52c8](https://github.com/Enigmatis/polaris-core/commit/e3d52c8722bd37600c9be3bf22f9437d65cf2745))
+
+# [2.0.0-beta.4](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2020-03-17)
+
+
+### Bug Fixes
+
+* **subscription:** subscription context fix ([3f0edf6](https://github.com/Enigmatis/polaris-core/commit/3f0edf65b238ae3eb87ca113c5225f2310f1ee02))
+
+# [2.0.0-beta.3](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2020-03-09)
+
+
+### Bug Fixes
+
+* **package:** update dependencies ([aabed46](https://github.com/Enigmatis/polaris-core/commit/aabed463e8e3378649a0998e87d2c670ac511bf1))
+* **package:** update dependencies ([13219cc](https://github.com/Enigmatis/polaris-core/commit/13219cc612978d49cd17f3952f270b73550b3aae))
+* updated dependencies ([587a4c4](https://github.com/Enigmatis/polaris-core/commit/587a4c40c0cf0522b7f1f0afcac238a304c3a2d6))
+
+# [2.0.0-beta.2](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2020-03-08)
+
+
+### Bug Fixes
+
+* disabled playground when environment is set to prod ([a6da83f](https://github.com/Enigmatis/polaris-core/commit/a6da83fb9d1535b87f50a93ff523eb93a7e3229a))
+
+# [2.0.0-beta.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.1...v2.0.0-beta.1) (2020-03-04)
+
+
+### Bug Fixes
+
+* space ([4d9a911](https://github.com/Enigmatis/polaris-core/commit/4d9a9114f2f39c0d484ef01b5f39843be0448cb7))
+* space ([94553b1](https://github.com/Enigmatis/polaris-core/commit/94553b11c081ced7ad299f7390ae474356dfc91a))
+* **extensions:** fixed extensions being overridden ([2335e0a](https://github.com/Enigmatis/polaris-core/commit/2335e0a46e43a999699cf374f0014ebf26b1ec94))
+* **extensions:** fixed extensions being overridden ([f836b07](https://github.com/Enigmatis/polaris-core/commit/f836b078e33f88ca1d4aa1028de7776f7d0e8cbe))
+* ip in context is now taken from the request ([f287d54](https://github.com/Enigmatis/polaris-core/commit/f287d541120001b12f429e46dc7af61bfa528c9c))
+
+
+### Features
+
+* new types ([f8ad431](https://github.com/Enigmatis/polaris-core/commit/f8ad431315840305ac1172fa59fbb42046bba57b))
+* new types ([7c50343](https://github.com/Enigmatis/polaris-core/commit/7c503431a23f7e9c23c38c4a53cc4fb7bd102cbb))
+* new types ([c73f624](https://github.com/Enigmatis/polaris-core/commit/c73f624fb563d554f5c770e00361da99b0c53b5d))
+* new types ([f1ef79e](https://github.com/Enigmatis/polaris-core/commit/f1ef79e01dcfa8b23df14e692b6adfe724a7b6af))
+* new types ([dde9000](https://github.com/Enigmatis/polaris-core/commit/dde9000ffcfba24a1e235b567f4b78ac44b4cef3))
+* new types ([342a37d](https://github.com/Enigmatis/polaris-core/commit/342a37d7f36db1f63e80678bfa5f260411584650))
+* refactored the way custom context was handled ([db272a4](https://github.com/Enigmatis/polaris-core/commit/db272a41c9333268134990472c0e933ab8016bde))
+
+
+* refactor: ([726f4f8](https://github.com/Enigmatis/polaris-core/commit/726f4f8d78d31c2b21855f7e5ddd5f91c732b725))
+
+
+### BREAKING CHANGES
+
+* polaris types
+
+# [2.0.0-development.2](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-development.1...v2.0.0-development.2) (2020-03-04)
+
+
+### Features
+
+* new types ([7c50343](https://github.com/Enigmatis/polaris-core/commit/7c503431a23f7e9c23c38c4a53cc4fb7bd102cbb))
+
+# [2.0.0-development.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.1...v2.0.0-development.1) (2020-03-03)
+
+
+### Bug Fixes
+
+* space ([4d9a911](https://github.com/Enigmatis/polaris-core/commit/4d9a9114f2f39c0d484ef01b5f39843be0448cb7))
+* space ([94553b1](https://github.com/Enigmatis/polaris-core/commit/94553b11c081ced7ad299f7390ae474356dfc91a))
+* **extensions:** fixed extensions being overridden ([2335e0a](https://github.com/Enigmatis/polaris-core/commit/2335e0a46e43a999699cf374f0014ebf26b1ec94))
+* **extensions:** fixed extensions being overridden ([f836b07](https://github.com/Enigmatis/polaris-core/commit/f836b078e33f88ca1d4aa1028de7776f7d0e8cbe))
+* ip in context is now taken from the request ([f287d54](https://github.com/Enigmatis/polaris-core/commit/f287d541120001b12f429e46dc7af61bfa528c9c))
+
+
+### Features
+
+* new types ([c73f624](https://github.com/Enigmatis/polaris-core/commit/c73f624fb563d554f5c770e00361da99b0c53b5d))
+* new types ([f1ef79e](https://github.com/Enigmatis/polaris-core/commit/f1ef79e01dcfa8b23df14e692b6adfe724a7b6af))
+* new types ([dde9000](https://github.com/Enigmatis/polaris-core/commit/dde9000ffcfba24a1e235b567f4b78ac44b4cef3))
+* new types ([342a37d](https://github.com/Enigmatis/polaris-core/commit/342a37d7f36db1f63e80678bfa5f260411584650))
+* refactored the way custom context was handled ([db272a4](https://github.com/Enigmatis/polaris-core/commit/db272a41c9333268134990472c0e933ab8016bde))
+
+
+* refactor: ([726f4f8](https://github.com/Enigmatis/polaris-core/commit/726f4f8d78d31c2b21855f7e5ddd5f91c732b725))
+
+
+### BREAKING CHANGES
+
+* polaris types
+
 ## [1.4.1](https://github.com/Enigmatis/polaris-core/compare/v1.4.0...v1.4.1) (2020-02-11)
 
 

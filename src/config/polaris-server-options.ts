@@ -1,11 +1,12 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { ApplicationProperties, LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { Connection } from '@enigmatis/polaris-typeorm';
+import { PolarisConnection } from '@enigmatis/polaris-typeorm';
 import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
-import { MiddlewareConfiguration } from '../index';
+import { ExpressContext, MiddlewareConfiguration } from '..';
+import { SnapshotConfiguration } from './snapshot-configuration';
 
 export interface PolarisServerOptions extends ApolloServerExpressConfig {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
@@ -16,7 +17,10 @@ export interface PolarisServerOptions extends ApolloServerExpressConfig {
     middlewareConfiguration?: MiddlewareConfiguration;
     allowSubscription?: boolean;
     customMiddlewares?: any[];
-    customContext?: (context: any) => any;
-    connection?: Connection;
+    customContext?: (context: ExpressContext) => any;
+    connection?: PolarisConnection;
     supportedRealities?: RealitiesHolder;
+    shouldAddWarningsToExtensions?: boolean;
+    allowMandatoryHeaders?: boolean;
+    snapshotConfig?: SnapshotConfiguration;
 }
