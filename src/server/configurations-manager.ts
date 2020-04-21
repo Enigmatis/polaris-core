@@ -1,5 +1,5 @@
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration, PolarisServerOptions } from '..';
+import { MiddlewareConfiguration, PolarisServerOptions, SnapshotConfiguration } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
@@ -7,6 +7,7 @@ export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => 
         allowDataVersionAndIrrelevantEntitiesMiddleware: true,
         allowRealityMiddleware: true,
         allowSoftDeleteMiddleware: true,
+        allowTransactionalMutations: true,
     };
 };
 
@@ -15,6 +16,16 @@ export const getDefaultLoggerConfiguration = (): LoggerConfiguration => {
         loggerLevel: 'info',
         writeToConsole: true,
         writeFullMessageToConsole: false,
+    };
+};
+
+export const getDefaultSnapshotConfiguration = (): SnapshotConfiguration => {
+    return {
+        snapshotCleaningInterval: 60,
+        secondsToBeOutdated: 60,
+        maxPageSize: 50,
+        entitiesAmountPerFetch: 50,
+        autoSnapshot: true,
     };
 };
 
@@ -33,5 +44,6 @@ export const getPolarisServerConfigFromOptions = (
                 ? true
                 : options.shouldAddWarningsToExtensions,
         allowMandatoryHeaders: options.allowMandatoryHeaders || false,
+        snapshotConfig: options.snapshotConfig || getDefaultSnapshotConfiguration(),
     };
 };
