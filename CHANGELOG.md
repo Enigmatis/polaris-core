@@ -1,3 +1,12 @@
+# [2.0.0-beta.12](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2020-04-21)
+
+
+### Bug Fixes
+
+* dependency to middlewares ([9bdb009](https://github.com/Enigmatis/polaris-core/commit/9bdb009900a9819d73bf8eb29f7621f70beb5b59))
+* upgrade polaris typeorm ([bcfd6de](https://github.com/Enigmatis/polaris-core/commit/bcfd6de9283b07fdd0463ca79aa04d8f6f5055c0))
+* upgrade polaris typeorm ([aeecaaa](https://github.com/Enigmatis/polaris-core/commit/aeecaaa4338e35d7d1d4904d76ea9142f812931d))
+
 # [2.0.0-beta.11](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2020-04-20)
 
 
