@@ -17,7 +17,7 @@ export const connectionOptions: ConnectionOptions = {
     synchronize: true,
     logging: true,
     dropSchema: true,
-    schema: 'osher',
+    schema: process.env.SCHEMA_NAME,
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {

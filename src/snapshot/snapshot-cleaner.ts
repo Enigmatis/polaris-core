@@ -1,6 +1,10 @@
 import { RealitiesHolder, Reality } from '@enigmatis/polaris-common';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
-import { getConnectionForReality, getPolarisConnectionManager, SnapshotPage } from '@enigmatis/polaris-typeorm';
+import {
+    getConnectionForReality,
+    getPolarisConnectionManager,
+    SnapshotPage,
+} from '@enigmatis/polaris-typeorm';
 
 let snapshotCleanerInterval: NodeJS.Timeout;
 
