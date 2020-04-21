@@ -17,7 +17,7 @@ describe('transactional mutations enabled integration tests', () => {
         await stopTestServer(polarisServer);
     });
 
-    it('execute multiple mutations in one request and one of the mutations is broken, the data version wasn\'t changed', async () => {
+    it("execute multiple mutations in one request and one of the mutations is broken, the data version wasn't changed", async () => {
         let dataVersionBeforeUpdate;
         try {
             dataVersionBeforeUpdate = (
@@ -36,7 +36,7 @@ describe('transactional mutations enabled integration tests', () => {
         }
     });
 
-    it('execute multiple mutations in one request and one of the mutations is broken, the data in db wasn\'t changed', async () => {
+    it("execute multiple mutations in one request and one of the mutations is broken, the data in db wasn't changed", async () => {
         try {
             await graphQLRequest(
                 multipleMutationsWithBrokenOne.request,

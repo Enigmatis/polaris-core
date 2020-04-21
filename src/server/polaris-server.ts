@@ -16,7 +16,11 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin, TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import { getConnectionForReality, SnapshotPage } from '@enigmatis/polaris-typeorm';
+import {
+    getConnectionForReality,
+    getPolarisConnectionManager,
+    SnapshotPage,
+} from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import * as express from 'express';
@@ -73,6 +77,7 @@ export class PolarisServer {
             const snapshotRepository = getConnectionForReality(
                 realityId,
                 this.getSupportedRealities(),
+                getPolarisConnectionManager(),
             ).getRepository(SnapshotPage);
             const result = await snapshotRepository.findOne({} as any, id);
             res.send(result?.getData());
@@ -126,6 +131,7 @@ export class PolarisServer {
                 new TransactionalMutationsPlugin(
                     polarisGraphQLLogger,
                     this.getSupportedRealities(),
+                    getPolarisConnectionManager() as any,
                 ),
             );
         }
@@ -191,7 +197,7 @@ export class PolarisServer {
         const middlewaresMap = getMiddlewaresMap(
             this.polarisLogger as PolarisGraphQLLogger,
             this.getSupportedRealities(),
-            this.polarisServerConfig.connection,
+            getPolarisConnectionManager() as any,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
