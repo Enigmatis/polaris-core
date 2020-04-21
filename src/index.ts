@@ -22,4 +22,4 @@ export {
     IResolverValidationOptions,
     IFieldResolver,
 } from 'graphql-tools';
-export * from './plugins/snapshot/paginated-resolver';
+export * from './snapshot/paginated-resolver';

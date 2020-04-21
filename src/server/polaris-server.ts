@@ -14,7 +14,7 @@ import {
 } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { PolarisLoggerPlugin, TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares';
+import { PolarisLoggerPlugin } from '@enigmatis/polaris-middlewares';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import {
     getConnectionForReality,
@@ -37,6 +37,10 @@ import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
+import {
+    clearSnapshotCleanerInterval,
+    setSnapshotCleanerInterval,
+} from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 import { ExpressContext } from './express-context';
 
@@ -77,7 +81,7 @@ export class PolarisServer {
             const snapshotRepository = getConnectionForReality(
                 realityId,
                 this.getSupportedRealities(),
-                getPolarisConnectionManager(),
+                getPolarisConnectionManager() as any,
             ).getRepository(SnapshotPage);
             const result = await snapshotRepository.findOne({} as any, id);
             res.send(result?.getData());
@@ -95,10 +99,17 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
+        setSnapshotCleanerInterval(
+            this.getSupportedRealities(),
+            this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
+            this.polarisLogger,
+        );
         this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
+        clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }
@@ -125,17 +136,6 @@ export class PolarisServer {
                 this.getSchemaWithMiddlewares(),
             ),
         ];
-
-        if (this.polarisServerConfig.middlewareConfiguration.allowTransactionalMutations) {
-            plugins.push(
-                new TransactionalMutationsPlugin(
-                    polarisGraphQLLogger,
-                    this.getSupportedRealities(),
-                    getPolarisConnectionManager() as any,
-                ),
-            );
-        }
-
         if (this.polarisServerConfig.plugins) {
             plugins.push(...(this.polarisServerConfig.plugins as ApolloServerPlugin[]));
         }
@@ -175,7 +175,7 @@ export class PolarisServer {
         return applyMiddleware(schema, ...middlewares);
     }
 
-    private getSupportedRealities() {
+    private getSupportedRealities(): RealitiesHolder {
         if (!this.polarisServerConfig.supportedRealities) {
             this.polarisServerConfig.supportedRealities = new RealitiesHolder();
         }
@@ -197,7 +197,7 @@ export class PolarisServer {
         const middlewaresMap = getMiddlewaresMap(
             this.polarisLogger as PolarisGraphQLLogger,
             this.getSupportedRealities(),
-            getPolarisConnectionManager() as any,
+            this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {

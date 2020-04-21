@@ -64,7 +64,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             const snapshotRepository = getConnectionForReality(
                 requestHeaders.realityId!,
                 this.realitiesHolder,
-                getPolarisConnectionManager(),
+                getPolarisConnectionManager() as any,
             ).getRepository(SnapshotPage);
             const pagesIds: string[] = [];
 
