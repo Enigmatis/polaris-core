@@ -14,9 +14,7 @@ export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
     url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
-    synchronize: true,
     logging: true,
-    dropSchema: true,
     schema: process.env.SCHEMA_NAME,
 };
 

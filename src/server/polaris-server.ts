@@ -197,7 +197,6 @@ export class PolarisServer {
         const middlewaresMap = getMiddlewaresMap(
             this.polarisLogger as PolarisGraphQLLogger,
             this.getSupportedRealities(),
-            this.polarisServerConfig.connection,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
