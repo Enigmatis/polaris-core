@@ -55,6 +55,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         if (!context.requestHeaders.snapRequest && !this.snapshotConfiguration.autoSnapshot) {
             return;
         }
+
         return (async (): Promise<void> => {
             const { requestHeaders } = context;
             const snapshotRepository = getConnectionForReality(
@@ -76,21 +77,22 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 });
 
                 if (!context.snapshotContext) {
-                    const totalCount = JSON.parse(currentPageResult.graphqlResponse).extensions.totalCount;
-                    if(totalCount !== undefined) {
+                    const totalCount = JSON.parse(currentPageResult.graphqlResponse).extensions
+                        .totalCount;
+                    if (totalCount !== undefined) {
                         context.snapshotContext = {
                             totalCount,
                             startIndex: 0,
                             countPerPage: requestHeaders.snapPageSize
                                 ? Math.min(
-                                    this.snapshotConfiguration.maxPageSize,
-                                    requestHeaders.snapPageSize,
-                                )
+                                      this.snapshotConfiguration.maxPageSize,
+                                      requestHeaders.snapPageSize,
+                                  )
                                 : this.snapshotConfiguration.maxPageSize,
                         };
-                    }
-                    else{
-                        return ;
+                        context.returnedExtensions.globalDataVersion = JSON.parse(currentPageResult.graphqlResponse).extensions.globalDataVersion;
+                    } else {
+                        return;
                     }
                 }
 
@@ -118,7 +120,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
 
         if (context.snapshotContext) {
             return {
-                data: null,
+                data: {},
             };
         }
 
