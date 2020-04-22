@@ -1,0 +1,14 @@
+{
+  "request": "mutation($firstName:String!, $lastName:String!){\n  createAuthor(firstName:$firstName,lastName:$lastName){\n    id\n    firstName\n    lastName\n  }\n}",
+  "requestTwo": "mutation($fName:String!, $lName:String!){\n  createAuthor(firstName:$fName,lastName:$lName){\n    id\n    firstName\n    lastName\n  }\n}",
+  "requestThree": "mutation($first:String!, $last:String!){\n  createAuthor(firstName:$first,lastName:$last){\n    id\n    firstName\n    lastName\n  }\n}",
+  "variables": {
+    "firstName": "or",
+    "lastName": "cohen",
+    "fName": "bar",
+    "lName": "shamir",
+    "first": "ben",
+    "last": "ten"
+  },
+  "headers": { "reality-id": 0 }
+}
