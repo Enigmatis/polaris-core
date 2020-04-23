@@ -1,11 +1,14 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { SnapshotConfiguration } from '..';
 
 export class SnapshotMiddleware {
     public readonly logger: PolarisGraphQLLogger;
+    public readonly snapshotConfiguration: SnapshotConfiguration;
 
-    constructor(logger: PolarisGraphQLLogger) {
+    constructor(logger: PolarisGraphQLLogger, snapshotConfiguration: SnapshotConfiguration) {
         this.logger = logger;
+        this.snapshotConfiguration = snapshotConfiguration;
     }
 
     public getMiddleware() {
@@ -24,12 +27,28 @@ export class SnapshotMiddleware {
                 return result;
             }
 
-            if (context.requestHeaders.snapRequest) {
+            if (context.requestHeaders.snapRequest || this.snapshotConfiguration.autoSnapshot) {
                 if (context.snapshotContext == null) {
-                    const count = await result.totalCount();
+                    const totalCount = await result.totalCount();
+
+                    countPerPage = context.requestHeaders.snapPageSize
+                        ? Math.min(
+                              this.snapshotConfiguration.maxPageSize,
+                              context.requestHeaders.snapPageSize,
+                          )
+                        : this.snapshotConfiguration.maxPageSize;
+
+                    if (this.snapshotConfiguration.autoSnapshot) {
+                        if (totalCount > countPerPage) {
+                            context.returnedExtensions.totalCount = totalCount;
+                        } else {
+                            countPerPage = totalCount;
+                        }
+                    } else if (context.requestHeaders.snapRequest) {
+                        context.returnedExtensions.totalCount = totalCount;
+                    }
+
                     startIndex = 0;
-                    countPerPage = context.requestHeaders.snapPageSize!;
-                    context.returnedExtensions.totalCount = count;
                 } else {
                     startIndex = context.snapshotContext.startIndex!;
                     countPerPage = context.snapshotContext.countPerPage!;
