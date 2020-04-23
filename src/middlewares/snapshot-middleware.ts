@@ -38,13 +38,13 @@ export class SnapshotMiddleware {
                           )
                         : this.snapshotConfiguration.maxPageSize;
 
-                    if(this.snapshotConfiguration.autoSnapshot) {
+                    if (this.snapshotConfiguration.autoSnapshot) {
                         if (totalCount > countPerPage) {
                             context.returnedExtensions.totalCount = totalCount;
                         } else {
                             countPerPage = totalCount;
                         }
-                    } else if(context.requestHeaders.snapRequest){
+                    } else if (context.requestHeaders.snapRequest) {
                         context.returnedExtensions.totalCount = totalCount;
                     }
 

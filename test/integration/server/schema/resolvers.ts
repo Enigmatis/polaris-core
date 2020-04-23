@@ -1,10 +1,15 @@
-import {PolarisGraphQLContext} from '@enigmatis/polaris-common';
-import {PubSub} from 'apollo-server-express';
-import {DeleteResult, getPolarisConnectionManager, Like, PaginatedResolver} from '../../../../src/index';
-import {TestContext} from '../context/test-context';
-import {Author} from '../dal/entities/author';
-import {Book} from '../dal/entities/book';
-import {polarisGraphQLLogger} from '../utils/logger';
+import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
+import { PubSub } from 'apollo-server-express';
+import {
+    DeleteResult,
+    getPolarisConnectionManager,
+    Like,
+    PaginatedResolver,
+} from '../../../../src/index';
+import { TestContext } from '../context/test-context';
+import { Author } from '../dal/entities/author';
+import { Book } from '../dal/entities/book';
+import { polarisGraphQLLogger } from '../utils/logger';
 
 const pubsub = new PubSub();
 const BOOK_UPDATED = 'BOOK_UPDATED';
@@ -18,7 +23,7 @@ export const resolvers = {
         ): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books", context);
-            return connection.getRepository(Book).find(context, {relations: ['author']});
+            return connection.getRepository(Book).find(context, { relations: ['author'] });
         },
         allBooksPaginated: async (
             parent: any,
@@ -32,13 +37,13 @@ export const resolvers = {
                     return connection.getRepository(Book).find(context, {
                         relations: ['author'],
                         skip: startIndex,
-                        take: pageSize
-                    },)
+                        take: pageSize,
+                    });
                 },
                 totalCount(): Promise<number> {
                     return connection.getRepository(Book).count(context);
-                }
-            }
+                },
+            };
         },
         allBooksWithWarnings: async (
             parent: any,
@@ -47,12 +52,12 @@ export const resolvers = {
         ): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
             context.returnedExtensions.warnings = ['warning 1', 'warning 2'];
-            return connection.getRepository(Book).find(context, {relations: ['author']});
+            return connection.getRepository(Book).find(context, { relations: ['author'] });
         },
         bookByTitle: (parent: any, args: any, context: PolarisGraphQLContext): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
             return connection.getRepository(Book).find(context, {
-                where: {title: Like(`%${args.title}%`)},
+                where: { title: Like(`%${args.title}%`) },
                 relations: ['author'],
             });
         },
@@ -64,7 +69,7 @@ export const resolvers = {
             const connection = getPolarisConnectionManager().get();
             return connection
                 .getRepository(Author)
-                .find(context, {where: {firstName: Like(`%${args.name}%`)}});
+                .find(context, { where: { firstName: Like(`%${args.name}%`) } });
         },
         authorById: async (
             parent: any,
@@ -74,7 +79,7 @@ export const resolvers = {
             const connection = getPolarisConnectionManager().get();
             return connection
                 .getRepository(Author)
-                .findOne(context, {where: {id: args.id}}, {});
+                .findOne(context, { where: { id: args.id } }, {});
         },
         authorsByFirstNameFromCustomHeader: async (
             parent: any,
@@ -83,7 +88,7 @@ export const resolvers = {
         ): Promise<Author[]> => {
             const connection = getPolarisConnectionManager().get();
             return connection.getRepository(Author).find(context, {
-                where: {firstName: Like(`%${context.requestHeaders.customHeader}%`)},
+                where: { firstName: Like(`%${context.requestHeaders.customHeader}%`) },
             });
         },
         customContextCustomField: (parent: any, args: any, context: TestContext): number =>
@@ -111,12 +116,12 @@ export const resolvers = {
             const connection = getPolarisConnectionManager().get();
             const bookRepo = connection.getRepository(Book);
             const result: Book[] = await bookRepo.find(context, {
-                where: {title: Like(`%${args.title}%`)},
+                where: { title: Like(`%${args.title}%`) },
             });
 
             result.forEach(book => (book.title = args.newTitle));
             await bookRepo.save(context, result);
-            result.forEach(book => pubsub.publish(BOOK_UPDATED, {bookUpdated: book}));
+            result.forEach(book => pubsub.publish(BOOK_UPDATED, { bookUpdated: book }));
             return result;
         },
         deleteBook: async (

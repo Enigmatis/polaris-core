@@ -90,7 +90,9 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                                   )
                                 : this.snapshotConfiguration.maxPageSize,
                         };
-                        context.returnedExtensions.globalDataVersion = JSON.parse(currentPageResult.graphqlResponse).extensions.globalDataVersion;
+                        context.returnedExtensions.globalDataVersion = JSON.parse(
+                            currentPageResult.graphqlResponse,
+                        ).extensions.globalDataVersion;
                     } else {
                         return;
                     }

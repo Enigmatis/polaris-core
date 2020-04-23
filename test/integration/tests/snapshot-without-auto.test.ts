@@ -1,9 +1,9 @@
-import {PolarisServer} from "../../../src";
-import {startTestServer, stopTestServer} from "../server/test-server";
-import {initializeDatabase} from "../server/dal/data-initalizer";
-import {graphqlRawRequest} from "../server/utils/graphql-client";
-import * as paginatedQuery from "./jsonRequestsAndHeaders/paginatedQuery.json";
-import {snapshotRequest} from "../server/utils/snapshot-client";
+import { PolarisServer } from '../../../src';
+import { initializeDatabase } from '../server/dal/data-initalizer';
+import { startTestServer, stopTestServer } from '../server/test-server';
+import { graphqlRawRequest } from '../server/utils/graphql-client';
+import { snapshotRequest } from '../server/utils/snapshot-client';
+import * as paginatedQuery from './jsonRequestsAndHeaders/paginatedQuery.json';
 
 let polarisServer: PolarisServer;
 beforeEach(async () => {
@@ -14,7 +14,7 @@ beforeEach(async () => {
             snapshotCleaningInterval: 60,
             secondsToBeOutdated: 60,
             entitiesAmountPerFetch: 50,
-        }
+        },
     });
     await initializeDatabase();
 });
@@ -34,13 +34,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(2);
             });
             it('snap size is 2 divides to 1 page', async () => {
-                const paginatedResult = await graphqlRawRequest(
-                    paginatedQuery.request,
-                    {
-                        ...paginatedQuery.headers,
-                        "snap-page-size": 3
-                    },
-                );
+                const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                    ...paginatedQuery.headers,
+                    'snap-page-size': 3,
+                });
 
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(1);
             });
@@ -54,10 +51,13 @@ describe('snapshot pagination tests with auto disabled', () => {
                 const pageIds = paginatedResult.extensions.snapResponse.pagesIds;
                 const firstPage = await snapshotRequest(pageIds[0]);
                 const secondPage = await snapshotRequest(pageIds[1]);
-                const returnedBookName = [firstPage.data.data.allBooksPaginated["0"].title, secondPage.data.data.allBooksPaginated["0"].title];
+                const returnedBookName = [
+                    firstPage.data.data.allBooksPaginated['0'].title,
+                    secondPage.data.data.allBooksPaginated['0'].title,
+                ];
 
-                expect(returnedBookName).toContain("Book1");
-                expect(returnedBookName).toContain("Book2");
+                expect(returnedBookName).toContain('Book1');
+                expect(returnedBookName).toContain('Book2');
             });
             it('should return extensions for page id', async () => {
                 const paginatedResult = await graphqlRawRequest(
