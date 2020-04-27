@@ -79,7 +79,6 @@
         "express": "^4.17.1",
         "graphql": "^14.6.0",
         "graphql-middleware": "^4.0.2",
-        "graphql-tools": "^4.0.7",
         "http-status": "^1.4.2",
         "lodash": "^4.17.15",
         "subscriptions-transport-ws": "^0.9.16",
