@@ -1,3 +1,13 @@
+# [2.0.0-beta.13](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2020-04-23)
+
+
+### Bug Fixes
+
+* finished fixing auto and implement tests ([44bf443](https://github.com/Enigmatis/polaris-core/commit/44bf443777566b0d923f2ceb549e3bd1551aa1de))
+* fixed tests ([2ea6ba2](https://github.com/Enigmatis/polaris-core/commit/2ea6ba2c765142194bdd8ca9ada08321ae6278b6))
+* offline pagination works with auto ([db3af54](https://github.com/Enigmatis/polaris-core/commit/db3af540813ae520fdbf8295398a1235070ed2c3))
+* review fixes ([7b324be](https://github.com/Enigmatis/polaris-core/commit/7b324be5ec39b4ee29a3dc3a4f1118d84da54c6a))
+
 # [2.0.0-beta.12](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2020-04-21)
 
 

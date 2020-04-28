@@ -1,6 +1,7 @@
 export const typeDefs = `
     type Query {
         allBooks: [Book]!
+        allBooksPaginated: [Book]!
         allBooksWithWarnings: [Book]!
         authorById(id: String!): Author
         bookByTitle(title: String!): [Book]!

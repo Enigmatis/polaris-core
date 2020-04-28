@@ -1,6 +1,11 @@
 import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PubSub } from 'apollo-server-express';
-import { DeleteResult, getPolarisConnectionManager, Like } from '../../../../src/index';
+import {
+    DeleteResult,
+    getPolarisConnectionManager,
+    Like,
+    PaginatedResolver,
+} from '../../../../src/index';
 import { TestContext } from '../context/test-context';
 import { Author } from '../dal/entities/author';
 import { Book } from '../dal/entities/book';
@@ -19,6 +24,26 @@ export const resolvers = {
             const connection = getPolarisConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books", context);
             return connection.getRepository(Book).find(context, { relations: ['author'] });
+        },
+        allBooksPaginated: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<PaginatedResolver<Book>> => {
+            const connection = getPolarisConnectionManager().get();
+            polarisGraphQLLogger.debug("I'm the resolver of all books", context);
+            return {
+                getData: (startIndex?: number, pageSize?: number): Promise<Book[]> => {
+                    return connection.getRepository(Book).find(context, {
+                        relations: ['author'],
+                        skip: startIndex,
+                        take: pageSize,
+                    });
+                },
+                totalCount(): Promise<number> {
+                    return connection.getRepository(Book).count(context);
+                },
+            };
         },
         allBooksWithWarnings: async (
             parent: any,
