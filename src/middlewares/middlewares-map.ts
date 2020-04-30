@@ -6,24 +6,24 @@ import {
     RealitiesMiddleware,
     SoftDeleteMiddleware,
 } from '@enigmatis/polaris-middlewares';
-import { PolarisConnection } from '@enigmatis/polaris-typeorm';
+import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 
 export const getMiddlewaresMap = (
     logger: PolarisGraphQLLogger,
     realitiesHolder: RealitiesHolder,
-    connection?: PolarisConnection,
 ): Map<string, any[]> => {
+    const connectionManager = getPolarisConnectionManager();
     const softDeleteMiddleware = new SoftDeleteMiddleware(logger).getMiddleware();
     const realitiesMiddleware = new RealitiesMiddleware(logger, realitiesHolder).getMiddleware();
     const dataVersionMiddleware = new DataVersionMiddleware(
         logger,
         realitiesHolder,
-        connection,
+        connectionManager,
     ).getMiddleware();
     const irrelevantEntitiesMiddleware = new IrrelevantEntitiesMiddleware(
         logger,
         realitiesHolder,
-        connection,
+        connectionManager,
     ).getMiddleware();
 
     return new Map([

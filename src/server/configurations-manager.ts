@@ -7,6 +7,7 @@ export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => 
         allowDataVersionAndIrrelevantEntitiesMiddleware: true,
         allowRealityMiddleware: true,
         allowSoftDeleteMiddleware: true,
+        allowTransactionalMutations: true,
     };
 };
 
