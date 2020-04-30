@@ -3,14 +3,14 @@ language: node_js
 node_js:
     - 12
 
-install:
-    - npm install -g codecov
+#install:
+#    - npm install -g codecov
 
 #script:
 #  - npm run coverage
 
-after_success:
-    - codecov
+#after_success:
+#    - codecov
 
 jobs:
     include:
