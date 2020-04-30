@@ -15,6 +15,8 @@ export const connectionOptions: ConnectionOptions = {
     url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
     logging: true,
+    synchronize: true,
+    dropSchema: true,
     schema: process.env.SCHEMA_NAME,
 };
 

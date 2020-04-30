@@ -1,3 +1,22 @@
+# [2.0.0-beta.14](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.13...v2.0.0-beta.14) (2020-04-30)
+
+
+### Bug Fixes
+
+* dependency to middlewares ([8c7dd02](https://github.com/Enigmatis/polaris-core/commit/8c7dd022a34c1ae36e0f743b056c6e1743bb2cea))
+* dependency to middlewares ([d8cda3c](https://github.com/Enigmatis/polaris-core/commit/d8cda3ced4b1f30636ce4a464c6ca867fe828fe8))
+* dependency to middlewares ([15ca126](https://github.com/Enigmatis/polaris-core/commit/15ca126e0e926f708ec0ba9f3f1e2ebf038797e8))
+* upgrade polaris typeorm ([de9e605](https://github.com/Enigmatis/polaris-core/commit/de9e605da5f7dcb157baf5c36ffb3e8768b850cd))
+* upgrade polaris typeorm ([6ae4d07](https://github.com/Enigmatis/polaris-core/commit/6ae4d0729ec69dcc0c09d78b04678d460f9c111f))
+
+
+### Features
+
+* **transactional mutations:** not finished yet at all. ([b297f8f](https://github.com/Enigmatis/polaris-core/commit/b297f8f2209cbe76e2f04f75aa541e90c096f037))
+* **transactional mutations:** not finished yet at all. ([7fa94cc](https://github.com/Enigmatis/polaris-core/commit/7fa94cc5a57bb9b4bb81fed23f0ff1210a9bda09))
+* **transactional mutations:** temp commit, finished tests but maybe will have another changes. ([f9ed73c](https://github.com/Enigmatis/polaris-core/commit/f9ed73c1620d6df6c652f17bc83e7d704c56fed2))
+* **transactionalMutations:** temp commit - not finished yet. ([7f0f006](https://github.com/Enigmatis/polaris-core/commit/7f0f006c1b9056106aeb51fc976768fdf411a7b0))
+
 # [2.0.0-beta.13](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2020-04-23)
 
 
