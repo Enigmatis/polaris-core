@@ -3,6 +3,12 @@ language: node_js
 node_js:
     - 12
 
+scripts:
+    - npm install codecov -g
+
+after_success:
+    - codecov
+
 jobs:
     include:
         # Define the release stage that runs semantic-release
