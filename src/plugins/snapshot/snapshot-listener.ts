@@ -56,9 +56,10 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
     ): Promise<void> | void {
         const { context } = requestContext;
 
-        if (!context.requestHeaders.snapRequest) {
+        if (!context.requestHeaders.snapRequest && !this.snapshotConfiguration.autoSnapshot) {
             return;
         }
+
         return (async (): Promise<void> => {
             const { requestHeaders } = context;
             const snapshotRepository = getConnectionForReality(
@@ -83,16 +84,23 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 if (!context.snapshotContext) {
                     const totalCount = JSON.parse(currentPageResult.graphqlResponse).extensions
                         .totalCount;
-                    context.snapshotContext = {
-                        totalCount,
-                        startIndex: 0,
-                        countPerPage: requestHeaders.snapPageSize
-                            ? Math.min(
-                                  this.snapshotConfiguration.maxPageSize,
-                                  requestHeaders.snapPageSize,
-                              )
-                            : this.snapshotConfiguration.maxPageSize,
-                    };
+                    if (totalCount !== undefined) {
+                        context.snapshotContext = {
+                            totalCount,
+                            startIndex: 0,
+                            countPerPage: requestHeaders.snapPageSize
+                                ? Math.min(
+                                      this.snapshotConfiguration.maxPageSize,
+                                      requestHeaders.snapPageSize,
+                                  )
+                                : this.snapshotConfiguration.maxPageSize,
+                        };
+                        context.returnedExtensions.globalDataVersion = JSON.parse(
+                            currentPageResult.graphqlResponse,
+                        ).extensions.globalDataVersion;
+                    } else {
+                        return;
+                    }
                 }
 
                 const snapshotPage = new SnapshotPage(currentPageResult.graphqlResponse);
@@ -117,9 +125,9 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
     ): Promise<GraphQLResponse | null> | GraphQLResponse | null {
         const { context } = requestContext;
 
-        if (context.requestHeaders.snapRequest) {
+        if (context.snapshotContext) {
             return {
-                data: null,
+                data: {},
             };
         }
 

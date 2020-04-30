@@ -17,6 +17,8 @@ export const connectionOptions: ConnectionOptions = {
     synchronize: true,
     dropSchema: true,
     logging: true,
+    synchronize: true,
+    dropSchema: true,
     schema: process.env.SCHEMA_NAME,
 };
 
@@ -64,6 +66,5 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
-        connection: getPolarisConnectionManager().get(),
     };
 };

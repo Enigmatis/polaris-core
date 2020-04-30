@@ -22,7 +22,6 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     allowSubscription: boolean;
     customMiddlewares?: any[];
     customContext?: (context: ExpressContext) => any;
-    connection?: PolarisConnection;
     supportedRealities?: RealitiesHolder;
     shouldAddWarningsToExtensions: boolean;
     allowMandatoryHeaders: boolean;
