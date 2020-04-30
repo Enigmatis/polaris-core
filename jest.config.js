@@ -5,4 +5,5 @@ module.exports = {
     testEnvironment: 'node',
     testMatch: ['**/*.test.ts'],
     testTimeout: 150000,
+    coverageDirectory: './coverage/',
 };
