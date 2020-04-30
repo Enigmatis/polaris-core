@@ -1,3 +1,10 @@
+# [2.0.0-beta.15](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.14...v2.0.0-beta.15) (2020-04-30)
+
+
+### Bug Fixes
+
+* reality id in response headers is now fixed ([62c1abc](https://github.com/Enigmatis/polaris-core/commit/62c1abca339f53810b331a16f8dc64170b0f141a))
+
 # [2.0.0-beta.14](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.13...v2.0.0-beta.14) (2020-04-30)
 
 
