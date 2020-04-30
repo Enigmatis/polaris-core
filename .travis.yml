@@ -1,5 +1,7 @@
 language: node_js
 
+os: linux
+
 node_js:
     - 12
 
@@ -7,7 +9,7 @@ before_script:
     - npm install -g codecov
 
 script:
-  - npm run coverage
+    - npm run coverage
 
 after_success:
     - codecov
