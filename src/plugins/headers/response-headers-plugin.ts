@@ -1,3 +1,4 @@
+import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import {
     ApolloServerPlugin,
@@ -6,16 +7,16 @@ import {
 } from 'apollo-server-plugin-base';
 import { ResponseHeadersListener } from './response-headers-listener';
 
-export class ResponseHeadersPlugin implements ApolloServerPlugin {
+export class ResponseHeadersPlugin implements ApolloServerPlugin<PolarisGraphQLContext> {
     public readonly logger: any;
 
     constructor(logger: PolarisGraphQLLogger) {
         this.logger = logger;
     }
 
-    public requestDidStart<TContext>(
-        requestContext: GraphQLRequestContext<TContext>,
-    ): GraphQLRequestListener<TContext> | void {
+    public requestDidStart(
+        requestContext: GraphQLRequestContext<PolarisGraphQLContext>,
+    ): GraphQLRequestListener<PolarisGraphQLContext> | void {
         return new ResponseHeadersListener(this.logger);
     }
 }

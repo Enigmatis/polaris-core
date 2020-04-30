@@ -32,10 +32,10 @@ import * as path from 'path';
 import { v4 as uuid } from 'uuid';
 import { formatError, PolarisServerOptions } from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
-import { ResponseHeadersPlugin } from '../headers/response-headers-plugin';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
+import { ResponseHeadersPlugin } from '../plugins/headers/response-headers-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import {
     clearSnapshotCleanerInterval,
