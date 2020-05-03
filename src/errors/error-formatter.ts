@@ -2,7 +2,7 @@ import { PolarisError } from '@enigmatis/polaris-common';
 import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-express';
 import * as status from 'http-status';
 
-export const formatError = (err: any) => {
+export const polarisFormatError = (err: any) => {
     const formattedError = err;
     if (err.originalError instanceof UserInputError) {
         formattedError.extensions.httpStatusCode = status.BAD_REQUEST;

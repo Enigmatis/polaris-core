@@ -35,7 +35,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         this.snapshotConfiguration = snapshotConfiguration;
         this.realitiesHolder = realitiesHolder;
 
-        const plugins = polarisServer.getPlugins();
+        const plugins: any = polarisServer.apolloServerConfiguration.plugins;
         remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
 
         this.httpQueryOptions = {
