@@ -1,3 +1,10 @@
+# [2.0.0-beta.16](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.15...v2.0.0-beta.16) (2020-05-03)
+
+
+### Bug Fixes
+
+* static functions ([1e9a7b1](https://github.com/Enigmatis/polaris-core/commit/1e9a7b1560acdd169664be0323e04dbd9ab16ba5))
+
 # [2.0.0-beta.15](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.14...v2.0.0-beta.15) (2020-04-30)
 
 
