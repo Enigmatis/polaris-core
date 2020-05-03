@@ -1,3 +1,71 @@
+# [2.0.0-beta.15](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.14...v2.0.0-beta.15) (2020-04-30)
+
+
+### Bug Fixes
+
+* reality id in response headers is now fixed ([62c1abc](https://github.com/Enigmatis/polaris-core/commit/62c1abca339f53810b331a16f8dc64170b0f141a))
+
+# [2.0.0-beta.14](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.13...v2.0.0-beta.14) (2020-04-30)
+
+
+### Bug Fixes
+
+* dependency to middlewares ([8c7dd02](https://github.com/Enigmatis/polaris-core/commit/8c7dd022a34c1ae36e0f743b056c6e1743bb2cea))
+* dependency to middlewares ([d8cda3c](https://github.com/Enigmatis/polaris-core/commit/d8cda3ced4b1f30636ce4a464c6ca867fe828fe8))
+* dependency to middlewares ([15ca126](https://github.com/Enigmatis/polaris-core/commit/15ca126e0e926f708ec0ba9f3f1e2ebf038797e8))
+* upgrade polaris typeorm ([de9e605](https://github.com/Enigmatis/polaris-core/commit/de9e605da5f7dcb157baf5c36ffb3e8768b850cd))
+* upgrade polaris typeorm ([6ae4d07](https://github.com/Enigmatis/polaris-core/commit/6ae4d0729ec69dcc0c09d78b04678d460f9c111f))
+
+
+### Features
+
+* **transactional mutations:** not finished yet at all. ([b297f8f](https://github.com/Enigmatis/polaris-core/commit/b297f8f2209cbe76e2f04f75aa541e90c096f037))
+* **transactional mutations:** not finished yet at all. ([7fa94cc](https://github.com/Enigmatis/polaris-core/commit/7fa94cc5a57bb9b4bb81fed23f0ff1210a9bda09))
+* **transactional mutations:** temp commit, finished tests but maybe will have another changes. ([f9ed73c](https://github.com/Enigmatis/polaris-core/commit/f9ed73c1620d6df6c652f17bc83e7d704c56fed2))
+* **transactionalMutations:** temp commit - not finished yet. ([7f0f006](https://github.com/Enigmatis/polaris-core/commit/7f0f006c1b9056106aeb51fc976768fdf411a7b0))
+
+# [2.0.0-beta.13](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2020-04-23)
+
+
+### Bug Fixes
+
+* finished fixing auto and implement tests ([44bf443](https://github.com/Enigmatis/polaris-core/commit/44bf443777566b0d923f2ceb549e3bd1551aa1de))
+* fixed tests ([2ea6ba2](https://github.com/Enigmatis/polaris-core/commit/2ea6ba2c765142194bdd8ca9ada08321ae6278b6))
+* offline pagination works with auto ([db3af54](https://github.com/Enigmatis/polaris-core/commit/db3af540813ae520fdbf8295398a1235070ed2c3))
+* review fixes ([7b324be](https://github.com/Enigmatis/polaris-core/commit/7b324be5ec39b4ee29a3dc3a4f1118d84da54c6a))
+
+# [2.0.0-beta.12](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2020-04-21)
+
+
+### Bug Fixes
+
+* dependency to middlewares ([9bdb009](https://github.com/Enigmatis/polaris-core/commit/9bdb009900a9819d73bf8eb29f7621f70beb5b59))
+* upgrade polaris typeorm ([bcfd6de](https://github.com/Enigmatis/polaris-core/commit/bcfd6de9283b07fdd0463ca79aa04d8f6f5055c0))
+* upgrade polaris typeorm ([aeecaaa](https://github.com/Enigmatis/polaris-core/commit/aeecaaa4338e35d7d1d4904d76ea9142f812931d))
+
+# [2.0.0-beta.11](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.10...v2.0.0-beta.11) (2020-04-20)
+
+
+### Features
+
+* **snapshot:** added snapshot cleaner logic ([1bf7143](https://github.com/Enigmatis/polaris-core/commit/1bf714332a3d3209ffc0e97c5db0b7df94643783))
+
+# [2.0.0-beta.10](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.9...v2.0.0-beta.10) (2020-04-02)
+
+
+### Bug Fixes
+
+* added snapshot configuration ([e3294bd](https://github.com/Enigmatis/polaris-core/commit/e3294bd4dbf40a5914ab44586de6b3cb300e47e9))
+* count per page can not be bigger than configured max page size ([98a8bdf](https://github.com/Enigmatis/polaris-core/commit/98a8bdf4a247d1438ae5355076c056bb960f6f51))
+* fixed plugins that were sent in a snap request ([2aa5b82](https://github.com/Enigmatis/polaris-core/commit/2aa5b82242ce242042d89bae8e25a7b8e8cb22d9))
+* fixed stuff ([6bac41b](https://github.com/Enigmatis/polaris-core/commit/6bac41b5815ef82a4f5bfe2c82d1e040b2551018))
+* kinda working ([cb99e90](https://github.com/Enigmatis/polaris-core/commit/cb99e900a7df750d284b39889774c41b82ccb3f2))
+* pagination ([7fdfc3d](https://github.com/Enigmatis/polaris-core/commit/7fdfc3d0a0853a09265c728d9a83a46c649f3544))
+* pagination plugin ([b3ea012](https://github.com/Enigmatis/polaris-core/commit/b3ea012ab6c786b24ce8744cf89e4ee0c02d602e))
+* pagination works kinda! ([0eda19b](https://github.com/Enigmatis/polaris-core/commit/0eda19bfe6720d6fb41866f3bd7b0fc71abacc81))
+* plugins ([6717735](https://github.com/Enigmatis/polaris-core/commit/67177350b3160568ec45856859f10939f3661c2b))
+* started doing stuff ([2618252](https://github.com/Enigmatis/polaris-core/commit/2618252c08c66470191dfbff50911df4ee473ef3))
+
 # [2.0.0-beta.9](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2020-03-22)
 
 

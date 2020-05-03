@@ -15,7 +15,9 @@ export const connectionOptions: ConnectionOptions = {
     url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
     synchronize: true,
+    dropSchema: true,
     logging: true,
+    schema: process.env.SCHEMA_NAME,
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
@@ -62,6 +64,5 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
         supportedRealities: new RealitiesHolder(
             new Map([[3, { id: 3, type: 'notreal3', name: 'default' }]]),
         ),
-        connection: getPolarisConnectionManager().get(),
     };
 };

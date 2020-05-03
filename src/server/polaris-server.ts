@@ -1,39 +1,46 @@
-import { RealitiesHolder } from '@enigmatis/polaris-common';
+import { REALITY_ID } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
+import {
+    getConnectionForReality,
+    getPolarisConnectionManager,
+    SnapshotPage,
+} from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
-import { applyMiddleware } from 'graphql-middleware';
 import * as http from 'http';
 import * as path from 'path';
-import { polarisFormatError, PolarisServerOptions } from '..';
+import { createPolarisSchemaWithMiddlewares, polarisFormatError, PolarisServerOptions } from '..';
 import {
     createIntrospectionConfig,
     createPlaygroundConfig,
     createPolarisContext,
     createPolarisLoggerFromPolarisServerConfig,
-    createPolarisMiddlewares,
     createPolarisPlugins,
     createPolarisSubscriptionsConfig,
 } from '../config/create-apollo-config-util';
 import { PolarisServerConfig } from '../config/polaris-server-config';
+import {
+    clearSnapshotCleanerInterval,
+    setSnapshotCleanerInterval,
+} from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
 
 export const app = express();
 let server: http.Server;
 
 export class PolarisServer {
-    private readonly apolloServer: ApolloServer;
+    public readonly apolloServer: ApolloServer;
+    public readonly apolloServerConfiguration: ApolloServerExpressConfig;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
-
-    constructor(config: PolarisServerOptions) {
+    public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
         this.polarisLogger = createPolarisLoggerFromPolarisServerConfig(this.polarisServerConfig);
-        this.apolloServer = new ApolloServer(this.getApolloServerConfigurations());
-
+        this.apolloServerConfiguration = this.getApolloServerConfigurations();
+        this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
@@ -42,6 +49,18 @@ export class PolarisServer {
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
+        });
+        app.get('/snapshot', async (req: express.Request, res: express.Response) => {
+            const id = req.query.id;
+            const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
+            const realityId: number = realityHeader ? +realityHeader : 0;
+            const snapshotRepository = getConnectionForReality(
+                realityId,
+                this.polarisServerConfig.supportedRealities,
+                getPolarisConnectionManager() as any,
+            ).getRepository(SnapshotPage);
+            const result = await snapshotRepository.findOne({} as any, id);
+            res.send(result?.getData());
         });
         app.get('/whoami', (req: express.Request, res: express.Response) => {
             const appProps = this.polarisServerConfig.applicationProperties;
@@ -56,10 +75,17 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
+        setSnapshotCleanerInterval(
+            this.polarisServerConfig.supportedRealities,
+            this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
+            this.polarisLogger,
+        );
         this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
     public async stop(): Promise<void> {
+        clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }
@@ -70,13 +96,16 @@ export class PolarisServer {
     }
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
+        const schema: GraphQLSchema = this.createSchemaWithMiddlewares();
         return {
             ...this.polarisServerConfig,
-            schema: this.createSchemaWithMiddlewares(this.polarisServerConfig.supportedRealities),
+            schema,
             context: createPolarisContext(this.polarisLogger, this.polarisServerConfig),
             plugins: createPolarisPlugins(
                 this.polarisLogger as PolarisGraphQLLogger,
                 this.polarisServerConfig,
+                this,
+                schema,
             ),
             playground: createPlaygroundConfig(this.polarisServerConfig),
             introspection: createIntrospectionConfig(this.polarisServerConfig),
@@ -85,18 +114,16 @@ export class PolarisServer {
         };
     }
 
-    private createSchemaWithMiddlewares(supportedRealities: RealitiesHolder): GraphQLSchema {
-        const schema = makeExecutablePolarisSchema(
+    private createSchemaWithMiddlewares(): GraphQLSchema {
+        const schema: GraphQLSchema = makeExecutablePolarisSchema(
             this.polarisServerConfig.typeDefs,
             this.polarisServerConfig.resolvers,
             this.polarisServerConfig.schemaDirectives,
         );
-        return applyMiddleware(
+        return createPolarisSchemaWithMiddlewares(
             schema,
-            ...createPolarisMiddlewares(
-                this.polarisServerConfig,
-                this.polarisLogger as PolarisGraphQLLogger,
-            ),
+            this.polarisLogger as PolarisGraphQLLogger,
+            this.polarisServerConfig,
         );
     }
 }

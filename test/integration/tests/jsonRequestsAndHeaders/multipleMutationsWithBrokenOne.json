@@ -1,0 +1,10 @@
+{
+  "request": "mutation($firstName:String!, $lastName:String!){\n  a:createAuthor(firstName:$firstName,lastName:$lastName){\n    id\n    firstName\n    lastName\n   }\n b:createAuthor(firstName:$fName,lastName:$lName){\n    id\n    firstName\n    lastName\n   }\n c:createAuthor(firstName:$fName,lastName:$name){\n    id\n    firstName\n    lastName\n}}",
+  "dataValidateRequest": "query($firstName:String!, $fName:String!){\n  a:authorsByName(name:$firstName){\n    id\n    firstName\n  }\n b:authorsByName(name:$fName){\n    id\n    firstName\n  }}",
+  "variables": {
+    "firstName": "itay",
+    "lastName": "kl",
+    "fName": "asd",
+    "lName": "asd"
+  }
+}

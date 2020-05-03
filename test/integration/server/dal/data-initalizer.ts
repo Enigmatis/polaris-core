@@ -2,16 +2,6 @@ import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { Author } from './entities/author';
 import { Book } from './entities/book';
 
-export async function deleteTables() {
-    const connection = getPolarisConnectionManager().get();
-    const tables = ['book', 'author', 'dataVersion'];
-    for (const table of tables) {
-        if (connection) {
-            await connection.getRepository(table).query('DELETE FROM "' + table + '";');
-        }
-    }
-}
-
 function getAuthors(): Author[] {
     return [new Author('Author1', 'First'), new Author('Author2', 'Two')];
 }
@@ -46,9 +36,6 @@ async function createExampleData(authors: Author[], books: Book[]) {
 }
 
 export async function initializeDatabase() {
-    const connection = getPolarisConnectionManager().get();
-    await deleteTables();
-    await connection.synchronize();
     const authors: Author[] = getAuthors();
     const books: Book[] = getBooks(authors);
     await createExampleData(authors, books);
