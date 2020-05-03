@@ -55,8 +55,31 @@ export class SnapshotMiddleware {
                 }
             }
 
+            let prefetchBuffer;
+            if (
+                context.snapshotContext?.prefetchBuffer &&
+                context.snapshotContext?.prefetchBuffer.length > countPerPage
+            ) {
+                prefetchBuffer = context.snapshotContext?.prefetchBuffer;
+            } else {
+                prefetchBuffer = await result.getData(
+                    startIndex,
+                    countPerPage > this.snapshotConfiguration.entitiesAmountPerFetch
+                        ? countPerPage
+                        : this.snapshotConfiguration.entitiesAmountPerFetch,
+                );
+
+                if (
+                    context.snapshotContext?.prefetchBuffer &&
+                    context.snapshotContext?.prefetchBuffer.length > 0
+                ) {
+                    prefetchBuffer = [...context.snapshotContext.prefetchBuffer, ...prefetchBuffer];
+                }
+            }
+            const currentPage = prefetchBuffer.splice(0, countPerPage);
+            context.returnedExtensions.prefetchBuffer = prefetchBuffer;
             this.logger.debug('Snapshot middleware finished job', context);
-            return result.getData(startIndex, countPerPage);
+            return currentPage;
         };
     }
 }
