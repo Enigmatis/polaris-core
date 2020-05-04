@@ -68,19 +68,18 @@ export function createPolarisPlugins(
 }
 
 export function initSnapshotGraphQLOptions(
-    server: ApolloServer,
     polarisLogger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
+    server: ApolloServer,
+    schema: GraphQLSchema,
 ): void {
-    if (server.requestOptions.schema) {
-        const plugins: any[] = createPolarisPlugins(polarisLogger, config);
-        remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
-        SnapshotListener.graphQLOptions = {
-            ...server.requestOptions,
-            plugins,
-            schema: server.requestOptions.schema,
-        };
-    }
+    const plugins: any[] = createPolarisPlugins(polarisLogger, config);
+    remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
+    SnapshotListener.graphQLOptions = {
+        ...server.requestOptions,
+        plugins,
+        schema,
+    };
 }
 
 export function createPolarisMiddlewares(

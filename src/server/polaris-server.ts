@@ -46,9 +46,10 @@ export class PolarisServer {
         this.apolloServerConfiguration = this.getApolloServerConfigurations();
         this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
         initSnapshotGraphQLOptions(
-            this.apolloServer,
             this.polarisLogger as PolarisGraphQLLogger,
             this.polarisServerConfig,
+            this.apolloServer,
+            this.createSchemaWithMiddlewares(),
         );
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
