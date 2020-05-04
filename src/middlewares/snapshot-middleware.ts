@@ -20,66 +20,88 @@ export class SnapshotMiddleware {
             info: any,
         ) => {
             this.logger.debug('Snapshot middleware started job', context);
-            let startIndex;
-            let countPerPage;
+            let startIndex: number;
+            let countPerPage: number;
+            let currentPage: any[];
             const result = await resolve(root, args, context, info);
+
             if (!(result && result.totalCount && result.getData && !root)) {
                 return result;
             }
 
             if (context.requestHeaders.snapRequest || this.snapshotConfiguration.autoSnapshot) {
                 if (context.snapshotContext == null) {
-                    const totalCount = await result.totalCount();
-
-                    countPerPage = context.requestHeaders.snapPageSize
-                        ? Math.min(
-                              this.snapshotConfiguration.maxPageSize,
-                              context.requestHeaders.snapPageSize,
-                          )
-                        : this.snapshotConfiguration.maxPageSize;
-
-                    if (this.snapshotConfiguration.autoSnapshot) {
-                        if (totalCount > countPerPage) {
-                            context.returnedExtensions.totalCount = totalCount;
-                        } else {
-                            countPerPage = totalCount;
-                        }
-                    } else if (context.requestHeaders.snapRequest) {
-                        context.returnedExtensions.totalCount = totalCount;
-                    }
-
+                    countPerPage = await this.calculateSnapshotParameters(result, context);
                     startIndex = 0;
                 } else {
                     startIndex = context.snapshotContext.startIndex!;
                     countPerPage = context.snapshotContext.countPerPage!;
                 }
-            }
 
-            let prefetchBuffer;
-            if (
-                context.snapshotContext?.prefetchBuffer &&
-                context.snapshotContext?.prefetchBuffer.length > countPerPage
-            ) {
-                prefetchBuffer = context.snapshotContext?.prefetchBuffer;
-            } else {
-                prefetchBuffer = await result.getData(
+                currentPage = await this.prefetchEntities(
+                    context,
+                    result,
                     startIndex,
-                    countPerPage > this.snapshotConfiguration.entitiesAmountPerFetch
-                        ? countPerPage
-                        : this.snapshotConfiguration.entitiesAmountPerFetch,
+                    countPerPage,
                 );
-
-                if (
-                    context.snapshotContext?.prefetchBuffer &&
-                    context.snapshotContext?.prefetchBuffer.length > 0
-                ) {
-                    prefetchBuffer = [...context.snapshotContext.prefetchBuffer, ...prefetchBuffer];
-                }
+            } else {
+                currentPage = await result.getData(0, undefined);
             }
-            const currentPage = prefetchBuffer.splice(0, countPerPage);
-            context.returnedExtensions.prefetchBuffer = prefetchBuffer;
+
             this.logger.debug('Snapshot middleware finished job', context);
             return currentPage;
         };
+    }
+
+    private async calculateSnapshotParameters(result: any, context: PolarisGraphQLContext) {
+        const totalCount = await result.totalCount();
+        let countPerPage = context.requestHeaders.snapPageSize
+            ? Math.min(this.snapshotConfiguration.maxPageSize, context.requestHeaders.snapPageSize)
+            : this.snapshotConfiguration.maxPageSize;
+
+        if (this.snapshotConfiguration.autoSnapshot) {
+            if (totalCount > countPerPage) {
+                context.returnedExtensions.totalCount = totalCount;
+            } else {
+                countPerPage = totalCount;
+            }
+        } else if (context.requestHeaders.snapRequest) {
+            context.returnedExtensions.totalCount = totalCount;
+        }
+
+        return countPerPage;
+    }
+
+    private async prefetchEntities(
+        context: PolarisGraphQLContext,
+        result: any,
+        startIndex: number,
+        countPerPage: number,
+    ) {
+        let prefetchBuffer = context.snapshotContext?.prefetchBuffer || [];
+
+        if (prefetchBuffer.length < countPerPage) {
+            const fetchedData = await this.fetchMoreDataForBuffer(result, startIndex, countPerPage);
+            prefetchBuffer = [...(prefetchBuffer || []), ...(fetchedData || [])];
+        }
+
+        const currentPage = prefetchBuffer.splice(0, countPerPage);
+
+        if (prefetchBuffer.length > 0) {
+            context.returnedExtensions.prefetchBuffer = prefetchBuffer;
+        } else {
+            delete context.returnedExtensions.prefetchBuffer;
+        }
+
+        return currentPage;
+    }
+
+    private fetchMoreDataForBuffer(result: any, startIndex: number, countPerPage: number) {
+        return result.getData(
+            startIndex,
+            countPerPage > this.snapshotConfiguration.entitiesAmountPerFetch
+                ? countPerPage
+                : this.snapshotConfiguration.entitiesAmountPerFetch,
+        );
     }
 }

@@ -96,7 +96,6 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                                       requestHeaders.snapPageSize,
                                   )
                                 : this.snapshotConfiguration.maxPageSize,
-                            prefetchBuffer: [],
                         };
                         context.returnedExtensions.globalDataVersion =
                             parsedResult.extensions.globalDataVersion;
@@ -105,20 +104,16 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                     }
                 }
 
-                context.snapshotContext.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
+                context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
                 delete parsedResult.extensions.prefetchBuffer;
                 const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
                 await snapshotRepository.save({} as any, snapshotPage);
                 pagesIds.push(snapshotPage.getId());
-                context.snapshotContext.startIndex! +=
-                    context.snapshotContext.countPerPage! >
-                    this.snapshotConfiguration.entitiesAmountPerFetch
-                        ? context.snapshotContext.countPerPage!
-                        : this.snapshotConfiguration.entitiesAmountPerFetch;
+                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
                 currentPageIndex++;
             } while (
                 currentPageIndex <
-                context.snapshotContext.totalCount! / context.snapshotContext.countPerPage!
+                context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
             );
 
             context.returnedExtensions.snapResponse = { pagesIds };
