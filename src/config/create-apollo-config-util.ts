@@ -26,9 +26,9 @@ import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../plugins/headers/response-headers-plugin';
+import { SnapshotListener } from '../plugins/snapshot/snapshot-listener';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { PolarisServerConfig } from './polaris-server-config';
-import { SnapshotListener } from '../plugins/snapshot/snapshot-listener';
 
 export function createPolarisLoggerFromPolarisServerConfig(
     config: PolarisServerConfig,
