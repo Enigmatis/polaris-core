@@ -1,5 +1,6 @@
 import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { ApolloServer } from 'apollo-server-express';
 import {
     ApolloServerPlugin,
     GraphQLRequestContext,
@@ -13,21 +14,18 @@ export class SnapshotPlugin implements ApolloServerPlugin<PolarisGraphQLContext>
     private readonly logger: PolarisGraphQLLogger;
     private readonly realitiesHolder: RealitiesHolder;
     private readonly snapshotConfiguration: SnapshotConfiguration;
-    private readonly polarisServer: PolarisServer;
-    private readonly graphQLSchema: GraphQLSchema;
+    private readonly server: ApolloServer;
 
     constructor(
         logger: PolarisGraphQLLogger,
         realitiesHolder: RealitiesHolder,
         snapshotConfiguration: SnapshotConfiguration,
-        polarisServer: PolarisServer,
-        graphQLSchema: GraphQLSchema,
+        server: ApolloServer,
     ) {
         this.logger = logger;
         this.realitiesHolder = realitiesHolder;
         this.snapshotConfiguration = snapshotConfiguration;
-        this.polarisServer = polarisServer;
-        this.graphQLSchema = graphQLSchema;
+        this.server = server;
     }
 
     public requestDidStart(
@@ -37,8 +35,7 @@ export class SnapshotPlugin implements ApolloServerPlugin<PolarisGraphQLContext>
             this.logger,
             this.realitiesHolder,
             this.snapshotConfiguration,
-            this.polarisServer,
-            this.graphQLSchema,
+            this.server,
         );
     }
 }

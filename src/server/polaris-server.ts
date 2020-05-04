@@ -12,7 +12,12 @@ import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import * as http from 'http';
 import * as path from 'path';
-import { createPolarisSchemaWithMiddlewares, polarisFormatError, PolarisServerOptions } from '..';
+import {
+    createPolarisPluginsWithSnapshot,
+    createPolarisSchemaWithMiddlewares,
+    polarisFormatError,
+    PolarisServerOptions,
+} from '..';
 import {
     createIntrospectionConfig,
     createPlaygroundConfig,
@@ -101,11 +106,10 @@ export class PolarisServer {
             ...this.polarisServerConfig,
             schema,
             context: createPolarisContext(this.polarisLogger, this.polarisServerConfig),
-            plugins: createPolarisPlugins(
+            plugins: createPolarisPluginsWithSnapshot(
                 this.polarisLogger as PolarisGraphQLLogger,
                 this.polarisServerConfig,
-                this,
-                schema,
+                this.apolloServer,
             ),
             playground: createPlaygroundConfig(this.polarisServerConfig),
             introspection: createIntrospectionConfig(this.polarisServerConfig),

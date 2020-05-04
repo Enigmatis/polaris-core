@@ -6,7 +6,7 @@ import {
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
-import { GraphQLOptions } from 'apollo-server-express';
+import { ApolloServer, GraphQLOptions } from 'apollo-server-express';
 import {
     ApolloServerPlugin,
     GraphQLRequestContext,
@@ -28,20 +28,18 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         logger: PolarisGraphQLLogger,
         realitiesHolder: RealitiesHolder,
         snapshotConfiguration: SnapshotConfiguration,
-        polarisServer: PolarisServer,
-        graphQLSchema: GraphQLSchema,
+        server: ApolloServer,
     ) {
         this.logger = logger;
         this.snapshotConfiguration = snapshotConfiguration;
         this.realitiesHolder = realitiesHolder;
 
-        const plugins: any = polarisServer.apolloServerConfiguration.plugins;
+        const plugins: any = server.requestOptions.plugins;
         remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
-
         this.httpQueryOptions = {
-            ...polarisServer.apolloServer.requestOptions,
+            ...server.requestOptions,
             plugins,
-            schema: graphQLSchema,
+            schema: server.requestOptions.schema || ({} as any),
         };
     }
 

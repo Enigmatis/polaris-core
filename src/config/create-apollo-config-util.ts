@@ -15,7 +15,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin, TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares';
 import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
-import { PlaygroundConfig } from 'apollo-server-express';
+import { ApolloServer, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
@@ -40,23 +40,27 @@ export function createPolarisLoggerFromPolarisServerConfig(
           );
 }
 
+export function createPolarisPluginsWithSnapshot(
+    polarisLogger: PolarisGraphQLLogger,
+    config: PolarisServerConfig,
+    server: ApolloServer,
+): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
+    const snapshotPlugin = new SnapshotPlugin(
+        polarisLogger,
+        config.supportedRealities,
+        config.snapshotConfig,
+        server,
+    );
+    return [...createPolarisPlugins(polarisLogger, config), snapshotPlugin];
+}
 export function createPolarisPlugins(
     polarisLogger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
-    server: PolarisServer,
-    schema: GraphQLSchema,
 ): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
     const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
         new ExtensionsPlugin(polarisLogger, config.shouldAddWarningsToExtensions),
         new ResponseHeadersPlugin(polarisLogger),
         new PolarisLoggerPlugin(polarisLogger),
-        new SnapshotPlugin(
-            polarisLogger,
-            config.supportedRealities,
-            config.snapshotConfig,
-            server,
-            schema,
-        ),
     ];
     if (config.middlewareConfiguration.allowTransactionalMutations) {
         const connectionManager = getPolarisConnectionManager();
