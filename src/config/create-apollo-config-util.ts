@@ -19,15 +19,16 @@ import { ApolloServer, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { GraphQLSchema } from 'graphql';
 import { applyMiddleware } from 'graphql-middleware';
-import { merge } from 'lodash';
+import { merge, remove } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import { ExpressContext, PolarisServer } from '..';
+import { ExpressContext } from '..';
 import { getMiddlewaresMap } from '../middlewares/middlewares-map';
 import { SnapshotMiddleware } from '../middlewares/snapshot-middleware';
 import { ExtensionsPlugin } from '../plugins/extensions/extensions-plugin';
 import { ResponseHeadersPlugin } from '../plugins/headers/response-headers-plugin';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { PolarisServerConfig } from './polaris-server-config';
+import { SnapshotListener } from '../plugins/snapshot/snapshot-listener';
 
 export function createPolarisLoggerFromPolarisServerConfig(
     config: PolarisServerConfig,
@@ -40,19 +41,6 @@ export function createPolarisLoggerFromPolarisServerConfig(
           );
 }
 
-export function createPolarisPluginsWithSnapshot(
-    polarisLogger: PolarisGraphQLLogger,
-    config: PolarisServerConfig,
-    server: ApolloServer,
-): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
-    const snapshotPlugin = new SnapshotPlugin(
-        polarisLogger,
-        config.supportedRealities,
-        config.snapshotConfig,
-        server,
-    );
-    return [...createPolarisPlugins(polarisLogger, config), snapshotPlugin];
-}
 export function createPolarisPlugins(
     polarisLogger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
@@ -61,6 +49,7 @@ export function createPolarisPlugins(
         new ExtensionsPlugin(polarisLogger, config.shouldAddWarningsToExtensions),
         new ResponseHeadersPlugin(polarisLogger),
         new PolarisLoggerPlugin(polarisLogger),
+        new SnapshotPlugin(polarisLogger, config.supportedRealities, config.snapshotConfig),
     ];
     if (config.middlewareConfiguration.allowTransactionalMutations) {
         const connectionManager = getPolarisConnectionManager();
@@ -76,6 +65,22 @@ export function createPolarisPlugins(
         plugins.push(...config.plugins);
     }
     return plugins;
+}
+
+export function initSnapshotGraphQLOptions(
+    server: ApolloServer,
+    polarisLogger: PolarisGraphQLLogger,
+    config: PolarisServerConfig,
+): void {
+    if (server.requestOptions.schema) {
+        const plugins: any[] = createPolarisPlugins(polarisLogger, config);
+        remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
+        SnapshotListener.graphQLOptions = {
+            ...server.requestOptions,
+            plugins,
+            schema: server.requestOptions.schema,
+        };
+    }
 }
 
 export function createPolarisMiddlewares(
@@ -100,6 +105,7 @@ export function createPolarisMiddlewares(
     }
     return allowedMiddlewares;
 }
+
 export function createPolarisSchemaWithMiddlewares(
     schema: GraphQLSchema,
     logger: PolarisGraphQLLogger,
@@ -108,11 +114,13 @@ export function createPolarisSchemaWithMiddlewares(
     applyMiddleware(schema, new SnapshotMiddleware(logger, config.snapshotConfig).getMiddleware());
     return applyMiddleware(schema, ...createPolarisMiddlewares(config, logger));
 }
+
 export function createPolarisSubscriptionsConfig(config: PolarisServerConfig): any {
     return {
         path: `/${config.applicationProperties.version}/subscription`,
     };
 }
+
 export function createPolarisContext(logger: AbstractPolarisLogger, config: PolarisServerConfig) {
     return (context: ExpressContext): PolarisGraphQLContext => {
         const { req, connection } = context;
@@ -181,7 +189,7 @@ export function createPlaygroundConfig(config: PolarisServerConfig): PlaygroundC
 }
 
 export function createIntrospectionConfig(config: PolarisServerConfig): boolean {
-    return isProduction(config) ? false : true;
+    return !isProduction(config);
 }
 
 export function isProduction(config: PolarisServerConfig): boolean {
