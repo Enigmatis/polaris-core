@@ -57,7 +57,7 @@ export class PolarisServer {
             const snapshotRepository = getConnectionForReality(
                 realityId,
                 this.polarisServerConfig.supportedRealities,
-                getPolarisConnectionManager() as any,
+                getPolarisConnectionManager(),
             ).getRepository(SnapshotPage);
             const result = await snapshotRepository.findOne({} as any, id);
             res.send(result?.getData());

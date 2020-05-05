@@ -69,6 +69,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             ).getRepository(SnapshotPage);
             const pagesIds: string[] = [];
 
+            let currentPageIndex = 0;
             do {
                 const httpRequest = requestContext.request.http!;
                 const currentPageResult = await runHttpQuery([], {
@@ -81,9 +82,10 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                     },
                 });
 
+                const parsedResult = JSON.parse(currentPageResult.graphqlResponse);
+
                 if (!context.snapshotContext) {
-                    const totalCount = JSON.parse(currentPageResult.graphqlResponse).extensions
-                        .totalCount;
+                    const totalCount = parsedResult.extensions.totalCount;
                     if (totalCount !== undefined) {
                         context.snapshotContext = {
                             totalCount,
@@ -95,20 +97,24 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                                   )
                                 : this.snapshotConfiguration.maxPageSize,
                         };
-                        context.returnedExtensions.globalDataVersion = JSON.parse(
-                            currentPageResult.graphqlResponse,
-                        ).extensions.globalDataVersion;
+                        context.returnedExtensions.globalDataVersion =
+                            parsedResult.extensions.globalDataVersion;
                     } else {
                         return;
                     }
                 }
 
-                const snapshotPage = new SnapshotPage(currentPageResult.graphqlResponse);
+                context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
+                delete parsedResult.extensions.prefetchBuffer;
+                const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
                 await snapshotRepository.save({} as any, snapshotPage);
                 pagesIds.push(snapshotPage.getId());
-
-                context.snapshotContext.startIndex! += context.snapshotContext.countPerPage!;
-            } while (context.snapshotContext.startIndex! < context.snapshotContext.totalCount!);
+                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
+                currentPageIndex++;
+            } while (
+                currentPageIndex <
+                context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
+            );
 
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
