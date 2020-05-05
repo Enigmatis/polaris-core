@@ -14,7 +14,7 @@ afterEach(async () => {
 describe('snapshot pagination tests with auto disabled', () => {
     describe('snap request is true', () => {
         describe('prefetch is 1', () => {
-            it('should query the db every time', async () => {
+            beforeEach(async  ()=>{
                 polarisServer = await startTestServer({
                     snapshotConfig: {
                         autoSnapshot: false,
@@ -25,12 +25,18 @@ describe('snapshot pagination tests with auto disabled', () => {
                     },
                 });
                 await initializeDatabase();
+            });
+            it('should query the db every time', async () => {
                 const paginatedResult = await graphqlRawRequest(
                     paginatedQuery.request,
                     paginatedQuery.headers,
                 );
-                const firstPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[0]);
-                const secondPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[1]);
+                const firstPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[0],
+                );
+                const secondPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[1],
+                );
                 const returnedBookName = [
                     firstPage.data.data.allBooksPaginated['0'].title,
                     secondPage.data.data.allBooksPaginated['0'].title,
@@ -42,7 +48,7 @@ describe('snapshot pagination tests with auto disabled', () => {
             });
         });
         describe('prefetch is 2', () => {
-            it('should query the db once', async () => {
+            beforeEach(async () => {
                 polarisServer = await startTestServer({
                     snapshotConfig: {
                         autoSnapshot: false,
@@ -53,12 +59,18 @@ describe('snapshot pagination tests with auto disabled', () => {
                     },
                 });
                 await initializeDatabase();
+            });
+            it('should query the db once snap page size is 1', async () => {
                 const paginatedResult = await graphqlRawRequest(
                     paginatedQuery.request,
                     paginatedQuery.headers,
                 );
-                const firstPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[0]);
-                const secondPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[1]);
+                const firstPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[0],
+                );
+                const secondPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[1],
+                );
                 const returnedBookName = [
                     firstPage.data.data.allBooksPaginated['0'].title,
                     secondPage.data.data.allBooksPaginated['0'].title,
@@ -69,22 +81,14 @@ describe('snapshot pagination tests with auto disabled', () => {
                 expect(returnedBookName).toContain('Book2');
             });
 
-            it('should query the db once', async () => {
-                polarisServer = await startTestServer({
-                    snapshotConfig: {
-                        autoSnapshot: false,
-                        maxPageSize: 5,
-                        snapshotCleaningInterval: 60,
-                        secondsToBeOutdated: 60,
-                        entitiesAmountPerFetch: 2,
-                    },
+            it('snap page size is 2 query the db once', async () => {
+                const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                    ...paginatedQuery.headers,
+                    'snap-page-size': 2,
                 });
-                await initializeDatabase();
-                const paginatedResult = await graphqlRawRequest(
-                    paginatedQuery.request,
-                    {...paginatedQuery.headers, "snap-page-size": 2},
+                const firstPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[0],
                 );
-                const firstPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[0]);
                 const returnedBookName = [
                     firstPage.data.data.allBooksPaginated['0'].title,
                     firstPage.data.data.allBooksPaginated['1'].title,
@@ -96,7 +100,7 @@ describe('snapshot pagination tests with auto disabled', () => {
             });
         });
         describe('prefetch is larger than response size', () => {
-            it('should query the db once', async () => {
+            beforeEach(async () => {
                 polarisServer = await startTestServer({
                     snapshotConfig: {
                         autoSnapshot: false,
@@ -107,12 +111,18 @@ describe('snapshot pagination tests with auto disabled', () => {
                     },
                 });
                 await initializeDatabase();
+            });
+            it('snap page size is 1', async () => {
                 const paginatedResult = await graphqlRawRequest(
                     paginatedQuery.request,
                     paginatedQuery.headers,
                 );
-                const firstPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[0]);
-                const secondPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[1]);
+                const firstPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[0],
+                );
+                const secondPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[1],
+                );
                 const returnedBookName = [
                     firstPage.data.data.allBooksPaginated['0'].title,
                     secondPage.data.data.allBooksPaginated['0'].title,
@@ -123,22 +133,14 @@ describe('snapshot pagination tests with auto disabled', () => {
                 expect(returnedBookName).toContain('Book2');
             });
 
-            it('should query the db once', async () => {
-                polarisServer = await startTestServer({
-                    snapshotConfig: {
-                        autoSnapshot: false,
-                        maxPageSize: 5,
-                        snapshotCleaningInterval: 60,
-                        secondsToBeOutdated: 60,
-                        entitiesAmountPerFetch: 2,
-                    },
+            it('snap page size is 2', async () => {
+                const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                    ...paginatedQuery.headers,
+                    'snap-page-size': 2,
                 });
-                await initializeDatabase();
-                const paginatedResult = await graphqlRawRequest(
-                    paginatedQuery.request,
-                    {...paginatedQuery.headers, "snap-page-size": 2},
+                const firstPage = await snapshotRequest(
+                    paginatedResult.extensions.snapResponse.pagesIds[0],
                 );
-                const firstPage = await snapshotRequest(paginatedResult.extensions.snapResponse.pagesIds[0]);
                 const returnedBookName = [
                     firstPage.data.data.allBooksPaginated['0'].title,
                     firstPage.data.data.allBooksPaginated['1'].title,

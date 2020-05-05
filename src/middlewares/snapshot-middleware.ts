@@ -31,14 +31,14 @@ export class SnapshotMiddleware {
 
             if (context.requestHeaders.snapRequest || this.snapshotConfiguration.autoSnapshot) {
                 if (context.snapshotContext == null) {
-                    countPerPage = await this.calculateSnapshotParameters(result, context);
+                    countPerPage = await this.calculateCountPerPage(result, context);
                     startIndex = 0;
                 } else {
                     startIndex = context.snapshotContext.startIndex!;
                     countPerPage = context.snapshotContext.countPerPage!;
                 }
 
-                currentPage = await this.prefetchEntities(
+                currentPage = await this.fetchEntitiesWithBuffer(
                     context,
                     result,
                     startIndex,
@@ -53,11 +53,18 @@ export class SnapshotMiddleware {
         };
     }
 
-    private async calculateSnapshotParameters(result: any, context: PolarisGraphQLContext) {
-        const totalCount = await result.totalCount();
+    private async calculateCountPerPage(result: any, context: PolarisGraphQLContext) {
         let countPerPage = context.requestHeaders.snapPageSize
             ? Math.min(this.snapshotConfiguration.maxPageSize, context.requestHeaders.snapPageSize)
             : this.snapshotConfiguration.maxPageSize;
+
+        countPerPage = await this.setCalculatePerPageAccordingToTotalCount(result, countPerPage, context);
+
+        return countPerPage;
+    }
+
+    private async setCalculatePerPageAccordingToTotalCount(result: any, countPerPage: number, context: PolarisGraphQLContext) {
+        const totalCount = await result.totalCount();
 
         if (this.snapshotConfiguration.autoSnapshot) {
             if (totalCount > countPerPage) {
@@ -72,7 +79,7 @@ export class SnapshotMiddleware {
         return countPerPage;
     }
 
-    private async prefetchEntities(
+    private async fetchEntitiesWithBuffer(
         context: PolarisGraphQLContext,
         result: any,
         startIndex: number,
@@ -82,7 +89,7 @@ export class SnapshotMiddleware {
 
         if (prefetchBuffer.length < countPerPage) {
             const fetchedData = await this.fetchMoreDataForBuffer(result, startIndex, countPerPage);
-            prefetchBuffer = [...(prefetchBuffer || []), ...(fetchedData || [])];
+            prefetchBuffer = [...prefetchBuffer, ...(fetchedData || [])];
         }
 
         const currentPage = prefetchBuffer.splice(0, countPerPage);
