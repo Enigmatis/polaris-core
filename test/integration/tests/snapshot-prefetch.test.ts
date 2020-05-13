@@ -1,8 +1,8 @@
-import {PolarisServer} from '../../../src';
-import {initializeDatabase} from '../server/dal/data-initalizer';
-import {startTestServer, stopTestServer} from '../server/test-server';
-import {graphqlRawRequest} from '../server/utils/graphql-client';
-import {snapshotRequest} from '../server/utils/snapshot-client';
+import { PolarisServer } from '../../../src';
+import { initializeDatabase } from '../server/dal/data-initalizer';
+import { startTestServer, stopTestServer } from '../server/test-server';
+import { graphqlRawRequest } from '../server/utils/graphql-client';
+import { snapshotRequest } from '../server/utils/snapshot-client';
 import * as paginatedQuery from './jsonRequestsAndHeaders/paginatedQuery.json';
 
 let polarisServer: PolarisServer;
@@ -14,7 +14,7 @@ afterEach(async () => {
 describe('snapshot pagination tests with auto disabled', () => {
     describe('snap request is true', () => {
         describe('prefetch is 1', () => {
-            beforeEach(async  ()=>{
+            beforeEach(async () => {
                 polarisServer = await startTestServer({
                     snapshotConfig: {
                         autoSnapshot: false,

@@ -58,12 +58,20 @@ export class SnapshotMiddleware {
             ? Math.min(this.snapshotConfiguration.maxPageSize, context.requestHeaders.snapPageSize)
             : this.snapshotConfiguration.maxPageSize;
 
-        countPerPage = await this.setCalculatePerPageAccordingToTotalCount(result, countPerPage, context);
+        countPerPage = await this.setCalculatePerPageAccordingToTotalCount(
+            result,
+            countPerPage,
+            context,
+        );
 
         return countPerPage;
     }
 
-    private async setCalculatePerPageAccordingToTotalCount(result: any, countPerPage: number, context: PolarisGraphQLContext) {
+    private async setCalculatePerPageAccordingToTotalCount(
+        result: any,
+        countPerPage: number,
+        context: PolarisGraphQLContext,
+    ) {
         const totalCount = await result.totalCount();
 
         if (this.snapshotConfiguration.autoSnapshot) {
