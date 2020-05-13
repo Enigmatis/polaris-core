@@ -1,3 +1,13 @@
+# [2.0.0-beta.17](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.16...v2.0.0-beta.17) (2020-05-05)
+
+
+### Bug Fixes
+
+* added int tests ([4ca57be](https://github.com/Enigmatis/polaris-core/commit/4ca57be2f6850c65504598bf2ecba6a2fd21a563))
+* added prefetch ([af59edd](https://github.com/Enigmatis/polaris-core/commit/af59edd51384955af04e00eb3cfde1e40088b648))
+* refactored the prefetch mechanism ([ae36fa1](https://github.com/Enigmatis/polaris-core/commit/ae36fa112b784d6e4862bfdc661b0500a0f2ed56))
+* review fixes ([807e0a2](https://github.com/Enigmatis/polaris-core/commit/807e0a2f9f8319d639f1f458faed38d436449287))
+
 # [2.0.0-beta.16](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.15...v2.0.0-beta.16) (2020-05-03)
 
 
