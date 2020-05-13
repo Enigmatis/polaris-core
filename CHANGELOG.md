@@ -1,3 +1,12 @@
+# [2.0.0-beta.18](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.17...v2.0.0-beta.18) (2020-05-13)
+
+
+### Bug Fixes
+
+* fixed if condition ([41ce74f](https://github.com/Enigmatis/polaris-core/commit/41ce74f8d03c019f8fffc805488443b2f861202e))
+* snapshot plugin is no longer requiring injection of apollo server ([bb394d2](https://github.com/Enigmatis/polaris-core/commit/bb394d2a98c34c1198e8dda7ca803b0c77cc7277))
+* upgrade polaris typeorm ([05dec14](https://github.com/Enigmatis/polaris-core/commit/05dec14ea081a47a4ab2144c2a60be73144f65bd))
+
 # [2.0.0-beta.17](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.16...v2.0.0-beta.17) (2020-05-05)
 
 
