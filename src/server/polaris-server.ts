@@ -12,15 +12,18 @@ import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
 import * as http from 'http';
 import * as path from 'path';
-import { createPolarisSchemaWithMiddlewares, polarisFormatError, PolarisServerOptions } from '..';
 import {
     createIntrospectionConfig,
     createPlaygroundConfig,
     createPolarisContext,
     createPolarisLoggerFromPolarisServerConfig,
     createPolarisPlugins,
+    createPolarisSchemaWithMiddlewares,
     createPolarisSubscriptionsConfig,
-} from '../config/create-apollo-config-util';
+    initSnapshotGraphQLOptions,
+    polarisFormatError,
+    PolarisServerOptions,
+} from '..';
 import { PolarisServerConfig } from '../config/polaris-server-config';
 import {
     clearSnapshotCleanerInterval,
@@ -36,11 +39,18 @@ export class PolarisServer {
     public readonly apolloServerConfiguration: ApolloServerExpressConfig;
     private readonly polarisServerConfig: PolarisServerConfig;
     private readonly polarisLogger: AbstractPolarisLogger;
+
     public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
         this.polarisLogger = createPolarisLoggerFromPolarisServerConfig(this.polarisServerConfig);
         this.apolloServerConfiguration = this.getApolloServerConfigurations();
         this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
+        initSnapshotGraphQLOptions(
+            this.polarisLogger as PolarisGraphQLLogger,
+            this.polarisServerConfig,
+            this.apolloServer,
+            this.createSchemaWithMiddlewares(),
+        );
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
@@ -104,8 +114,6 @@ export class PolarisServer {
             plugins: createPolarisPlugins(
                 this.polarisLogger as PolarisGraphQLLogger,
                 this.polarisServerConfig,
-                this,
-                schema,
             ),
             playground: createPlaygroundConfig(this.polarisServerConfig),
             introspection: createIntrospectionConfig(this.polarisServerConfig),

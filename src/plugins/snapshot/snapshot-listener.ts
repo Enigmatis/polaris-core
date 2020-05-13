@@ -8,41 +8,26 @@ import {
 import { runHttpQuery } from 'apollo-server-core';
 import { GraphQLOptions } from 'apollo-server-express';
 import {
-    ApolloServerPlugin,
     GraphQLRequestContext,
     GraphQLRequestListener,
     GraphQLResponse,
 } from 'apollo-server-plugin-base';
-import { GraphQLSchema } from 'graphql';
-import { remove } from 'lodash';
-import { PolarisServer, SnapshotConfiguration } from '../..';
-import { SnapshotPlugin } from './snapshot-plugin';
+import { SnapshotConfiguration } from '../..';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
+    public static graphQLOptions: GraphQLOptions;
     private readonly logger: PolarisGraphQLLogger;
     private readonly realitiesHolder: RealitiesHolder;
     private readonly snapshotConfiguration: SnapshotConfiguration;
-    private readonly httpQueryOptions: GraphQLOptions;
 
     public constructor(
         logger: PolarisGraphQLLogger,
         realitiesHolder: RealitiesHolder,
         snapshotConfiguration: SnapshotConfiguration,
-        polarisServer: PolarisServer,
-        graphQLSchema: GraphQLSchema,
     ) {
         this.logger = logger;
-        this.snapshotConfiguration = snapshotConfiguration;
         this.realitiesHolder = realitiesHolder;
-
-        const plugins: any = polarisServer.apolloServerConfiguration.plugins;
-        remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
-
-        this.httpQueryOptions = {
-            ...polarisServer.apolloServer.requestOptions,
-            plugins,
-            schema: graphQLSchema,
-        };
+        this.snapshotConfiguration = snapshotConfiguration;
     }
 
     public didResolveOperation(
@@ -77,7 +62,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                     request: httpRequest,
                     query: requestContext.request,
                     options: {
-                        ...this.httpQueryOptions,
+                        ...SnapshotListener.graphQLOptions,
                         context,
                     },
                 });
