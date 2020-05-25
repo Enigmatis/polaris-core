@@ -4,6 +4,7 @@ import {
     ApplicationProperties,
     LoggerConfiguration,
 } from '@enigmatis/polaris-logs';
+import { PolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ApolloServerExpressConfig } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { IResolvers } from 'graphql-tools';
@@ -25,4 +26,5 @@ export interface PolarisServerConfig extends ApolloServerExpressConfig {
     shouldAddWarningsToExtensions: boolean;
     allowMandatoryHeaders: boolean;
     snapshotConfig: SnapshotConfiguration;
+    connectionManager?: PolarisConnectionManager;
 }

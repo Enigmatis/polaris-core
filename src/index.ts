@@ -2,6 +2,7 @@ export { ExpressContext } from './server/express-context';
 export { PolarisServer, app } from './server/polaris-server';
 export * from './config/create-apollo-config-util';
 export { PolarisServerOptions } from './config/polaris-server-options';
+export { PolarisServerConfig } from './config/polaris-server-config';
 export { MiddlewareConfiguration } from './config/middleware-configuration';
 export { polarisFormatError } from './errors/error-formatter';
 export { SnapshotConfiguration } from './config/snapshot-configuration';

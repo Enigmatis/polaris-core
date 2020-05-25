@@ -14,7 +14,7 @@ import {
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger, LoggerConfiguration } from '@enigmatis/polaris-logs';
 import { PolarisLoggerPlugin, TransactionalMutationsPlugin } from '@enigmatis/polaris-middlewares';
-import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
+import { PolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, PlaygroundConfig } from 'apollo-server-express';
 import { ApolloServerPlugin } from 'apollo-server-plugin-base';
 import { GraphQLSchema } from 'graphql';
@@ -44,22 +44,31 @@ export function createPolarisLoggerFromPolarisServerConfig(
 export function createPolarisPlugins(
     polarisLogger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
+    connectionManager?: PolarisConnectionManager,
 ): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
     const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
         new ExtensionsPlugin(polarisLogger, config.shouldAddWarningsToExtensions),
         new ResponseHeadersPlugin(polarisLogger),
         new PolarisLoggerPlugin(polarisLogger),
-        new SnapshotPlugin(polarisLogger, config.supportedRealities, config.snapshotConfig),
     ];
-    if (config.middlewareConfiguration.allowTransactionalMutations) {
-        const connectionManager = getPolarisConnectionManager();
+    if (connectionManager) {
         plugins.push(
-            new TransactionalMutationsPlugin(
+            new SnapshotPlugin(
                 polarisLogger,
                 config.supportedRealities,
+                config.snapshotConfig,
                 connectionManager,
             ),
         );
+        if (config.middlewareConfiguration.allowTransactionalMutations) {
+            plugins.push(
+                new TransactionalMutationsPlugin(
+                    polarisLogger,
+                    config.supportedRealities,
+                    connectionManager,
+                ),
+            );
+        }
     }
     if (config.plugins) {
         plugins.push(...config.plugins);
@@ -72,8 +81,9 @@ export function initSnapshotGraphQLOptions(
     config: PolarisServerConfig,
     server: ApolloServer,
     schema: GraphQLSchema,
+    connectionManager: PolarisConnectionManager,
 ): void {
-    const plugins: any[] = createPolarisPlugins(polarisLogger, config);
+    const plugins: any[] = createPolarisPlugins(polarisLogger, config, connectionManager);
     remove(plugins, (plugin: ApolloServerPlugin) => plugin instanceof SnapshotPlugin);
     SnapshotListener.graphQLOptions = {
         ...server.requestOptions,
@@ -85,11 +95,16 @@ export function initSnapshotGraphQLOptions(
 export function createPolarisMiddlewares(
     config: PolarisServerConfig,
     logger: PolarisGraphQLLogger,
+    connectionManager?: PolarisConnectionManager,
 ): any[] {
     const allowedMiddlewares: any = [];
     const middlewareConfiguration = config.middlewareConfiguration;
     if (config.supportedRealities) {
-        const middlewaresMap = getMiddlewaresMap(logger, config.supportedRealities);
+        const middlewaresMap = getMiddlewaresMap(
+            logger,
+            config.supportedRealities,
+            connectionManager,
+        );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {
                 const middlewares = middlewaresMap.get(key);
@@ -109,9 +124,10 @@ export function createPolarisSchemaWithMiddlewares(
     schema: GraphQLSchema,
     logger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
+    connectionManager?: PolarisConnectionManager,
 ) {
     applyMiddleware(schema, new SnapshotMiddleware(logger, config.snapshotConfig).getMiddleware());
-    return applyMiddleware(schema, ...createPolarisMiddlewares(config, logger));
+    return applyMiddleware(schema, ...createPolarisMiddlewares(config, logger, connectionManager));
 }
 
 export function createPolarisSubscriptionsConfig(config: PolarisServerConfig): any {
