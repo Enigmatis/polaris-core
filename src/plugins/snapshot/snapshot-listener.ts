@@ -2,7 +2,7 @@ import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-commo
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import {
     getConnectionForReality,
-    getPolarisConnectionManager,
+    PolarisConnectionManager,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
@@ -16,19 +16,13 @@ import { SnapshotConfiguration } from '../..';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
     public static graphQLOptions: GraphQLOptions;
-    private readonly logger: PolarisGraphQLLogger;
-    private readonly realitiesHolder: RealitiesHolder;
-    private readonly snapshotConfiguration: SnapshotConfiguration;
 
     public constructor(
-        logger: PolarisGraphQLLogger,
-        realitiesHolder: RealitiesHolder,
-        snapshotConfiguration: SnapshotConfiguration,
-    ) {
-        this.logger = logger;
-        this.realitiesHolder = realitiesHolder;
-        this.snapshotConfiguration = snapshotConfiguration;
-    }
+        private readonly logger: PolarisGraphQLLogger,
+        private readonly realitiesHolder: RealitiesHolder,
+        private readonly snapshotConfiguration: SnapshotConfiguration,
+        private readonly connectionManager: PolarisConnectionManager,
+    ) {}
 
     public didResolveOperation(
         requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
@@ -49,8 +43,8 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             const { requestHeaders } = context;
             const snapshotRepository = getConnectionForReality(
                 requestHeaders.realityId!,
-                this.realitiesHolder,
-                getPolarisConnectionManager() as any,
+                this.realitiesHolder as any,
+                this.connectionManager,
             ).getRepository(SnapshotPage);
             const pagesIds: string[] = [];
 

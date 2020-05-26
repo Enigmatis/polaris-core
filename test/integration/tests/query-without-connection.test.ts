@@ -2,7 +2,7 @@ import { PolarisServer } from '../../../src';
 import { startTestServer, stopTestServer } from '../server-without-connection/test-server';
 import { graphQLRequest } from '../server/utils/graphql-client';
 import * as argsQuery from './jsonRequestsAndHeaders/queryWithArgs.json';
-import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
+import * as simpleQuery from './jsonRequestsAndHeaders/simpleQueryWithoutConnection.json';
 
 let polarisServer: PolarisServer;
 

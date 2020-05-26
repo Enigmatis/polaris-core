@@ -4,7 +4,7 @@ import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import {
     getConnectionForReality,
-    getPolarisConnectionManager,
+    PolarisConnectionManager,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
@@ -45,12 +45,27 @@ export class PolarisServer {
         this.polarisLogger = createPolarisLoggerFromPolarisServerConfig(this.polarisServerConfig);
         this.apolloServerConfiguration = this.getApolloServerConfigurations();
         this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
-        initSnapshotGraphQLOptions(
-            this.polarisLogger as PolarisGraphQLLogger,
-            this.polarisServerConfig,
-            this.apolloServer,
-            this.createSchemaWithMiddlewares(),
-        );
+        if (config.connectionManager) {
+            initSnapshotGraphQLOptions(
+                this.polarisLogger as PolarisGraphQLLogger,
+                this.polarisServerConfig,
+                this.apolloServer,
+                this.createSchemaWithMiddlewares(),
+                config.connectionManager,
+            );
+            app.get('/snapshot', async (req: express.Request, res: express.Response) => {
+                const id = req.query.id;
+                const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
+                const realityId: number = realityHeader ? +realityHeader : 0;
+                const snapshotRepository = getConnectionForReality(
+                    realityId,
+                    this.polarisServerConfig.supportedRealities as any,
+                    config.connectionManager as PolarisConnectionManager,
+                ).getRepository(SnapshotPage);
+                const result = await snapshotRepository.findOne({} as any, id);
+                res.send(result?.getData());
+            });
+        }
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
@@ -59,18 +74,6 @@ export class PolarisServer {
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
-        });
-        app.get('/snapshot', async (req: express.Request, res: express.Response) => {
-            const id = req.query.id;
-            const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
-            const realityId: number = realityHeader ? +realityHeader : 0;
-            const snapshotRepository = getConnectionForReality(
-                realityId,
-                this.polarisServerConfig.supportedRealities,
-                getPolarisConnectionManager(),
-            ).getRepository(SnapshotPage);
-            const result = await snapshotRepository.findOne({} as any, id);
-            res.send(result?.getData());
         });
         app.get('/whoami', (req: express.Request, res: express.Response) => {
             const appProps = this.polarisServerConfig.applicationProperties;
@@ -85,12 +88,15 @@ export class PolarisServer {
             this.apolloServer.installSubscriptionHandlers(server);
         }
         await server.listen({ port: this.polarisServerConfig.port });
-        setSnapshotCleanerInterval(
-            this.polarisServerConfig.supportedRealities,
-            this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
-            this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
-            this.polarisLogger,
-        );
+        if (this.polarisServerConfig.connectionManager) {
+            setSnapshotCleanerInterval(
+                this.polarisServerConfig.supportedRealities,
+                this.polarisServerConfig.snapshotConfig.secondsToBeOutdated,
+                this.polarisServerConfig.snapshotConfig.snapshotCleaningInterval,
+                this.polarisLogger,
+                this.polarisServerConfig.connectionManager,
+            );
+        }
         this.polarisLogger.info(`Server started at port ${this.polarisServerConfig.port}`);
     }
 
@@ -114,6 +120,7 @@ export class PolarisServer {
             plugins: createPolarisPlugins(
                 this.polarisLogger as PolarisGraphQLLogger,
                 this.polarisServerConfig,
+                this.polarisServerConfig.connectionManager,
             ),
             playground: createPlaygroundConfig(this.polarisServerConfig),
             introspection: createIntrospectionConfig(this.polarisServerConfig),
@@ -132,6 +139,7 @@ export class PolarisServer {
             schema,
             this.polarisLogger as PolarisGraphQLLogger,
             this.polarisServerConfig,
+            this.polarisServerConfig.connectionManager,
         );
     }
 }

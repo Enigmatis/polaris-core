@@ -2,7 +2,7 @@ import { RealitiesHolder, Reality } from '@enigmatis/polaris-common';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import {
     getConnectionForReality,
-    getPolarisConnectionManager,
+    PolarisConnectionManager,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 
@@ -13,9 +13,16 @@ export const setSnapshotCleanerInterval = (
     secondsToBeOutdated: number,
     snapshotCleaningInterval: number,
     logger: AbstractPolarisLogger,
+    connectionManager: PolarisConnectionManager,
 ): void => {
     snapshotCleanerInterval = setInterval(
-        () => deleteOutdatedSnapshotPages(realitiesHolder, secondsToBeOutdated, logger),
+        () =>
+            deleteOutdatedSnapshotPages(
+                realitiesHolder,
+                secondsToBeOutdated,
+                logger,
+                connectionManager,
+            ),
         snapshotCleaningInterval * 1000,
     );
 };
@@ -30,12 +37,13 @@ const deleteOutdatedSnapshotPages = (
     realitiesHolder: RealitiesHolder,
     secondsToBeOutdated: number,
     logger: AbstractPolarisLogger,
+    connectionManager: PolarisConnectionManager,
 ): void => {
     realitiesHolder.getRealitiesMap().forEach(async (reality: Reality) => {
         const snapshotRepository = getConnectionForReality(
             reality.id,
-            realitiesHolder,
-            getPolarisConnectionManager() as any,
+            realitiesHolder as any,
+            connectionManager,
         ).getRepository(SnapshotPage);
         await snapshotRepository.query(`DELETE FROM ${snapshotRepository.metadata.tablePath} 
                                         WHERE EXTRACT(EPOCH FROM (NOW() - "creationTime")) > ${secondsToBeOutdated};`);

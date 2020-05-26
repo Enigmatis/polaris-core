@@ -146,8 +146,13 @@ export const resolvers = {
         ): Promise<boolean> => {
             const connection = getPolarisConnectionManager().get();
             const authorRepos = connection.getRepository(Author);
-            await authorRepos.delete(context, args.id);
-            return true;
+            const result: DeleteResult = await authorRepos.delete(context, args.id);
+            return (
+                result &&
+                result.affected !== null &&
+                result.affected !== undefined &&
+                result.affected > 0
+            );
         },
     },
     Subscription: {
