@@ -3,6 +3,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import {
     getConnectionForReality,
     PolarisConnectionManager,
+    QueryRunner,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
@@ -47,7 +48,18 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 this.connectionManager,
             ).getRepository(SnapshotPage);
             const pagesIds: string[] = [];
-
+            const realityId =
+                requestContext.context.requestHeaders.realityId !== undefined
+                    ? requestContext.context.requestHeaders.realityId
+                    : 0;
+            const queryRunner = getConnectionForReality(
+                realityId,
+                this.realitiesHolder,
+                this.connectionManager,
+            ).manager.queryRunner!;
+            if (!queryRunner.isTransactionActive) {
+                queryRunner.startTransaction();
+            }
             let currentPageIndex = 0;
             do {
                 const httpRequest = requestContext.request.http!;
@@ -79,10 +91,10 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                         context.returnedExtensions.globalDataVersion =
                             parsedResult.extensions.globalDataVersion;
                     } else {
+                        queryRunner.rollbackTransaction();
                         return;
                     }
                 }
-
                 context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
                 delete parsedResult.extensions.prefetchBuffer;
                 const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
@@ -94,7 +106,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 currentPageIndex <
                 context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
             );
-
+            queryRunner.commitTransaction();
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
     }
