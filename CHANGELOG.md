@@ -1,3 +1,10 @@
+# [2.0.0-beta.20](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.19...v2.0.0-beta.20) (2020-06-08)
+
+
+### Bug Fixes
+
+* snapshot should not work if mutation ([f5d6588](https://github.com/Enigmatis/polaris-core/commit/f5d6588771c9cc872a8a98cab5839731b9214e4a))
+
 # [2.0.0-beta.19](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.18...v2.0.0-beta.19) (2020-05-26)
 
 
