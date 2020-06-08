@@ -1,3 +1,10 @@
+# [2.0.0-beta.19](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.18...v2.0.0-beta.19) (2020-05-26)
+
+
+### Bug Fixes
+
+* connection tests ([cdfad35](https://github.com/Enigmatis/polaris-core/commit/cdfad354b3cf95bee538a314b52f7da33688c53d))
+
 # [2.0.0-beta.18](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.17...v2.0.0-beta.18) (2020-05-13)
 
 
