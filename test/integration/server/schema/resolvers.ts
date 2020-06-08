@@ -40,7 +40,7 @@ export const resolvers = {
                         take: pageSize,
                     });
                 },
-                totalCount(): Promise<number> {
+                totalCount: (): Promise<number> => {
                     return connection.getRepository(Book).count(context);
                 },
             };
