@@ -1,8 +1,14 @@
-import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-common';
+import {
+    PolarisGraphQLContext,
+    PolarisRequestHeaders,
+    RealitiesHolder,
+} from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { ConnectionlessConfiguration } from '@enigmatis/polaris-middlewares';
 import {
     getConnectionForReality,
     PolarisConnectionManager,
+    PolarisRepository,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
@@ -22,6 +28,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         private readonly realitiesHolder: RealitiesHolder,
         private readonly snapshotConfiguration: SnapshotConfiguration,
         private readonly connectionManager: PolarisConnectionManager,
+        private readonly connectionlessConfig?: ConnectionlessConfiguration,
     ) {}
 
     public didResolveOperation(
@@ -41,11 +48,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
 
         return (async (): Promise<void> => {
             const { requestHeaders } = context;
-            const snapshotRepository = getConnectionForReality(
-                requestHeaders.realityId!,
-                this.realitiesHolder as any,
-                this.connectionManager,
-            ).getRepository(SnapshotPage);
+            const snapshotRepository = this.getSnapshotRepository(requestHeaders);
             const pagesIds: string[] = [];
 
             let currentPageIndex = 0;
@@ -117,5 +120,19 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         }
 
         return null;
+    }
+
+    private getSnapshotRepository(
+        requestHeaders: PolarisRequestHeaders,
+    ): PolarisRepository<SnapshotPage> {
+        // if (this.connectionlessConfig) {
+        //     return this.connectionlessConfig.getRepository('snapshot');
+        // } else {
+        return getConnectionForReality(
+            requestHeaders.realityId!,
+            this.realitiesHolder as any,
+            this.connectionManager,
+        ).getRepository(SnapshotPage);
+        // }
     }
 }

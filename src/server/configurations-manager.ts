@@ -1,7 +1,11 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration, PolarisServerOptions, SnapshotConfiguration } from '..';
-import { PolarisServerConfig } from '../config/polaris-server-config';
+import {
+    MiddlewareConfiguration,
+    PolarisServerConfig,
+    PolarisServerOptions,
+    SnapshotConfiguration,
+} from '..';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
     return {

@@ -58,6 +58,7 @@ export function createPolarisPlugins(
                 config.supportedRealities,
                 config.snapshotConfig,
                 connectionManager,
+                config.connectionLessConfiguration,
             ),
         );
         if (config.middlewareConfiguration.allowTransactionalMutations) {
@@ -104,6 +105,7 @@ export function createPolarisMiddlewares(
             logger,
             config.supportedRealities,
             connectionManager,
+            config.connectionLessConfiguration,
         );
         for (const [key, value] of Object.entries({ ...middlewareConfiguration })) {
             if (value) {

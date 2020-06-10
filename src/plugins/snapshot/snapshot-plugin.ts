@@ -1,5 +1,6 @@
 import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { ConnectionlessConfiguration } from '@enigmatis/polaris-middlewares';
 import { PolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import {
     ApolloServerPlugin,
@@ -15,6 +16,7 @@ export class SnapshotPlugin implements ApolloServerPlugin<PolarisGraphQLContext>
         private readonly realitiesHolder: RealitiesHolder,
         private readonly snapshotConfiguration: SnapshotConfiguration,
         private readonly connectionManager: PolarisConnectionManager,
+        private readonly connectionlessConfig?: ConnectionlessConfiguration,
     ) {}
 
     public requestDidStart(
@@ -25,6 +27,7 @@ export class SnapshotPlugin implements ApolloServerPlugin<PolarisGraphQLContext>
             this.realitiesHolder,
             this.snapshotConfiguration,
             this.connectionManager,
+            this.connectionlessConfig,
         );
     }
 }

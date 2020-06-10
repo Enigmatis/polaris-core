@@ -26,3 +26,4 @@ export {
     IFieldResolver,
 } from 'graphql-tools';
 export * from './snapshot/paginated-resolver';
+export { ConnectionlessConfiguration } from '@enigmatis/polaris-middlewares';
