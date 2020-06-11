@@ -25,7 +25,7 @@ describe('snapshot pagination tests with auto enabled', () => {
     describe('max page size is 3', () => {
         describe('snap request is true', () => {
             it('should not paginate if total count is smaller than minimal page size', async () => {
-                const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                const paginatedResult: any = await graphqlRawRequest(paginatedQuery.request, {
                     ...paginatedQuery.headers,
                     'snap-page-size': 10,
                 });
@@ -46,7 +46,7 @@ describe('snapshot pagination tests with auto enabled', () => {
             });
 
             it('should not paginate if total count is smaller than minimal page size', async () => {
-                const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                const paginatedResult: any = await graphqlRawRequest(paginatedQuery.request, {
                     ...paginatedQuery.headers,
                     'snap-request': false,
                     'snap-page-size': 10,

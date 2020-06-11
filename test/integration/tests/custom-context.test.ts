@@ -20,7 +20,7 @@ afterEach(async () => {
 
 describe('custom context tests', () => {
     test('querying author by custom header in the custom context', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             customHeadersRequest.query,
             customHeadersRequest.headers,
         );
@@ -30,7 +30,7 @@ describe('custom context tests', () => {
     });
 
     test('querying custom field in the custom context', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             customContextCustomFieldRequest.query,
             customContextCustomFieldRequest.headers,
         );
@@ -39,7 +39,7 @@ describe('custom context tests', () => {
     });
 
     test('querying method of a TestClassInContext instance in the custom context', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             customContextInstanceMethodRequest.query,
             customContextInstanceMethodRequest.headers,
         );

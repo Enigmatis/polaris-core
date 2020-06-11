@@ -23,7 +23,7 @@ describe('soft delete tests', () => {
         const bookDeletionCriteria = {
             title: '4',
         };
-        const bookToDelete = await graphQLRequest(
+        const bookToDelete: any = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
             bookDeletionCriteria,
@@ -31,7 +31,7 @@ describe('soft delete tests', () => {
         await graphQLRequest(deleteBook.request, deleteBook.headers, {
             id: bookToDelete.bookByTitle[0].id,
         });
-        const afterBookDeletionResponse = await graphQLRequest(
+        const afterBookDeletionResponse: any = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
             bookDeletionCriteria,
@@ -48,7 +48,7 @@ describe('soft delete tests', () => {
             title: '1',
         };
 
-        const authorToDelete = await graphQLRequest(
+        const authorToDelete: any = await graphQLRequest(
             authorsByName.request,
             authorsByName.headers,
             authorDeletionCriteria,
@@ -56,7 +56,7 @@ describe('soft delete tests', () => {
         await graphQLRequest(deleteAuthor.request, deleteAuthor.headers, {
             id: authorToDelete.authorsByName[0].id,
         });
-        const afterBookDeletionResponse = await graphQLRequest(
+        const afterBookDeletionResponse: any = await graphQLRequest(
             bookByTitle.request,
             bookByTitle.headers,
             bookDeletionCriteria,

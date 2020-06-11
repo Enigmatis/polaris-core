@@ -1,4 +1,5 @@
 import {
+    ApplicationProperties,
     DATA_VERSION,
     INCLUDE_LINKED_OPER,
     OICD_CLAIM_UPN,
@@ -30,23 +31,21 @@ import { SnapshotListener } from '../plugins/snapshot/snapshot-listener';
 import { SnapshotPlugin } from '../plugins/snapshot/snapshot-plugin';
 import { PolarisServerConfig } from './polaris-server-config';
 
-export function createPolarisLoggerFromPolarisServerConfig(
-    config: PolarisServerConfig,
-): AbstractPolarisLogger {
-    return config.logger instanceof PolarisGraphQLLogger
-        ? config.logger
-        : new PolarisGraphQLLogger(
-              config.logger as LoggerConfiguration,
-              config.applicationProperties,
-          );
+export function createPolarisLoggerFromPolarisServerOptions(
+    loggerDef: LoggerConfiguration | PolarisGraphQLLogger,
+    applicationProperties: ApplicationProperties,
+): PolarisGraphQLLogger {
+    return loggerDef instanceof PolarisGraphQLLogger
+        ? loggerDef
+        : new PolarisGraphQLLogger(loggerDef as LoggerConfiguration, applicationProperties);
 }
 
 export function createPolarisPlugins(
     polarisLogger: PolarisGraphQLLogger,
     config: PolarisServerConfig,
     connectionManager?: PolarisConnectionManager,
-): Array<ApolloServerPlugin | (() => ApolloServerPlugin)> {
-    const plugins: Array<ApolloServerPlugin | (() => ApolloServerPlugin)> = [
+): any[] {
+    const plugins: any[] = [
         new ExtensionsPlugin(polarisLogger, config.shouldAddWarningsToExtensions),
         new ResponseHeadersPlugin(polarisLogger),
         new PolarisLoggerPlugin(polarisLogger),
