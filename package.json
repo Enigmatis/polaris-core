@@ -68,7 +68,7 @@
     },
     "homepage": "https://github.com/Enigmatis/polaris-core#readme",
     "dependencies": {
-        "@enigmatis/polaris-common": "^1.4.3",
+        "@enigmatis/polaris-common": "^1.4.4",
         "@enigmatis/polaris-graphql-logger": "^1.4.2",
         "@enigmatis/polaris-logs": "^2.8.2",
         "@enigmatis/polaris-middlewares": "^1.4.5",
