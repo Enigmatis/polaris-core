@@ -1,4 +1,5 @@
 import { PolarisServer } from '../../../src';
+import { PermissionsDirective } from '../../../src/directives/permissions/permissions-directive';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphQLRequest } from '../server/utils/graphql-client';
@@ -8,7 +9,11 @@ import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
 let polarisServer: PolarisServer;
 
 beforeEach(async () => {
-    polarisServer = await startTestServer();
+    polarisServer = await startTestServer({
+        schemaDirectives: {
+            permissions: PermissionsDirective,
+        },
+    });
     await initializeDatabase();
 });
 

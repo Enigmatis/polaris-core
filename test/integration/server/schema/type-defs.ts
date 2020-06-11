@@ -1,6 +1,8 @@
 export const typeDefs = `
+    directive @permissions(entityTypes: [String], actions: [String]) on FIELD_DEFINITION
+
     type Query {
-        allBooks: [Book]!
+        allBooks: [Book]! @permissions(entityTypes: ["entity1","test2"], actions: ["read","write"])
         allBooksPaginated: [Book]!
         allBooksWithWarnings: [Book]!
         authorById(id: String!): Author

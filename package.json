@@ -72,6 +72,7 @@
         "@enigmatis/polaris-graphql-logger": "^1.4.2",
         "@enigmatis/polaris-logs": "^2.8.2",
         "@enigmatis/polaris-middlewares": "^1.4.5",
+        "@enigmatis/polaris-permissions": "file:../polaris-permissions",
         "@enigmatis/polaris-schema": "^1.1.1",
         "@enigmatis/polaris-typeorm": "^2.3.4",
         "apollo-server-express": "^2.14.3",
