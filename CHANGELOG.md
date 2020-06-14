@@ -1,3 +1,11 @@
+# [2.0.0-beta.21](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.20...v2.0.0-beta.21) (2020-06-14)
+
+
+### Bug Fixes
+
+* update apollo server ([9e55809](https://github.com/Enigmatis/polaris-core/commit/9e55809a0fc836522b87deaca806734639d17c05))
+* update apollo server ([52e8b9d](https://github.com/Enigmatis/polaris-core/commit/52e8b9d7f8d8c6d15f88ec9f75afa3b7d3ddd6df))
+
 # [2.0.0-beta.20](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.19...v2.0.0-beta.20) (2020-06-08)
 
 
