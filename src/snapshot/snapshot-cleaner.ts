@@ -15,7 +15,7 @@ export const setSnapshotCleanerInterval = (
     logger: AbstractPolarisLogger,
     connectionManager: PolarisConnectionManager,
 ): void => {
-    snapshotCleanerInterval = setInterval(
+    snapshotCleanerInterval = global.setInterval(
         () =>
             deleteOutdatedSnapshotPages(
                 realitiesHolder,

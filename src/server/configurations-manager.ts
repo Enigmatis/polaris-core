@@ -1,7 +1,12 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
-import { MiddlewareConfiguration, PolarisServerOptions, SnapshotConfiguration } from '..';
-import { PolarisServerConfig } from '../config/polaris-server-config';
+import {
+    createPolarisLoggerFromPolarisServerOptions,
+    MiddlewareConfiguration,
+    PolarisServerConfig,
+    PolarisServerOptions,
+    SnapshotConfiguration,
+} from '..';
 
 export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
     return {
@@ -49,12 +54,16 @@ export function getSupportedRealities(options: PolarisServerOptions): RealitiesH
 export const getPolarisServerConfigFromOptions = (
     options: PolarisServerOptions,
 ): PolarisServerConfig => {
+    const applicationProperties = options.applicationProperties || { version: 'v1' };
     return {
         ...options,
         middlewareConfiguration:
             options.middlewareConfiguration || getDefaultMiddlewareConfiguration(),
-        logger: options.logger || getDefaultLoggerConfiguration(),
-        applicationProperties: options.applicationProperties || { version: 'v1' },
+        logger: createPolarisLoggerFromPolarisServerOptions(
+            options.logger || getDefaultLoggerConfiguration(),
+            applicationProperties,
+        ),
+        applicationProperties,
         allowSubscription: options.allowSubscription || false,
         shouldAddWarningsToExtensions:
             options.shouldAddWarningsToExtensions === undefined

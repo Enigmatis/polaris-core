@@ -7,7 +7,6 @@ import {
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
-import { GraphQLOptions } from 'apollo-server-express';
 import {
     GraphQLRequestContext,
     GraphQLRequestListener,
@@ -16,7 +15,7 @@ import {
 import { SnapshotConfiguration } from '../..';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
-    public static graphQLOptions: GraphQLOptions;
+    public static graphQLOptions: any;
 
     public constructor(
         private readonly logger: PolarisGraphQLLogger,

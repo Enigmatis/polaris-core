@@ -44,7 +44,7 @@ describe('transactional mutations enabled integration tests', () => {
                 multipleMutationsWithBrokenOne.variables,
             );
         } catch (err) {
-            const result = await graphqlRawRequest(
+            const result: any = await graphqlRawRequest(
                 multipleMutationsWithBrokenOne.dataValidateRequest,
                 undefined,
                 multipleMutationsWithBrokenOne.variables,

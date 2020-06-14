@@ -53,7 +53,7 @@ describe('data version tests', () => {
     });
     describe('data version filtering', () => {
         it('should filter entities below the requested data version', async () => {
-            const response = await graphQLRequest(
+            const response: any = await graphQLRequest(
                 dataVersionFiltering.request,
                 dataVersionFiltering.headers,
             );

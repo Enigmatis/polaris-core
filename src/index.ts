@@ -1,3 +1,4 @@
+import { Entity } from '@enigmatis/polaris-typeorm';
 export { ExpressContext } from './server/express-context';
 export { PolarisServer, app } from './server/polaris-server';
 export * from './config/create-apollo-config-util';
@@ -15,7 +16,7 @@ export * from '@enigmatis/polaris-graphql-logger';
 export * from '@enigmatis/polaris-middlewares';
 export * from '@enigmatis/polaris-schema';
 export * from '@enigmatis/polaris-typeorm';
-export { Entity } from '@enigmatis/polaris-typeorm';
+export { Entity };
 export { getPolarisServerConfigFromOptions } from './server/configurations-manager';
 export {
     IResolvers,

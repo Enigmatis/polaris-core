@@ -19,12 +19,14 @@ afterEach(() => {
 
 describe('irrelevant entities in response', () => {
     it('should have irrelevant entities if the response is partial', async () => {
-        const result = await graphqlRawRequest(
+        const result: any = await graphqlRawRequest(
             irrelevantEntities.request,
             irrelevantEntities.headers,
         );
-        const irrelevantId = (await graphQLRequest(simpleQuery.request, simpleQuery.headers))
-            .allBooks[1].id;
+        const irrelevantId = ((await graphQLRequest(
+            simpleQuery.request,
+            simpleQuery.headers,
+        )) as any).allBooks[1].id;
         expect(result.extensions.irrelevantEntities.bookByTitle).toContain(irrelevantId);
     });
 
@@ -34,7 +36,7 @@ describe('irrelevant entities in response', () => {
     });
 
     it('should place irrelevant response in the specific field info', async () => {
-        const result = await graphqlRawRequest(
+        const result: any = await graphqlRawRequest(
             multipleIrrelevantEntities.request,
             multipleIrrelevantEntities.headers,
         );

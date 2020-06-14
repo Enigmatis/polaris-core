@@ -14,7 +14,7 @@ afterEach(async () => {
 
 describe('directives tests', () => {
     it('query a field with directive, directive logic activated', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             `
                 {
                     allBooks {
