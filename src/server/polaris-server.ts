@@ -1,5 +1,4 @@
 import { REALITY_ID } from '@enigmatis/polaris-common';
-import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import {
@@ -16,15 +15,14 @@ import {
     createIntrospectionConfig,
     createPlaygroundConfig,
     createPolarisContext,
-    createPolarisLoggerFromPolarisServerConfig,
     createPolarisPlugins,
     createPolarisSchemaWithMiddlewares,
     createPolarisSubscriptionsConfig,
     initSnapshotGraphQLOptions,
     polarisFormatError,
+    PolarisServerConfig,
     PolarisServerOptions,
 } from '..';
-import { PolarisServerConfig } from '../config/polaris-server-config';
 import {
     clearSnapshotCleanerInterval,
     setSnapshotCleanerInterval,
@@ -42,12 +40,12 @@ export class PolarisServer {
 
     public constructor(config: PolarisServerOptions) {
         this.polarisServerConfig = getPolarisServerConfigFromOptions(config);
-        this.polarisLogger = createPolarisLoggerFromPolarisServerConfig(this.polarisServerConfig);
+        this.polarisLogger = this.polarisServerConfig.logger;
         this.apolloServerConfiguration = this.getApolloServerConfigurations();
         this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
         if (config.connectionManager) {
             initSnapshotGraphQLOptions(
-                this.polarisLogger as PolarisGraphQLLogger,
+                this.polarisServerConfig.logger,
                 this.polarisServerConfig,
                 this.apolloServer,
                 this.createSchemaWithMiddlewares(),
@@ -113,12 +111,13 @@ export class PolarisServer {
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
         const schema: GraphQLSchema = this.createSchemaWithMiddlewares();
+        const config: Omit<PolarisServerConfig, 'logger'> = this.polarisServerConfig;
         return {
-            ...this.polarisServerConfig,
+            ...config,
             schema,
             context: createPolarisContext(this.polarisLogger, this.polarisServerConfig),
             plugins: createPolarisPlugins(
-                this.polarisLogger as PolarisGraphQLLogger,
+                this.polarisServerConfig.logger,
                 this.polarisServerConfig,
                 this.polarisServerConfig.connectionManager,
             ),
@@ -137,7 +136,7 @@ export class PolarisServer {
         );
         return createPolarisSchemaWithMiddlewares(
             schema,
-            this.polarisLogger as PolarisGraphQLLogger,
+            this.polarisServerConfig.logger,
             this.polarisServerConfig,
             this.polarisServerConfig.connectionManager,
         );

@@ -8,7 +8,7 @@ import { IResolvers } from 'graphql-tools';
 import { ExpressContext, MiddlewareConfiguration } from '..';
 import { SnapshotConfiguration } from './snapshot-configuration';
 
-export interface PolarisServerOptions extends ApolloServerExpressConfig {
+export interface PolarisServerOptions extends Omit<ApolloServerExpressConfig, 'logger'> {
     typeDefs: DocumentNode | DocumentNode[] | string | string[];
     resolvers: IResolvers | IResolvers[];
     port: number;

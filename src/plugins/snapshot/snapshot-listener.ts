@@ -1,5 +1,6 @@
 import { PolarisGraphQLContext, RealitiesHolder } from '@enigmatis/polaris-common';
 import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
+import { isMutation } from '@enigmatis/polaris-middlewares';
 import {
     getConnectionForReality,
     PolarisConnectionManager,
@@ -7,7 +8,6 @@ import {
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
-import { GraphQLOptions } from 'apollo-server-express';
 import {
     GraphQLRequestContext,
     GraphQLRequestListener,
@@ -16,7 +16,7 @@ import {
 import { SnapshotConfiguration } from '../..';
 
 export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLContext> {
-    public static graphQLOptions: GraphQLOptions;
+    public static graphQLOptions: any;
 
     public constructor(
         private readonly logger: PolarisGraphQLLogger,
@@ -36,7 +36,10 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
     ): Promise<void> | void {
         const { context } = requestContext;
 
-        if (!context.requestHeaders.snapRequest && !this.snapshotConfiguration.autoSnapshot) {
+        if (
+            (!context.requestHeaders.snapRequest && !this.snapshotConfiguration.autoSnapshot) ||
+            isMutation(requestContext.request.query)
+        ) {
             return;
         }
 

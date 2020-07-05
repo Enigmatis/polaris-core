@@ -4,7 +4,6 @@ import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphqlRawRequest, graphQLRequest } from '../server/utils/graphql-client';
 import * as concurrentMutations from './jsonRequestsAndHeaders/concurrentMutations.json';
 import * as simpleQuery from './jsonRequestsAndHeaders/simpleQuery.json';
-import validate = WebAssembly.validate;
 
 let polarisServer: PolarisServer;
 
@@ -31,7 +30,7 @@ describe('concurrent mutations tests', () => {
             concurrentMutations.request,
             concurrentMutations.headers,
             concurrentMutations.variables,
-        ).then(res => {
+        ).then((res: any) => {
             expect(res.createAuthor).toBeDefined();
             expect(res.createAuthor.firstName).toBe(concurrentMutations.variables.firstName);
             expect(res.createAuthor.lastName).toBe(concurrentMutations.variables.lastName);
@@ -48,7 +47,7 @@ describe('concurrent mutations tests', () => {
             concurrentMutations.requestTwo,
             concurrentMutations.headers,
             concurrentMutations.variables,
-        ).then(res => {
+        ).then((res: any) => {
             expect(res.createAuthor).toBeDefined();
             expect(res.createAuthor.firstName).toBe(concurrentMutations.variables.fName);
             expect(res.createAuthor.lastName).toBe(concurrentMutations.variables.lName);
@@ -65,7 +64,7 @@ describe('concurrent mutations tests', () => {
             concurrentMutations.requestThree,
             concurrentMutations.headers,
             concurrentMutations.variables,
-        ).then(res => {
+        ).then((res: any) => {
             expect(res.createAuthor).toBeDefined();
             expect(res.createAuthor.firstName).toBe(concurrentMutations.variables.first);
             expect(res.createAuthor.lastName).toBe(concurrentMutations.variables.last);

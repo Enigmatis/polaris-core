@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('reality is specified in the headers', () => {
     it('should set reality of the entity from the header', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             mutation.request,
             { 'reality-id': 3 },
             {
@@ -32,7 +32,7 @@ describe('reality is specified in the headers', () => {
     });
 
     it('should filter entities for the specific reality', async () => {
-        const result = await graphQLRequest(
+        const result: any = await graphQLRequest(
             includeLinkedOperDisabled.request,
             includeLinkedOperDisabled.headers,
         );
@@ -43,7 +43,7 @@ describe('reality is specified in the headers', () => {
 
     describe('include linked operational entities', () => {
         it('should link operational entities if set to true', async () => {
-            const result = await graphQLRequest(
+            const result: any = await graphQLRequest(
                 includeLinkedOperEnabled.request,
                 includeLinkedOperEnabled.headers,
             );
@@ -57,7 +57,7 @@ describe('reality is specified in the headers', () => {
         });
 
         it('should filter operational entities if set to false', async () => {
-            const result = await graphQLRequest(
+            const result: any = await graphQLRequest(
                 includeLinkedOperDisabled.request,
                 includeLinkedOperDisabled.headers,
             );
