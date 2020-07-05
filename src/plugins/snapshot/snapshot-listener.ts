@@ -4,7 +4,6 @@ import { isMutation } from '@enigmatis/polaris-middlewares';
 import {
     getConnectionForReality,
     PolarisConnectionManager,
-    QueryRunner,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { runHttpQuery } from 'apollo-server-core';
@@ -63,52 +62,61 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             if (!queryRunner.isTransactionActive) {
                 queryRunner.startTransaction();
             }
-            let currentPageIndex = 0;
-            do {
-                const httpRequest = requestContext.request.http!;
-                const currentPageResult = await runHttpQuery([], {
-                    method: httpRequest.method,
-                    request: httpRequest,
-                    query: requestContext.request,
-                    options: {
-                        ...SnapshotListener.graphQLOptions,
-                        context,
-                    },
-                });
+            try {
+                let currentPageIndex = 0;
+                do {
+                    const httpRequest = requestContext.request.http!;
+                    const currentPageResult = await runHttpQuery([], {
+                        method: httpRequest.method,
+                        request: httpRequest,
+                        query: requestContext.request,
+                        options: {
+                            ...SnapshotListener.graphQLOptions,
+                            context,
+                        },
+                    });
 
-                const parsedResult = JSON.parse(currentPageResult.graphqlResponse);
+                    const parsedResult = JSON.parse(currentPageResult.graphqlResponse);
 
-                if (!context.snapshotContext) {
-                    const totalCount = parsedResult.extensions.totalCount;
-                    if (totalCount !== undefined) {
-                        context.snapshotContext = {
-                            totalCount,
-                            startIndex: 0,
-                            countPerPage: requestHeaders.snapPageSize
-                                ? Math.min(
-                                      this.snapshotConfiguration.maxPageSize,
-                                      requestHeaders.snapPageSize,
-                                  )
-                                : this.snapshotConfiguration.maxPageSize,
-                        };
-                        context.returnedExtensions.globalDataVersion =
-                            parsedResult.extensions.globalDataVersion;
-                    } else {
-                        queryRunner.rollbackTransaction();
-                        return;
+                    if (!context.snapshotContext) {
+                        const totalCount = parsedResult.extensions.totalCount;
+                        if (totalCount !== undefined) {
+                            context.snapshotContext = {
+                                totalCount,
+                                startIndex: 0,
+                                countPerPage: requestHeaders.snapPageSize
+                                    ? Math.min(
+                                          this.snapshotConfiguration.maxPageSize,
+                                          requestHeaders.snapPageSize,
+                                      )
+                                    : this.snapshotConfiguration.maxPageSize,
+                            };
+                            context.returnedExtensions.globalDataVersion =
+                                parsedResult.extensions.globalDataVersion;
+                        } else {
+                            queryRunner.rollbackTransaction();
+                            return;
+                        }
                     }
-                }
-                context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
-                delete parsedResult.extensions.prefetchBuffer;
-                const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
-                await snapshotRepository.save({} as any, snapshotPage);
-                pagesIds.push(snapshotPage.getId());
-                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
-                currentPageIndex++;
-            } while (
-                currentPageIndex <
-                context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
-            );
+                    context.snapshotContext!.prefetchBuffer =
+                        parsedResult.extensions.prefetchBuffer;
+                    delete parsedResult.extensions.prefetchBuffer;
+                    const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
+                    await snapshotRepository.save({} as any, snapshotPage);
+                    pagesIds.push(snapshotPage.getId());
+                    context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
+                    currentPageIndex++;
+                } while (
+                    currentPageIndex <
+                    context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
+                );
+            } catch (e) {
+                queryRunner.rollbackTransaction();
+                this.logger.error('Error in snapshot process', context, {
+                    throwable: e,
+                });
+                throw e;
+            }
             queryRunner.commitTransaction();
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
