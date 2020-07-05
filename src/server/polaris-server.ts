@@ -68,7 +68,7 @@ export class PolarisServer {
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
-            express.static(path.join(__dirname, '../../static/playground')),
+            express.static(path.join(__dirname, '../../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
