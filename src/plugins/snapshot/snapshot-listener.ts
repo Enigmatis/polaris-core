@@ -60,7 +60,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 this.connectionManager,
             ).manager.queryRunner!;
             if (!queryRunner.isTransactionActive) {
-                queryRunner.startTransaction();
+                await queryRunner.startTransaction();
             }
             try {
                 let currentPageIndex = 0;
@@ -94,7 +94,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                             context.returnedExtensions.globalDataVersion =
                                 parsedResult.extensions.globalDataVersion;
                         } else {
-                            queryRunner.rollbackTransaction();
+                            await queryRunner.rollbackTransaction();
                             return;
                         }
                     }
@@ -111,13 +111,13 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                     context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
                 );
             } catch (e) {
-                queryRunner.rollbackTransaction();
+                await queryRunner.rollbackTransaction();
                 this.logger.error('Error in snapshot process', context, {
                     throwable: e,
                 });
                 throw e;
             }
-            queryRunner.commitTransaction();
+            await queryRunner.commitTransaction();
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
     }
