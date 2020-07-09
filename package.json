@@ -71,7 +71,7 @@
         "@enigmatis/polaris-common": "^1.4.4",
         "@enigmatis/polaris-graphql-logger": "^1.4.2",
         "@enigmatis/polaris-logs": "^2.8.2",
-        "@enigmatis/polaris-middlewares": "^1.4.5",
+        "@enigmatis/polaris-middlewares": "^1.4.6",
         "@enigmatis/polaris-schema": "^1.1.1",
         "@enigmatis/polaris-typeorm": "^2.3.5",
         "apollo-server-express": "^2.15.1",
@@ -80,7 +80,7 @@
         "graphql": "^14.7.0",
         "graphql-middleware": "^4.0.2",
         "http-status": "^1.4.2",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "subscriptions-transport-ws": "^0.9.16",
         "ts-node": "^8.10.2",
         "uuid": "^3.4.0"
