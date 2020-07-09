@@ -1,3 +1,10 @@
+# [2.0.0-beta.22](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.21...v2.0.0-beta.22) (2020-07-09)
+
+
+### Bug Fixes
+
+* version is now defined when sending partial application props ([53c89b0](https://github.com/Enigmatis/polaris-core/commit/53c89b0e5e1d538d97adea361d264d3de8979965))
+
 # [2.0.0-beta.21](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.20...v2.0.0-beta.21) (2020-06-14)
 
 
