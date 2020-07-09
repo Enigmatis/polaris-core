@@ -1,3 +1,10 @@
+# [2.0.0-beta.23](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.22...v2.0.0-beta.23) (2020-07-09)
+
+
+### Bug Fixes
+
+* playground assets load correctly ([b3f717c](https://github.com/Enigmatis/polaris-core/commit/b3f717ca80727fd9c1b8593a07617898c6ec125f))
+
 # [2.0.0-beta.22](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.21...v2.0.0-beta.22) (2020-07-09)
 
 
