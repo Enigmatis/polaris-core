@@ -89,7 +89,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             snapshotMetadata.setDataVersion(context.returnedExtensions.globalDataVersion);
             snapshotMetadata.setTotalCount(context.snapshotContext?.totalCount!);
             snapshotMetadata.setTotalPagesCount(pageCount);
-            await snapshotMetadataRepository.save({} as any , snapshotMetadata);
+            await snapshotMetadataRepository.save({} as any, snapshotMetadata);
             this.handleSnapshotOperation(
                 context,
                 firstRequest,

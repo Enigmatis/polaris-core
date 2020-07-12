@@ -3,7 +3,8 @@ import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import {
     getConnectionForReality,
-    PolarisConnectionManager, SnapshotMetadata,
+    PolarisConnectionManager,
+    SnapshotMetadata,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
@@ -81,7 +82,7 @@ export class PolarisServer {
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
-            express.static(path.join(__dirname, '../../static/playground')),
+            express.static(path.join(__dirname, '../../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
