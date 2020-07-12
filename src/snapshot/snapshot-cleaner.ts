@@ -2,7 +2,7 @@ import { RealitiesHolder, Reality } from '@enigmatis/polaris-common';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import {
     getConnectionForReality,
-    PolarisConnectionManager,
+    PolarisConnectionManager, SnapshotMetadata,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 
@@ -17,7 +17,7 @@ export const setSnapshotCleanerInterval = (
 ): void => {
     snapshotCleanerInterval = global.setInterval(
         () =>
-            deleteOutdatedSnapshotPages(
+            deleteOutdatedSnapshotPagesAndMetadata(
                 realitiesHolder,
                 secondsToBeOutdated,
                 logger,
@@ -33,20 +33,26 @@ export const clearSnapshotCleanerInterval = (): void => {
     }
 };
 
-const deleteOutdatedSnapshotPages = (
+const deleteOutdatedSnapshotPagesAndMetadata = (
     realitiesHolder: RealitiesHolder,
     secondsToBeOutdated: number,
     logger: AbstractPolarisLogger,
     connectionManager: PolarisConnectionManager,
 ): void => {
     realitiesHolder.getRealitiesMap().forEach(async (reality: Reality) => {
-        const snapshotRepository = getConnectionForReality(
+        const connection = getConnectionForReality(
             reality.id,
             realitiesHolder as any,
             connectionManager,
-        ).getRepository(SnapshotPage);
+        );
+        const snapshotRepository = connection.getRepository(SnapshotPage);
+        const snapshotMetadataRepository = connection.getRepository(SnapshotMetadata);
         await snapshotRepository.query(`DELETE FROM ${snapshotRepository.metadata.tablePath} 
                                         WHERE EXTRACT(EPOCH FROM (NOW() - "creationTime")) > ${secondsToBeOutdated};`);
+
+        await snapshotMetadataRepository.query(`DELETE FROM ${snapshotMetadataRepository.metadata.tablePath} 
+                                        WHERE EXTRACT(EPOCH FROM (NOW() - "lastAccessedTime")) > ${secondsToBeOutdated};`);
+
         logger.debug(`Snapshot cleaner has deleted outdated pages for reality id ${reality.id}`);
     });
 };

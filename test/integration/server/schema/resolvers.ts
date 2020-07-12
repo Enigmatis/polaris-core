@@ -14,6 +14,10 @@ import { polarisGraphQLLogger } from '../utils/logger';
 const pubsub = new PubSub();
 const BOOK_UPDATED = 'BOOK_UPDATED';
 
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export const resolvers = {
     Query: {
         allBooks: async (
@@ -22,7 +26,7 @@ export const resolvers = {
             context: PolarisGraphQLContext,
         ): Promise<Book[]> => {
             const connection = getPolarisConnectionManager().get();
-            polarisGraphQLLogger.debug("I'm the resolver of all books", context);
+            polarisGraphQLLogger.debug('I\'m the resolver of all books', context);
             return connection.getRepository(Book).find(context, { relations: ['author'] });
         },
         allBooksPaginated: async (
@@ -33,7 +37,8 @@ export const resolvers = {
             const connection = getPolarisConnectionManager().get();
             polarisGraphQLLogger.debug("I'm the resolver of all books", context);
             return {
-                getData: (startIndex?: number, pageSize?: number): Promise<Book[]> => {
+                getData: async (startIndex?: number, pageSize?: number): Promise<Book[]> => {
+                    await sleep(10000);
                     return connection.getRepository(Book).find(context, {
                         relations: ['author'],
                         skip: startIndex,
