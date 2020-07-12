@@ -10,7 +10,7 @@ export { SnapshotConfiguration } from './config/snapshot-configuration';
 export * from 'apollo-server-errors';
 export { PubSub, gql } from 'apollo-server-express';
 export * from '@enigmatis/polaris-common';
-export { Reality } from '@enigmatis/polaris-common';
+export { Reality, ApplicationProperties } from '@enigmatis/polaris-common';
 export * from '@enigmatis/polaris-logs';
 export * from '@enigmatis/polaris-graphql-logger';
 export * from '@enigmatis/polaris-middlewares';

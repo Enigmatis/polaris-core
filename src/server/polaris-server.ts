@@ -3,7 +3,7 @@ import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
 import {
     getConnectionForReality,
-    PolarisConnectionManager,
+    PolarisConnectionManager, SnapshotMetadata,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
@@ -63,12 +63,25 @@ export class PolarisServer {
                 const result = await snapshotRepository.findOne({} as any, id);
                 res.send(result?.getData());
             });
+
+            app.get('/snapshot/metadata', async (req: express.Request, res: express.Response) => {
+                const id = req.query.id;
+                const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
+                const realityId: number = realityHeader ? +realityHeader : 0;
+                const snapshotMetadataRepository = getConnectionForReality(
+                    realityId,
+                    this.polarisServerConfig.supportedRealities as any,
+                    config.connectionManager as PolarisConnectionManager,
+                ).getRepository(SnapshotMetadata);
+                const result = await snapshotMetadataRepository.findOne({} as any, id);
+                res.send(result);
+            });
         }
         const endpoint = `${this.polarisServerConfig.applicationProperties.version}/graphql`;
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
-            express.static(path.join(__dirname, '../../../static/playground')),
+            express.static(path.join(__dirname, '../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
