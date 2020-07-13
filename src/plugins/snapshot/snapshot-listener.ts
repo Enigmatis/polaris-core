@@ -59,8 +59,10 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 this.realitiesHolder,
                 this.connectionManager,
             ).manager.queryRunner!;
+            let transactionStarted = false;
             if (!queryRunner.isTransactionActive) {
                 await queryRunner.startTransaction();
+                transactionStarted = true;
             }
             try {
                 let currentPageIndex = 0;
@@ -98,17 +100,16 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                             return;
                         }
                     }
-                    context.snapshotContext!.prefetchBuffer =
-                        parsedResult.extensions.prefetchBuffer;
+                    context.snapshotContext.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
                     delete parsedResult.extensions.prefetchBuffer;
                     const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
                     await snapshotRepository.save({} as any, snapshotPage);
                     pagesIds.push(snapshotPage.getId());
-                    context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
+                    context.snapshotContext.startIndex! += context.snapshotContext.countPerPage!;
                     currentPageIndex++;
                 } while (
                     currentPageIndex <
-                    context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!
+                    context.snapshotContext.totalCount! / context.snapshotContext.countPerPage!
                 );
             } catch (e) {
                 await queryRunner.rollbackTransaction();
@@ -117,7 +118,9 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 });
                 throw e;
             }
-            await queryRunner.commitTransaction();
+            if (transactionStarted) {
+                await queryRunner.commitTransaction();
+            }
             context.returnedExtensions.snapResponse = { pagesIds };
         })();
     }
