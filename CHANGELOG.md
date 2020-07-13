@@ -1,3 +1,10 @@
+# [2.0.0-beta.24](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.23...v2.0.0-beta.24) (2020-07-12)
+
+
+### Bug Fixes
+
+* playground offline ([d8cac37](https://github.com/Enigmatis/polaris-core/commit/d8cac37699172e10f33f490bc751006fbc858864))
+
 # [2.0.0-beta.23](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.22...v2.0.0-beta.23) (2020-07-09)
 
 
