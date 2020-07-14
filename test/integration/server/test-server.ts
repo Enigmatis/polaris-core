@@ -10,16 +10,14 @@ import * as polarisProperties from './resources/polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';
 import { loggerConfig } from './utils/logger';
-
 export const connectionOptions: ConnectionOptions = {
     type: 'postgres',
-    url:
-        'postgres://vulcan_usr@galileo-dbs:vulcan_usr123@galileo-dbs.postgres.database.azure.com:5432/vulcan_db',
+    url: process.env.CONNECTION_STRING || '',
     entities: [__dirname + '/dal/entities/*.{ts,js}'],
     synchronize: true,
     dropSchema: true,
     logging: true,
-    schema: 'arik',
+    schema: process.env.SCHEMA_NAME,
 };
 
 const customContext = (context: ExpressContext): Partial<TestContext> => {
@@ -69,19 +67,3 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
         connectionManager: getPolarisConnectionManager(),
     };
 };
-
-async function start() {
-    await startTestServer({
-        snapshotConfig: {
-            autoSnapshot: true,
-            maxPageSize: 3,
-            snapshotCleaningInterval: 60,
-            secondsToBeOutdated: 600,
-            entitiesAmountPerFetch: 0,
-        },
-    });
-    await initializeDatabase();
-    await initializeDatabase();
-}
-
-start();
