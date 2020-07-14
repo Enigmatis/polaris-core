@@ -108,6 +108,21 @@ export const resolvers = {
             await authorRepo.save(context, newAuthor);
             return newAuthor;
         },
+        createBook: async (
+            parent: any,
+            args: any,
+            context: PolarisGraphQLContext,
+        ): Promise<Book | undefined> => {
+            const connection = getPolarisConnectionManager().get();
+            const authorRepo = connection.getRepository(Author);
+            const bookRepo = connection.getRepository(Book);
+            const author = await authorRepo.findOne(context, { where: { id: args.id } });
+            if (author) {
+                const newBook = new Book(args.title, author);
+                await bookRepo.save(context, newBook);
+                return newBook;
+            }
+        },
         updateBooksByTitle: async (
             parent: any,
             args: any,
