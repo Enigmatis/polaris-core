@@ -1,4 +1,6 @@
 import {
+    IrrelevantEntitiesResponse,
+    mergeIrrelevantEntities,
     PolarisGraphQLContext,
     PolarisRequestHeaders,
     RealitiesHolder,
@@ -19,6 +21,7 @@ import {
     GraphQLRequestListener,
     GraphQLResponse,
 } from 'apollo-server-plugin-base';
+import { cloneDeep } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { SnapshotConfiguration } from '../..';
 
@@ -41,7 +44,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 >
             >,
     ): Promise<void> | void {
-        const { context } = requestContext;
+        let { context } = requestContext;
 
         if (
             (!context.requestHeaders.snapRequest && !this.snapshotConfiguration.autoSnapshot) ||
@@ -78,6 +81,8 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 }
             }
 
+            context = cloneDeep(context);
+            const irrelevantEntitiesOfPages: IrrelevantEntitiesResponse[] = [];
             const pageCount =
                 context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!;
             const pagesIds: string[] = Array(pageCount)
@@ -97,22 +102,27 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 snapshotMetadataRepository,
                 snapshotMetadata,
                 pagesIds[currentPageIndex],
+                irrelevantEntitiesOfPages,
             );
+            context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
             ++currentPageIndex;
             while (currentPageIndex < pageCount) {
-                const parsedResult = this.sendQueryRequest(requestContext, context);
+                const clonedContext = cloneDeep(context);
+                const parsedResult = this.sendQueryRequest(requestContext, clonedContext);
                 this.handleSnapshotOperation(
-                    context,
+                    clonedContext,
                     parsedResult,
                     snapshotRepository,
                     snapshotMetadataRepository,
                     snapshotMetadata,
                     pagesIds[currentPageIndex],
+                    irrelevantEntitiesOfPages,
                 );
+                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
                 currentPageIndex++;
             }
             snapshotMetadataRepository.save({} as any, snapshotMetadata);
-            context.returnedExtensions.snapResponse = {
+            requestContext.context.returnedExtensions.snapResponse = {
                 snapshotMetadataId: snapshotMetadata.getId(),
                 pagesIds,
             };
@@ -146,17 +156,24 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         snapshotMetadataRepository: PolarisRepository<SnapshotMetadata>,
         snapshotMetadata: SnapshotMetadata,
         pagesId: string,
+        irrelevantEntities: IrrelevantEntitiesResponse[],
     ) {
         const parsedResult = await resultPromise;
         context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
         delete parsedResult.extensions.prefetchBuffer;
-        snapshotMetadata.addIrrelevantEntities(parsedResult.extensions.irrelevantEntities);
+        if (parsedResult.extensions.irrelevantEntities) {
+            irrelevantEntities.push(parsedResult.extensions.irrelevantEntities);
+            delete parsedResult.extensions.irrelevantEntities;
+        }
         snapshotMetadata.addWarnings(parsedResult.extensions.warnings);
         snapshotMetadata.addErrors(parsedResult.extensions.errors);
         await this.saveResultToSnapshot(parsedResult, snapshotRepository, pagesId);
-        context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
         snapshotMetadata.setCurrentPageCount(snapshotMetadata.getCurrentPageCount() + 1);
         if (snapshotMetadata.getCurrentPageCount() === snapshotMetadata.getTotalPagesCount()) {
+            const mergedIrrelevantEntities:
+                | IrrelevantEntitiesResponse
+                | undefined = mergeIrrelevantEntities(irrelevantEntities);
+            snapshotMetadata.setIrrelevantEntities(JSON.stringify(mergedIrrelevantEntities));
             snapshotMetadata.setSnapshotStatus(SnapshotStatus.DONE);
         }
         await snapshotMetadataRepository.save({} as any, snapshotMetadata);

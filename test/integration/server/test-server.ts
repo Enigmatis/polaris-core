@@ -76,10 +76,11 @@ async function start() {
             autoSnapshot: true,
             maxPageSize: 3,
             snapshotCleaningInterval: 60,
-            secondsToBeOutdated: 60,
+            secondsToBeOutdated: 600,
             entitiesAmountPerFetch: 0,
-        }
+        },
     });
+    await initializeDatabase();
     await initializeDatabase();
 }
 

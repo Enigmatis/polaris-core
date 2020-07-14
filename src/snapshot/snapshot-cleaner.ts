@@ -2,7 +2,8 @@ import { RealitiesHolder, Reality } from '@enigmatis/polaris-common';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import {
     getConnectionForReality,
-    PolarisConnectionManager, SnapshotMetadata,
+    PolarisConnectionManager,
+    SnapshotMetadata,
     SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
 

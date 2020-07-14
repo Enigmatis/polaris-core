@@ -75,6 +75,10 @@ export class PolarisServer {
                     config.connectionManager as PolarisConnectionManager,
                 ).getRepository(SnapshotMetadata);
                 const result = await snapshotMetadataRepository.findOne({} as any, id);
+                if (result) {
+                    result.setLastAccessedTime(new Date());
+                    snapshotMetadataRepository.save({} as any, result);
+                }
                 res.send(result);
             });
         }
@@ -82,7 +86,7 @@ export class PolarisServer {
         app.use(this.apolloServer.getMiddleware({ path: `/${endpoint}` }));
         app.use(
             '/graphql-playground-react',
-            express.static(path.join(__dirname, '../../../static/playground')),
+            express.static(path.join(__dirname, '../../static/playground')),
         );
         app.use('/$', (req: express.Request, res: express.Response) => {
             res.redirect(endpoint);
