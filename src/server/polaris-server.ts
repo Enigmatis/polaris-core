@@ -6,6 +6,7 @@ import {
     PolarisConnectionManager,
     SnapshotMetadata,
     SnapshotPage,
+    SnapshotStatus,
 } from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import * as express from 'express';
@@ -67,8 +68,13 @@ export class PolarisServer {
                     await snapshotRepository.update({} as any, result.getId(), {
                         lastAccessedTime: new Date(),
                     } as any);
+                } else {
+                    res.send({});
                 }
-                res.send({ data: result?.getData(), status: result?.getStatus() });
+                if (result!.getStatus() !== SnapshotStatus.DONE) {
+                    res.send({ status: result!.getStatus(), id: result!.getId() });
+                }
+                res.send(result!.getData());
             });
 
             app.get('/snapshot/metadata', async (req: express.Request, res: express.Response) => {
@@ -85,6 +91,7 @@ export class PolarisServer {
                     result.setLastAccessedTime(new Date());
                     snapshotMetadataRepository.save({} as any, result);
                 }
+
                 res.send(result);
             });
         }

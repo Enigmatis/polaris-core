@@ -2,7 +2,7 @@ import { PolarisGraphQLLogger } from '@enigmatis/polaris-graphql-logger';
 import { LoggerConfiguration } from '../../../../src';
 
 export const loggerConfig: LoggerConfiguration = {
-    loggerLevel: 'info',
+    loggerLevel: 'debug',
     writeToConsole: true,
     writeFullMessageToConsole: false,
 };
@@ -17,7 +17,7 @@ const applicationLogProperties = {
 
 export const polarisGraphQLLogger = new PolarisGraphQLLogger(
     {
-        loggerLevel: 'info',
+        loggerLevel: 'debug',
         writeToConsole: true,
         writeFullMessageToConsole: false,
     },

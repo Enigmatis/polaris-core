@@ -64,7 +64,6 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             const snapshotMetadataRepository = connection.getRepository(SnapshotMetadata);
             const snapshotMetadata = new SnapshotMetadata();
             await snapshotMetadataRepository.save({} as any, snapshotMetadata);
-            let currentPageIndex: number = 0;
             const firstRequest = await this.sendQueryRequest(requestContext, context);
 
             if (!context.snapshotContext) {
@@ -82,9 +81,9 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
             }
 
             context = cloneDeep(context);
-            const irrelevantEntitiesOfPages: IrrelevantEntitiesResponse[] = [];
-            const pageCount =
-                context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!;
+            const pageCount = Math.ceil(
+                context.snapshotContext!.totalCount! / context.snapshotContext!.countPerPage!,
+            );
             const snapshotPages: SnapshotPage[] = [];
             const pagesIds: string[] = Array(pageCount)
                 .fill(0)
@@ -94,38 +93,23 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                     return uuid;
                 });
             await snapshotRepository.save({} as any, snapshotPages);
+            const irrelevantEntitiesOfPages: IrrelevantEntitiesResponse[] = [];
             snapshotMetadata.setPageIds(pagesIds);
             snapshotMetadata.setDataVersion(context.returnedExtensions.globalDataVersion);
             snapshotMetadata.setTotalCount(context.snapshotContext?.totalCount!);
-            snapshotMetadata.setTotalPagesCount(pageCount);
+            snapshotMetadata.setPagesCount(pageCount);
             await snapshotMetadataRepository.save({} as any, snapshotMetadata);
-            this.handleSnapshotOperation(
+            this.executeSnapshotPagination(
                 context,
                 firstRequest,
                 snapshotRepository,
                 snapshotMetadataRepository,
                 snapshotMetadata,
-                snapshotPages[currentPageIndex],
+                snapshotPages,
                 irrelevantEntitiesOfPages,
+                pageCount,
+                requestContext,
             );
-            context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
-            ++currentPageIndex;
-            while (currentPageIndex < pageCount) {
-                const clonedContext = cloneDeep(context);
-                const parsedResult = this.sendQueryRequest(requestContext, clonedContext);
-                this.handleSnapshotOperation(
-                    clonedContext,
-                    parsedResult,
-                    snapshotRepository,
-                    snapshotMetadataRepository,
-                    snapshotMetadata,
-                    snapshotPages[currentPageIndex],
-                    irrelevantEntitiesOfPages,
-                );
-                context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
-                currentPageIndex++;
-            }
-            snapshotMetadataRepository.save({} as any, snapshotMetadata);
             requestContext.context.returnedExtensions.snapResponse = {
                 snapshotMetadataId: snapshotMetadata.getId(),
                 pagesIds,
@@ -153,6 +137,59 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         return null;
     }
 
+    private async executeSnapshotPagination(
+        context: PolarisGraphQLContext,
+        firstRequest: any,
+        snapshotRepository: PolarisRepository<SnapshotPage>,
+        snapshotMetadataRepository: PolarisRepository<SnapshotMetadata>,
+        snapshotMetadata: SnapshotMetadata,
+        snapshotPages: SnapshotPage[],
+        irrelevantEntitiesOfPages: IrrelevantEntitiesResponse[],
+        pageCount: number,
+        requestContext: GraphQLRequestContext<PolarisGraphQLContext> &
+            Required<
+                Pick<
+                    GraphQLRequestContext<PolarisGraphQLContext>,
+                    'metrics' | 'source' | 'document' | 'operationName' | 'operation'
+                >
+            >,
+    ) {
+        let currentPageIndex: number = 0;
+        await this.handleSnapshotOperation(
+            context,
+            firstRequest,
+            snapshotRepository,
+            snapshotMetadataRepository,
+            snapshotMetadata,
+            snapshotPages[currentPageIndex],
+            irrelevantEntitiesOfPages,
+        );
+        context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
+        ++currentPageIndex;
+        while (currentPageIndex < pageCount) {
+            const clonedContext = cloneDeep(context);
+            const parsedResult = this.sendQueryRequest(requestContext, clonedContext);
+            await this.handleSnapshotOperation(
+                clonedContext,
+                parsedResult,
+                snapshotRepository,
+                snapshotMetadataRepository,
+                snapshotMetadata,
+                snapshotPages[currentPageIndex],
+                irrelevantEntitiesOfPages,
+            );
+            context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
+            currentPageIndex++;
+        }
+        const mergedIrrelevantEntities:
+            | IrrelevantEntitiesResponse
+            | undefined = mergeIrrelevantEntities(irrelevantEntitiesOfPages);
+        snapshotMetadata.setIrrelevantEntities(JSON.stringify(mergedIrrelevantEntities));
+        snapshotMetadata.setCurrentPageIndex(null as any);
+        snapshotMetadata.setSnapshotStatus(SnapshotStatus.DONE);
+        await snapshotMetadataRepository.save({} as any, snapshotMetadata);
+    }
+
     private async handleSnapshotOperation(
         context: PolarisGraphQLContext,
         resultPromise: Promise<any>,
@@ -172,14 +209,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         snapshotMetadata.addWarnings(parsedResult.extensions.warnings);
         snapshotMetadata.addErrors(parsedResult.extensions.errors);
         await this.saveResultToSnapshot(parsedResult, snapshotRepository, snapshotPage);
-        snapshotMetadata.setCurrentPageCount(snapshotMetadata.getCurrentPageCount() + 1);
-        if (snapshotMetadata.getCurrentPageCount() === snapshotMetadata.getTotalPagesCount()) {
-            const mergedIrrelevantEntities:
-                | IrrelevantEntitiesResponse
-                | undefined = mergeIrrelevantEntities(irrelevantEntities);
-            snapshotMetadata.setIrrelevantEntities(JSON.stringify(mergedIrrelevantEntities));
-            snapshotMetadata.setSnapshotStatus(SnapshotStatus.DONE);
-        }
+        snapshotMetadata.setCurrentPageIndex(snapshotMetadata.getCurrentPageIndex() + 1);
         await snapshotMetadataRepository.save({} as any, snapshotMetadata);
     }
 
