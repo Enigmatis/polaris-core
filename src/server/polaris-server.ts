@@ -62,7 +62,13 @@ export class PolarisServer {
                     config.connectionManager as PolarisConnectionManager,
                 ).getRepository(SnapshotPage);
                 const result = await snapshotRepository.findOne({} as any, id);
-                res.send(result?.getData());
+                if (result) {
+                    result.setLastAccessedTime(new Date());
+                    await snapshotRepository.update({} as any, result.getId(), {
+                        lastAccessedTime: new Date(),
+                    } as any);
+                }
+                res.send({ data: result?.getData(), status: result?.getStatus() });
             });
 
             app.get('/snapshot/metadata', async (req: express.Request, res: express.Response) => {

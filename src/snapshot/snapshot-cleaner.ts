@@ -49,7 +49,7 @@ const deleteOutdatedSnapshotPagesAndMetadata = (
         const snapshotRepository = connection.getRepository(SnapshotPage);
         const snapshotMetadataRepository = connection.getRepository(SnapshotMetadata);
         await snapshotRepository.query(`DELETE FROM ${snapshotRepository.metadata.tablePath} 
-                                        WHERE EXTRACT(EPOCH FROM (NOW() - "creationTime")) > ${secondsToBeOutdated};`);
+                                        WHERE EXTRACT(EPOCH FROM (NOW() - "lastAccessedTime")) > ${secondsToBeOutdated};`);
 
         await snapshotMetadataRepository.query(`DELETE FROM ${snapshotMetadataRepository.metadata.tablePath} 
                                         WHERE EXTRACT(EPOCH FROM (NOW() - "lastAccessedTime")) > ${secondsToBeOutdated};`);

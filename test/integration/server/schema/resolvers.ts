@@ -38,7 +38,6 @@ export const resolvers = {
             polarisGraphQLLogger.debug("I'm the resolver of all books", context);
             return {
                 getData: async (startIndex?: number, pageSize?: number): Promise<Book[]> => {
-                    await sleep(10000);
                     return connection.getRepository(Book).find(context, {
                         relations: ['author'],
                         skip: startIndex,
