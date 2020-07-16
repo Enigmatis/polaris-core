@@ -12,7 +12,6 @@ export const waitUntilSnapshotRequestIsDone = async (metadataId: string, delayIn
     let response;
     do {
         await sleep(delayInMs);
-        const urlTo = metadataUrl + '?id=' + metadataId;
         response = await axios(metadataUrl + '?id=' + metadataId, { method: 'get' });
     } while (response?.data.status !== 'DONE');
 

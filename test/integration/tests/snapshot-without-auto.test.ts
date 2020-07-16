@@ -30,7 +30,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     paginatedQuery.request,
                     paginatedQuery.headers,
                 );
-
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(2);
             });
             it('snap size is 2 divides to 1 page', async () => {
@@ -38,7 +41,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     ...paginatedQuery.headers,
                     'snap-page-size': 3,
                 });
-
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(1);
             });
         });
