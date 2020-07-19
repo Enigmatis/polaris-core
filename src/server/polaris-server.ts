@@ -63,12 +63,7 @@ export class PolarisServer {
                     config.connectionManager as PolarisConnectionManager,
                 ).getRepository(SnapshotPage);
                 const result = await snapshotRepository.findOne({} as any, id);
-                if (result) {
-                    result.setLastAccessedTime(new Date());
-                    await snapshotRepository.update({} as any, result.getId(), {
-                        lastAccessedTime: new Date(),
-                    } as any);
-                } else {
+                if (!result) {
                     res.send({});
                 }
                 if (result!.getStatus() !== SnapshotStatus.DONE) {
@@ -87,11 +82,6 @@ export class PolarisServer {
                     config.connectionManager as PolarisConnectionManager,
                 ).getRepository(SnapshotMetadata);
                 const result = await snapshotMetadataRepository.findOne({} as any, id);
-                if (result) {
-                    result.setLastAccessedTime(new Date());
-                    snapshotMetadataRepository.save({} as any, result);
-                }
-
                 res.send(result);
             });
         }
