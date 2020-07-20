@@ -51,6 +51,12 @@ export async function stopTestServer(server: PolarisServer): Promise<void> {
         await getPolarisConnectionManager()
             .get()
             .close();
+        // @ts-ignore
+        delete getFromContainer(PolarisConnectionManager);
+        delete getPolarisConnectionManager().get().manager;
+        // @ts-ignore
+        delete getPolarisConnectionManager().connections;
+        Object.assign(getPolarisConnectionManager(), { connections: [] });
     }
 }
 
