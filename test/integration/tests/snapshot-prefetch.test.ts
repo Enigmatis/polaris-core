@@ -19,7 +19,7 @@ describe('snapshot pagination tests with auto disabled', () => {
                     snapshotConfig: {
                         autoSnapshot: false,
                         maxPageSize: 5,
-                        snapshotCleaningInterval: 60,
+                        snapshotCleaningInterval: 1000,
                         secondsToBeOutdated: 60,
                         entitiesAmountPerFetch: 1,
                     },
@@ -57,7 +57,7 @@ describe('snapshot pagination tests with auto disabled', () => {
                     snapshotConfig: {
                         autoSnapshot: false,
                         maxPageSize: 5,
-                        snapshotCleaningInterval: 60,
+                        snapshotCleaningInterval: 1000,
                         secondsToBeOutdated: 60,
                         entitiesAmountPerFetch: 2,
                     },
@@ -117,7 +117,7 @@ describe('snapshot pagination tests with auto disabled', () => {
                     snapshotConfig: {
                         autoSnapshot: false,
                         maxPageSize: 5,
-                        snapshotCleaningInterval: 60,
+                        snapshotCleaningInterval: 1000,
                         secondsToBeOutdated: 60,
                         entitiesAmountPerFetch: 50,
                     },
