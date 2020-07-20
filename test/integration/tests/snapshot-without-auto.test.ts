@@ -93,7 +93,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                 paginatedQuery.request,
                 paginatedQuery.headers,
             );
-
+            await waitUntilSnapshotRequestIsDone(
+                paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                100,
+            );
             expect(paginatedResult.data).toStrictEqual({});
             expect(paginatedResult.extensions.globalDataVersion).toBe(3);
             expect(paginatedResult.extensions.totalCount).toBe(2);
