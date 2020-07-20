@@ -1,6 +1,7 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
 import {
     ConnectionOptions,
+    getFromContainer,
     getPolarisConnectionManager,
     PolarisConnectionManager,
 } from '@enigmatis/polaris-typeorm';
