@@ -1,5 +1,5 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
-import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
+import { ConnectionOptions, getPolarisConnectionManager, PolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
 import * as customContextFields from './constants/custom-context-fields.json';
 import { TestClassInContext } from './context/test-class-in-context';
