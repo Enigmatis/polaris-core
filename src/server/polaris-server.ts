@@ -120,7 +120,7 @@ export class PolarisServer {
     }
 
     public async stop(): Promise<void> {
-        clearSnapshotCleanerInterval();
+        await clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }

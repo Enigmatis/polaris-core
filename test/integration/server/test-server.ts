@@ -5,7 +5,6 @@ import * as customContextFields from './constants/custom-context-fields.json';
 import { TestClassInContext } from './context/test-class-in-context';
 import { TestContext } from './context/test-context';
 import { initConnection } from './dal/connection-manager';
-import { initializeDatabase } from './dal/data-initalizer';
 import * as polarisProperties from './resources/polaris-properties.json';
 import { resolvers } from './schema/resolvers';
 import { typeDefs } from './schema/type-defs';

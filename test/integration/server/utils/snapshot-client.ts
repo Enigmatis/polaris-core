@@ -1,3 +1,4 @@
+import { getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import axios from 'axios';
 import { port } from '../resources/polaris-properties.json';
 
@@ -12,7 +13,10 @@ export const waitUntilSnapshotRequestIsDone = async (metadataId: string, delayIn
     let response;
     do {
         await sleep(delayInMs);
-        response = await axios(metadataUrl + '?id=' + metadataId, { method: 'get' });
+        // @ts-ignore
+        if (!getPolarisConnectionManager().get().manager.queryRunner.isTransactionActive) {
+            response = await axios(metadataUrl + '?id=' + metadataId, { method: 'get' });
+        }
     } while (response?.data.status !== 'DONE');
 
     function sleep(ms: number) {
