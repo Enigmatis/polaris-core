@@ -1,10 +1,5 @@
 import { RealitiesHolder } from '@enigmatis/polaris-common';
-import {
-    ConnectionOptions,
-    getFromContainer,
-    getPolarisConnectionManager,
-    PolarisConnectionManager,
-} from '@enigmatis/polaris-typeorm';
+import { ConnectionOptions, getPolarisConnectionManager } from '@enigmatis/polaris-typeorm';
 import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
 import * as customContextFields from './constants/custom-context-fields.json';
 import { TestClassInContext } from './context/test-class-in-context';
@@ -56,12 +51,6 @@ export async function stopTestServer(server: PolarisServer): Promise<void> {
         await getPolarisConnectionManager()
             .get()
             .close();
-        // @ts-ignore
-        delete getFromContainer(PolarisConnectionManager);
-        delete getPolarisConnectionManager().get().manager;
-        // @ts-ignore
-        delete getPolarisConnectionManager().connections;
-        Object.assign(getPolarisConnectionManager(), { connections: [] });
     }
 }
 
