@@ -1,6 +1,6 @@
 {
     "name": "@enigmatis/polaris-core",
-    "version": "2.0.0-beta.21",
+    "version": "2.0.0-beta.24",
     "description": "Create a node js graphql service easily",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -68,20 +68,20 @@
     },
     "homepage": "https://github.com/Enigmatis/polaris-core#readme",
     "dependencies": {
-        "@enigmatis/polaris-common": "^1.4.5",
+        "@enigmatis/polaris-common": "^1.4.4",
         "@enigmatis/polaris-graphql-logger": "^1.4.2",
         "@enigmatis/polaris-logs": "^2.8.2",
-        "@enigmatis/polaris-middlewares": "^1.4.7",
+        "@enigmatis/polaris-middlewares": "^1.4.6",
         "@enigmatis/polaris-schema": "^1.1.1",
-        "@enigmatis/polaris-typeorm": "^2.3.7",
-        "apollo-server-express": "^2.16.0",
+        "@enigmatis/polaris-typeorm": "^2.3.5",
+        "apollo-server-express": "^2.15.1",
         "apollo-server-plugin-base": "^0.6.10",
         "express": "^4.17.1",
         "graphql": "^14.7.0",
         "graphql-middleware": "^4.0.2",
         "http-status": "^1.4.2",
         "lodash": "^4.17.19",
-        "subscriptions-transport-ws": "^0.9.17",
+        "subscriptions-transport-ws": "^0.9.16",
         "ts-node": "^8.10.2",
         "uuid": "^3.4.0"
     },
@@ -110,7 +110,7 @@
         "tslint-consistent-codestyle": "^1.16.0",
         "tslint-eslint-rules": "^5.4.0",
         "tslint-plugin-prettier": "^2.3.0",
-        "typescript": "^3.9.7",
+        "typescript": "^3.9.6",
         "ws": "^7.3.1"
     },
     "husky": {

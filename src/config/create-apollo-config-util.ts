@@ -199,7 +199,9 @@ export function createPolarisContext(logger: AbstractPolarisLogger, config: Pola
 }
 
 export function createPlaygroundConfig(config: PolarisServerConfig): PlaygroundConfig {
-    return isProduction(config) ? false : { cdnUrl: '', version: '' };
+    return isProduction(config)
+        ? false
+        : { cdnUrl: '', version: config.applicationProperties.version };
 }
 
 export function createIntrospectionConfig(config: PolarisServerConfig): boolean {

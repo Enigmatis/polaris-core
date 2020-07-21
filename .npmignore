@@ -5,6 +5,7 @@ node_modules/
 src/
 test/
 docs/
+coverage/
 gulpfile.js
 tsconfig.json
 tslint.json

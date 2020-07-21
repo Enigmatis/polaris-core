@@ -1,4 +1,4 @@
-import { RealitiesHolder } from '@enigmatis/polaris-common';
+import { ApplicationProperties, RealitiesHolder } from '@enigmatis/polaris-common';
 import { LoggerConfiguration } from '@enigmatis/polaris-logs';
 import {
     createPolarisLoggerFromPolarisServerOptions,
@@ -8,34 +8,28 @@ import {
     SnapshotConfiguration,
 } from '..';
 
-export const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => {
-    return {
-        allowDataVersionAndIrrelevantEntitiesMiddleware: true,
-        allowRealityMiddleware: true,
-        allowSoftDeleteMiddleware: true,
-        allowTransactionalMutations: true,
-    };
-};
+const getDefaultMiddlewareConfiguration = (): MiddlewareConfiguration => ({
+    allowDataVersionAndIrrelevantEntitiesMiddleware: true,
+    allowRealityMiddleware: true,
+    allowSoftDeleteMiddleware: true,
+    allowTransactionalMutations: true,
+});
 
-export const getDefaultLoggerConfiguration = (): LoggerConfiguration => {
-    return {
-        loggerLevel: 'info',
-        writeToConsole: true,
-        writeFullMessageToConsole: false,
-    };
-};
+const getDefaultLoggerConfiguration = (): LoggerConfiguration => ({
+    loggerLevel: 'info',
+    writeToConsole: true,
+    writeFullMessageToConsole: false,
+});
 
-export const getDefaultSnapshotConfiguration = (): SnapshotConfiguration => {
-    return {
-        snapshotCleaningInterval: 60,
-        secondsToBeOutdated: 60,
-        maxPageSize: 50,
-        entitiesAmountPerFetch: 50,
-        autoSnapshot: false,
-    };
-};
+const getDefaultSnapshotConfiguration = (): SnapshotConfiguration => ({
+    snapshotCleaningInterval: 60,
+    secondsToBeOutdated: 60,
+    maxPageSize: 50,
+    entitiesAmountPerFetch: 50,
+    autoSnapshot: false,
+});
 
-export function getSupportedRealities(options: PolarisServerOptions): RealitiesHolder {
+const getSupportedRealities = (options: PolarisServerOptions): RealitiesHolder => {
     if (!options.supportedRealities) {
         options.supportedRealities = new RealitiesHolder();
     }
@@ -49,12 +43,25 @@ export function getSupportedRealities(options: PolarisServerOptions): RealitiesH
     }
 
     return options.supportedRealities;
-}
+};
+
+const getDefaultApplicationProperties = (
+    properties?: ApplicationProperties,
+): ApplicationProperties => {
+    const defaultVersion = { version: 'v1' };
+    if (!properties) {
+        return defaultVersion;
+    } else if (!properties.version) {
+        return { ...properties, ...defaultVersion };
+    } else {
+        return properties;
+    }
+};
 
 export const getPolarisServerConfigFromOptions = (
     options: PolarisServerOptions,
 ): PolarisServerConfig => {
-    const applicationProperties = options.applicationProperties || { version: 'v1' };
+    const applicationProperties = getDefaultApplicationProperties(options.applicationProperties);
     return {
         ...options,
         middlewareConfiguration:
