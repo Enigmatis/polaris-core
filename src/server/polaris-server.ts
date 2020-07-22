@@ -65,11 +65,15 @@ export class PolarisServer {
                 const result = await snapshotRepository.findOne({} as any, id);
                 if (!result) {
                     res.send({});
+                } else {
+                    result.setLastAccessedTime(new Date());
+                    await snapshotRepository.save({} as any, result);
+                    const responseToSend =
+                        result!.getStatus() !== SnapshotStatus.DONE
+                            ? { status: result!.getStatus(), id: result!.getId() }
+                            : result!.getData();
+                    res.send(responseToSend);
                 }
-                if (result!.getStatus() !== SnapshotStatus.DONE) {
-                    res.send({ status: result!.getStatus(), id: result!.getId() });
-                }
-                res.send(result!.getData());
             });
 
             app.get('/snapshot/metadata', async (req: express.Request, res: express.Response) => {
@@ -82,6 +86,10 @@ export class PolarisServer {
                     config.connectionManager as PolarisConnectionManager,
                 ).getRepository(SnapshotMetadata);
                 const result = await snapshotMetadataRepository.findOne({} as any, id);
+                if (result) {
+                    result.setLastAccessedTime(new Date());
+                    await snapshotMetadataRepository.save({} as any, result);
+                }
                 res.send(result);
             });
         }

@@ -9,13 +9,16 @@ export const snapshotRequest = async (snapshotId: string) => {
     return axios(url + '?id=' + snapshotId, { method: 'get' });
 };
 
+export const metadataRequest = async (snapshotMetadataId: string) => {
+    return axios(metadataUrl + '?id=' + snapshotMetadataId, {method: 'get'});
+};
+
 export const waitUntilSnapshotRequestIsDone = async (metadataId: string, delayInMs: number) => {
     let response;
     do {
         await sleep(delayInMs);
-        // @ts-ignore
-        if (!getPolarisConnectionManager().get().manager.queryRunner.isTransactionActive) {
-            response = await axios(metadataUrl + '?id=' + metadataId, { method: 'get' });
+        if (!getPolarisConnectionManager().get().manager!.queryRunner!.isTransactionActive) {
+            response = await metadataRequest(metadataId);
         }
     } while (response?.data.status !== 'DONE');
 
