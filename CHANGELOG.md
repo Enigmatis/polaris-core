@@ -1,3 +1,10 @@
+# [2.0.0-beta.25](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.24...v2.0.0-beta.25) (2020-07-22)
+
+
+### Bug Fixes
+
+* add irrelevant-entities.test.ts test on dv not answering criteria ([4e3992b](https://github.com/Enigmatis/polaris-core/commit/4e3992b0c891a58cb8006dd7242d36f8f74153f2))
+
 # [2.0.0-beta.24](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.23...v2.0.0-beta.24) (2020-07-12)
 
 
