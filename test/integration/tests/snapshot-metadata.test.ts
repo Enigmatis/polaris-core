@@ -85,37 +85,37 @@ describe('snapshot metadata is generated running snapshot pagination', () => {
             });
         });
     });
-    // describe('snapshot metadata last accessed time handling', () => {
-    //     let polarisServer: PolarisServer;
-    //     beforeEach(async () => {
-    //         polarisServer = await startTestServer({
-    //             snapshotConfig: {
-    //                 autoSnapshot: true,
-    //                 maxPageSize: 3,
-    //                 snapshotCleaningInterval: 1,
-    //                 secondsToBeOutdated: 10,
-    //                 entitiesAmountPerFetch: 50,
-    //             },
-    //         });
-    //         await initializeDatabase();
-    //     });
-    //     afterEach(async () => {
-    //         await stopTestServer(polarisServer);
-    //     });
-    //
-    //     it('should remove expired metadata', async () => {
-    //         const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
-    //             ...paginatedQuery.headers,
-    //         });
-    //         const snapshotMetadataId = paginatedResult.extensions.snapResponse.snapshotMetadataId;
-    //         await waitUntilSnapshotRequestIsDone(snapshotMetadataId, 500);
-    //         await sleep(11000);
-    //         const metadataResponse = await metadataRequest(snapshotMetadataId);
-    //         expect(metadataResponse.data).toBe('');
-    //
-    //         function sleep(ms: number) {
-    //             return new Promise(resolve => setTimeout(resolve, ms));
-    //         }
-    //     });
-    // });
+    describe('snapshot metadata last accessed time handling', () => {
+        let polarisServer: PolarisServer;
+        beforeEach(async () => {
+            polarisServer = await startTestServer({
+                snapshotConfig: {
+                    autoSnapshot: true,
+                    maxPageSize: 3,
+                    snapshotCleaningInterval: 1,
+                    secondsToBeOutdated: 4,
+                    entitiesAmountPerFetch: 50,
+                },
+            });
+            await initializeDatabase();
+        });
+        afterEach(async () => {
+            await stopTestServer(polarisServer);
+        });
+
+        it('should remove expired metadata', async () => {
+            const paginatedResult = await graphqlRawRequest(paginatedQuery.request, {
+                ...paginatedQuery.headers,
+            });
+            const snapshotMetadataId = paginatedResult.extensions.snapResponse.snapshotMetadataId;
+            await waitUntilSnapshotRequestIsDone(snapshotMetadataId, 500);
+            await sleep(5000);
+            const metadataResponse = await metadataRequest(snapshotMetadataId);
+            expect(metadataResponse.data).toBe('');
+
+            function sleep(ms: number) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        });
+     });
 });
