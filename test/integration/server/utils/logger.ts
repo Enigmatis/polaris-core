@@ -17,7 +17,7 @@ const applicationLogProperties = {
 
 export const polarisGraphQLLogger = new PolarisGraphQLLogger(
     {
-        loggerLevel: 'debug',
+        loggerLevel: 'info',
         writeToConsole: true,
         writeFullMessageToConsole: false,
     },
