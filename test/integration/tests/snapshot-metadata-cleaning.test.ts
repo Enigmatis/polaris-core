@@ -11,8 +11,8 @@ beforeEach(async () => {
         snapshotConfig: {
             autoSnapshot: true,
             maxPageSize: 3,
-            snapshotCleaningInterval: 5,
-            secondsToBeOutdated: 13,
+            snapshotCleaningInterval: 1,
+            secondsToBeOutdated: 3,
             entitiesAmountPerFetch: 50,
         },
     });
@@ -29,7 +29,7 @@ describe('snapshot metadata cleaned every interval', () => {
         });
         const snapshotMetadataId = paginatedResult.extensions.snapResponse.snapshotMetadataId;
         await waitUntilSnapshotRequestIsDone(snapshotMetadataId, 500);
-        await sleep(20000);
+        // await sleep(20000);
         const metadataResponse = await metadataRequest(snapshotMetadataId);
         expect(metadataResponse.data).toBe('');
 
