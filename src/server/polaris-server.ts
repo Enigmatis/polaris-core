@@ -1,11 +1,5 @@
-import { REALITY_ID } from '@enigmatis/polaris-common';
 import { AbstractPolarisLogger } from '@enigmatis/polaris-logs';
 import { makeExecutablePolarisSchema } from '@enigmatis/polaris-schema';
-import {
-    getConnectionForReality,
-    PolarisConnectionManager,
-    SnapshotPage,
-} from '@enigmatis/polaris-typeorm';
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -28,6 +22,7 @@ import {
     setSnapshotCleanerInterval,
 } from '../snapshot/snapshot-cleaner';
 import { getPolarisServerConfigFromOptions } from './configurations-manager';
+import { createSnapshotRoutes } from './routes/snapshot-routes';
 
 export const app = express();
 let server: http.Server;
@@ -43,6 +38,7 @@ export class PolarisServer {
         this.polarisLogger = this.polarisServerConfig.logger;
         this.apolloServerConfiguration = this.getApolloServerConfigurations();
         this.apolloServer = new ApolloServer(this.apolloServerConfiguration);
+
         if (config.connectionManager) {
             initSnapshotGraphQLOptions(
                 this.polarisServerConfig.logger,
@@ -51,18 +47,7 @@ export class PolarisServer {
                 this.createSchemaWithMiddlewares(),
                 config.connectionManager,
             );
-            app.get('/snapshot', async (req: express.Request, res: express.Response) => {
-                const id = req.query.id;
-                const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
-                const realityId: number = realityHeader ? +realityHeader : 0;
-                const snapshotRepository = getConnectionForReality(
-                    realityId,
-                    this.polarisServerConfig.supportedRealities as any,
-                    config.connectionManager as PolarisConnectionManager,
-                ).getRepository(SnapshotPage);
-                const result = await snapshotRepository.findOne({} as any, id);
-                res.send(result?.getData());
-            });
+            app.use('/snapshot', createSnapshotRoutes(this.polarisServerConfig, config));
         }
         const { version } = this.polarisServerConfig.applicationProperties;
         const endpoint = `${version}/graphql`;
@@ -100,7 +85,7 @@ export class PolarisServer {
     }
 
     public async stop(): Promise<void> {
-        clearSnapshotCleanerInterval();
+        await clearSnapshotCleanerInterval();
         if (this.apolloServer) {
             await this.apolloServer.stop();
         }

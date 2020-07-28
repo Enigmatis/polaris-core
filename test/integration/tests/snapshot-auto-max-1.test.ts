@@ -2,6 +2,7 @@ import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphqlRawRequest } from '../server/utils/graphql-client';
+import { waitUntilSnapshotRequestIsDone } from '../server/utils/snapshot-client';
 import * as paginatedQuery from './jsonRequestsAndHeaders/paginatedQuery.json';
 
 let polarisServer: PolarisServer;
@@ -10,7 +11,7 @@ beforeEach(async () => {
         snapshotConfig: {
             autoSnapshot: true,
             maxPageSize: 1,
-            snapshotCleaningInterval: 60,
+            snapshotCleaningInterval: 1000,
             secondsToBeOutdated: 60,
             entitiesAmountPerFetch: 50,
         },
@@ -30,6 +31,10 @@ describe('snapshot pagination tests with auto enabled', () => {
                     'snap-request': false,
                 });
                 const pageIds = paginatedResult.extensions.snapResponse.pagesIds;
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    1000,
+                );
                 expect(pageIds.length).toBe(2);
             });
 
@@ -40,6 +45,10 @@ describe('snapshot pagination tests with auto enabled', () => {
                     'snap-page-size': 10,
                 });
                 const pageIds = paginatedResult.extensions.snapResponse.pagesIds;
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    1000,
+                );
                 expect(pageIds.length).toBe(2);
             });
         });

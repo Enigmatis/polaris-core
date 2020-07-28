@@ -2,7 +2,7 @@ import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphqlRawRequest } from '../server/utils/graphql-client';
-import { snapshotRequest } from '../server/utils/snapshot-client';
+import { snapshotRequest, waitUntilSnapshotRequestIsDone } from '../server/utils/snapshot-client';
 import * as paginatedQuery from './jsonRequestsAndHeaders/paginatedQuery.json';
 
 let polarisServer: PolarisServer;
@@ -11,7 +11,7 @@ beforeEach(async () => {
         snapshotConfig: {
             autoSnapshot: false,
             maxPageSize: 5,
-            snapshotCleaningInterval: 60,
+            snapshotCleaningInterval: 1000,
             secondsToBeOutdated: 60,
             entitiesAmountPerFetch: 50,
         },
@@ -30,7 +30,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     paginatedQuery.request,
                     paginatedQuery.headers,
                 );
-
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(2);
             });
             it('snap size is 2 divides to 1 page', async () => {
@@ -38,7 +41,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     ...paginatedQuery.headers,
                     'snap-page-size': 3,
                 });
-
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 expect(paginatedResult.extensions.snapResponse.pagesIds.length).toBe(1);
             });
         });
@@ -49,6 +55,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     paginatedQuery.headers,
                 );
                 const pageIds = paginatedResult.extensions.snapResponse.pagesIds;
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 const firstPage = await snapshotRequest(pageIds[0]);
                 const secondPage = await snapshotRequest(pageIds[1]);
                 const returnedBookName = [
@@ -65,6 +75,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                     paginatedQuery.headers,
                 );
                 const pageIds = paginatedResult.extensions.snapResponse.pagesIds;
+                await waitUntilSnapshotRequestIsDone(
+                    paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                    100,
+                );
                 const firstPage = await snapshotRequest(pageIds[0]);
                 const secondPage = await snapshotRequest(pageIds[1]);
 
@@ -79,7 +93,10 @@ describe('snapshot pagination tests with auto disabled', () => {
                 paginatedQuery.request,
                 paginatedQuery.headers,
             );
-
+            await waitUntilSnapshotRequestIsDone(
+                paginatedResult.extensions.snapResponse.snapshotMetadataId,
+                100,
+            );
             expect(paginatedResult.data).toStrictEqual({});
             expect(paginatedResult.extensions.globalDataVersion).toBe(3);
             expect(paginatedResult.extensions.totalCount).toBe(2);

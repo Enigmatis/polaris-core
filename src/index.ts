@@ -1,4 +1,5 @@
 import { Entity } from '@enigmatis/polaris-typeorm';
+import { createSnapshotRoutes } from './server/routes/snapshot-routes';
 export { ExpressContext } from './server/express-context';
 export { PolarisServer, app } from './server/polaris-server';
 export * from './config/create-apollo-config-util';
@@ -10,7 +11,7 @@ export { SnapshotConfiguration } from './config/snapshot-configuration';
 export * from 'apollo-server-errors';
 export { PubSub, gql } from 'apollo-server-express';
 export * from '@enigmatis/polaris-common';
-export { Reality } from '@enigmatis/polaris-common';
+export { Reality, ApplicationProperties } from '@enigmatis/polaris-common';
 export * from '@enigmatis/polaris-logs';
 export * from '@enigmatis/polaris-graphql-logger';
 export * from '@enigmatis/polaris-middlewares';
@@ -27,3 +28,4 @@ export {
     IFieldResolver,
 } from 'graphql-tools';
 export * from './snapshot/paginated-resolver';
+export { createSnapshotRoutes } from './server/routes/snapshot-routes';
