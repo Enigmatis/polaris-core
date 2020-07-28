@@ -11,8 +11,8 @@ beforeEach(async () => {
         snapshotConfig: {
             autoSnapshot: true,
             maxPageSize: 3,
-            snapshotCleaningInterval: 1,
-            secondsToBeOutdated: 3,
+            snapshotCleaningInterval: 10,
+            secondsToBeOutdated: 30,
             entitiesAmountPerFetch: 50,
         },
     });
