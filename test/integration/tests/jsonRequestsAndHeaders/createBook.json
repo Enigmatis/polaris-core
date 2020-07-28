@@ -1,0 +1,4 @@
+{
+  "request": "mutation($id:String!, $title:String!){\n  createBook(title:$title,id:$id)\n{ id \n title}}",
+  "headers": { "reality-id": 3 }
+}
