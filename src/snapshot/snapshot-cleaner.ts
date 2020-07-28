@@ -48,10 +48,10 @@ const deleteOutdatedSnapshotPagesAndMetadata = (
         );
         const snapshotRepository = connection.getRepository(SnapshotPage);
         const snapshotMetadataRepository = connection.getRepository(SnapshotMetadata);
-        await snapshotRepository.query(`DELETE FROM ${snapshotRepository.metadata.tablePath} 
+        await snapshotRepository.query(`DELETE FROM "${snapshotRepository.metadata.schema}".${snapshotRepository.metadata.tableName} 
                                         WHERE EXTRACT(EPOCH FROM (NOW() - "lastAccessedTime")) > ${secondsToBeOutdated};`);
 
-        await snapshotMetadataRepository.query(`DELETE FROM ${snapshotMetadataRepository.metadata.tablePath} 
+        await snapshotMetadataRepository.query(`DELETE FROM "${snapshotMetadataRepository.metadata.schema}".${snapshotMetadataRepository.metadata.tableName} 
                                         WHERE EXTRACT(EPOCH FROM (NOW() - "lastAccessedTime")) > ${secondsToBeOutdated};`);
 
         logger.debug(`Snapshot cleaner has deleted outdated pages for reality id ${reality.id}`);
