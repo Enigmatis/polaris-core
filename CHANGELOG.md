@@ -1,3 +1,39 @@
+# [2.0.0-beta.26](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.25...v2.0.0-beta.26) (2020-07-28)
+
+
+### Bug Fixes
+
+* added test ([27a89cd](https://github.com/Enigmatis/polaris-core/commit/27a89cde5deada90443c979b9bce4a72e88e4bea))
+* added test ([f064197](https://github.com/Enigmatis/polaris-core/commit/f064197d7e76b2d34c9f10367e6e3a22c4cb94fd))
+* added tests ([b5dcec2](https://github.com/Enigmatis/polaris-core/commit/b5dcec229bfee712484e669ce4752963aa7cdede))
+* fix playground ([98e3877](https://github.com/Enigmatis/polaris-core/commit/98e3877bd57c733f6d9415da2b63faf7e9582e3b))
+* fix test ([fce0044](https://github.com/Enigmatis/polaris-core/commit/fce004473bbd943f54f4025e2ed4f8f64483b5e9))
+* fix wait for paging process ([b66acce](https://github.com/Enigmatis/polaris-core/commit/b66acce9197980be36f0093fdac6940a85f9dd4f))
+* fix wait for paging process ([6f92341](https://github.com/Enigmatis/polaris-core/commit/6f923413bc7d4caa9fb155cfadc728530ed91737))
+* fix wait for paging process ([642a9c5](https://github.com/Enigmatis/polaris-core/commit/642a9c5133e07bb478d65b6c59fe4b7fbf8956e1))
+* fix wait for paging process ([33005d3](https://github.com/Enigmatis/polaris-core/commit/33005d303268ce89fed83dfffcb09b33dd63a46b))
+* fix wait for paging process ([61dade6](https://github.com/Enigmatis/polaris-core/commit/61dade6093fe909fe8a9210af44117e994f0e8af))
+* fix wait for paging process ([6b985c9](https://github.com/Enigmatis/polaris-core/commit/6b985c93b476e252983ae8c42409feb1c00179e8))
+* fix wait for paging process ([8aea9de](https://github.com/Enigmatis/polaris-core/commit/8aea9de80826e0ce9923d289e38a580e5826d1c0))
+* fix wait for paging process ([eed759d](https://github.com/Enigmatis/polaris-core/commit/eed759da021a107a333076b4df5e3dccd607ac93))
+* fixed test timing ([e6e75ef](https://github.com/Enigmatis/polaris-core/commit/e6e75efe3dc1cf89dbd0ed594690a019daaf959c))
+* fixed tests ([4c0704b](https://github.com/Enigmatis/polaris-core/commit/4c0704b6e1f96927b0c056f191f9ee361bbf77f6))
+* fixes ([ffd9349](https://github.com/Enigmatis/polaris-core/commit/ffd93491cd05577e29f9492e95dc71a4f401d84f))
+* now works ([10c179c](https://github.com/Enigmatis/polaris-core/commit/10c179c8b7404c5e06808d117d1ba355c44f8df6))
+* pagination working with irrelevant entities ([1a9043f](https://github.com/Enigmatis/polaris-core/commit/1a9043f796b296509d57912b8a62df76f9e35b5f))
+* review fixes ([6f1297c](https://github.com/Enigmatis/polaris-core/commit/6f1297cb3be3274d88284afbd443be7d4757010b))
+* review fixes1 ([165711a](https://github.com/Enigmatis/polaris-core/commit/165711a006eb8db110a14233bea7c6b5588d6e21))
+* review fixes2 ([ce9bd0a](https://github.com/Enigmatis/polaris-core/commit/ce9bd0a58d170d70a0fdf6e2ac62563913a69cfa))
+* review fixes3 ([55ea065](https://github.com/Enigmatis/polaris-core/commit/55ea0652632c118f93a8e2088b67633f9866e6f0))
+* should now work good ([65a21e0](https://github.com/Enigmatis/polaris-core/commit/65a21e06d09c7d70ec5cb35ed0ca970485e4dee6))
+* snapshot created before data ([ed81127](https://github.com/Enigmatis/polaris-core/commit/ed81127c28d30c2397f34738f69cbf8a084016c2))
+* snapshot is now works as metadata ([c6c37fb](https://github.com/Enigmatis/polaris-core/commit/c6c37fb275397cbe2562d98c6e09ccff481e9c9c))
+* snapshot response is now correct ([bce31cb](https://github.com/Enigmatis/polaris-core/commit/bce31cba47b8d48ed7d4f32d5340942511bf73f8))
+* try travis without metadata snapshot tests ([2210653](https://github.com/Enigmatis/polaris-core/commit/22106534a23dff92cc08a9f9d84e32e0717abdef))
+* updated ([7ab6e01](https://github.com/Enigmatis/polaris-core/commit/7ab6e018cadb7dbe1387b40dbd9206d9a578fe09))
+* updated ([1e14d4e](https://github.com/Enigmatis/polaris-core/commit/1e14d4e9ef50a03a7b1911b48d45983fe688c279))
+* updated tests ([a30a664](https://github.com/Enigmatis/polaris-core/commit/a30a6647161cd7d5629edb574962c4c214cb5eef))
+
 # [2.0.0-beta.25](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.24...v2.0.0-beta.25) (2020-07-22)
 
 
