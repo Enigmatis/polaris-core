@@ -1,4 +1,5 @@
 import { Entity } from '@enigmatis/polaris-typeorm';
+import { createSnapshotRoutes } from './server/routes/snapshot-routes';
 export { ExpressContext } from './server/express-context';
 export { PolarisServer, app } from './server/polaris-server';
 export * from './config/create-apollo-config-util';
@@ -27,3 +28,4 @@ export {
     IFieldResolver,
 } from 'graphql-tools';
 export * from './snapshot/paginated-resolver';
+export { createSnapshotRoutes } from './server/routes/snapshot-routes';
