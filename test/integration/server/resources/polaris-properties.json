@@ -1,0 +1,8 @@
+{
+    "port": 8080,
+    "id": "p0laris-ex5mpl3",
+    "name": "polaris-example",
+    "version": "v1",
+    "environment": "environment",
+    "component": "component"
+}

@@ -1,9 +1,13 @@
-![Polaris-logo](static/img/polariscoolsm.png)
+<p align="center">
+    <img height="190" src="https://github.com/Enigmatis/polaris-nest-logger/raw/master/polarisen.png" alt="polaris logo" /><br><br>
+    Create a graphql service easily, integrated with typeorm, middlewares, standard logs, and more!<br><br>
+    <img alt="npm (scoped)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core">
+    <img alt="npm (scoped with tag)" src="https://img.shields.io/npm/v/@enigmatis/polaris-core/beta">
+    <img alt="Travis (.org) branch" src="https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master">
+    <a href="https://www.codacy.com/gh/Enigmatis/polaris-core?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Enigmatis/polaris-core&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/6a403edb43684b2382728837f58bbfbb"/></a>
+</p>
 
 # polaris-core
-
-[![NPM version](https://img.shields.io/npm/v/@enigmatis/polaris-core.svg?style=flat-square)](https://www.npmjs.com/package/@enigmatis/polaris-core)
-[![Build Status](https://travis-ci.com/Enigmatis/polaris-core.svg?branch=master)](https://travis-ci.com/Enigmatis/polaris-core)
 
 Polaris is a set of libraries that help you create the perfect graphql service, integrated with type orm and the hottest API standards.
 polaris-core organizes all of the libraries for you, and let you create your graphql service as easily as it can be.
@@ -23,7 +27,7 @@ polaris-core organizes all of the libraries for you, and let you create your gra
 This is the server that you will use in order to create your own standardized GraphQL server.\
 `PolarisServer` uses `ApolloServer` and starts the server with `Express`.
 
-### PolarisServerConfig
+### PolarisServerOptions
 
 Through this interface you should set the following configurations which will be supplied to the `PolarisServer`:
 
@@ -34,6 +38,7 @@ Through this interface you should set the following configurations which will be
 -   **port** (_number_) - Specify a port the `PolarisServer` should start the server on.
 -   **applicationProperties** (_ApplicationProperties - optional_) - Properties that describe your repository.
     If you don't provide those properties, the core will put 'v1' in the version.
+-   **allowSubscription** (boolean - optional) - Responsible for creating a websocket endpoint for graphql subscriptions.
 -   **customMiddlewares** (_any[] - optional_) - Custom middlewares that can be provided the `PolarisServer` with.
 -   **customContext** (_(context: any, connection?: Connection) => any - optional_) - You can provide the `PolarisServer` your own custom context.
     If you do not set your custom context, the core will use a default context.
@@ -41,6 +46,9 @@ Through this interface you should set the following configurations which will be
     If you do not provide this property, the core will use default values for the logger.
 -   **middlewareConfiguration** (_MiddlewareConfiguration - optional_) - This is an interface that defines what core middlewares should be activated/disabled.
 -   **connection** (_Connection - optional_) - This class represents your connection with the database. Used in the core middlewares.
+-   **allowSubscription** (_boolean - optional_) - _Default: false._ Responsible for creating a websocket endpoint for graphql subscriptions.
+-   **shouldAddWarningsToExtensions** (_boolean - optional_) - _Default: true._ Specifies whether to return the warnings in the response extensions or not.
+-   **allowMandatoryHeaders** (_boolean - optional_) - _Default: false._ When set to true, every request must have `reality-id` and `requesting-sys` headers.
 
 ### MiddlewareConfiguration
 
@@ -50,10 +58,184 @@ As mentioned above, this interface defines what core middlewares should be activ
 -   **allowSoftDeleteMiddleware** (_boolean_) - Determine if `SoftDeleteMiddleware` should be applied to the request.
 -   **allowRealityMiddleware** (_boolean_) - Determine if `RealityMiddleware` should be applied to the request.
 
+### Custom context
+
+First we will define the new context type, pay attention that we just added a new field in the root of the context,
+and a new header in the request headers object.
+
+```typescript
+import { PolarisGraphQLContext, PolarisRequestHeaders } from '@enigmatis/polaris-core';
+
+interface CustomRequestHeaders extends PolarisRequestHeaders {
+    customHeader?: string | string[];
+}
+
+export interface CustomContext extends PolarisGraphQLContext {
+    customField: number;
+    requestHeaders: CustomRequestHeaders;
+}
+```
+
+Then we will pass the custom context like this:
+
+```typescript
+import { ExpressContext, PolarisServer } from '@enigmatis/polaris-core';
+
+const typeDefs = `...`;
+const resolvers = { ... };
+
+const customContext = (context: ExpressContext): Partial<CustomContext> => {
+    const { req } = context;
+
+    return {
+        customField: 1000,
+        requestHeaders: {
+            customHeader: req.headers['custom-header'],
+        },
+    };
+};
+
+const server = new PolarisServer({
+    typeDefs,
+    resolvers,
+    port: 8082,
+    customContext,
+});
+```
+
+### Subscriptions
+
+Add the Subscription object to your schema
+
+```
+export const typeDefs = `
+    type Query {
+        ...
+    }
+
+    type Mutation {
+        ...
+        updateBook(id: String!, newTitle: String!): [Book]!
+        ...
+    }
+
+    type Subscription {
+        bookUpdated: Book
+    }
+
+    type Book implements RepositoryEntity {
+        ...
+    }
+`;
+
+```
+
+now let's implement the subscription resolver logic
+
+```
+import { PubSub } from '@enigmatis/polaris-core';
+
+const pubsub = new PubSub();
+const BOOK_UPDATED = 'BOOK_UPDATED';
+
+export const resolvers = {
+    Query: { ... },
+    Mutation: { ... },
+    Subscription: {
+        bookUpdated: {
+            subscribe: () => pubsub.asyncIterator([BOOK_UPDATED]),
+        },
+    },
+};
+```
+
+and inside the updateBook resolver we will publish the book that got changed:
+
+```
+pubsub.publish(BOOK_UPDATED, { bookUpdated: myBook })
+```
+
+When you create the server you have to allow subscriptions, so the server could create the endpoint
+
+```
+const server = new PolarisServer({
+    typeDefs,
+    resolvers,
+    port: 8080,
+    allowSubscription: true,
+});
+```
+
+Just pay attention that in case you are using custom context as well, the subscription context will be different,
+you can handle it like so:
+
+```
+const customContext = (context: ExpressContext): Partial<CustomContext> => {
+    const { req, connection } = context;
+    const headers = req ? req.headers : connection?.context;
+
+    return {
+        customField: 1000,
+        requestHeaders: {
+            customHeader: headers['custom-header'],
+        },
+    };
+};
+```
+
+### Warnings
+
+In order to have the ability of warnings, which returned in the extensions of the response, you will need to supply them to
+polaris. you can supply the warnings through the context. let's see an example:
+
+```
+allBooksWithWarnings: async (
+    parent: any,
+    args: any,
+    context: PolarisGraphQLContext,
+): Promise<Book[]> => {
+    const connection = getPolarisConnectionManager().get();
+    context.returnedExtensions.warnings = ['warning 1', 'warning 2'];
+    return connection.getRepository(Book).find(context, { relations: ['author'] });
+}
+```
+
+And let's see an example of response with the warnings:
+
+```json
+{
+    "data": {
+        "allBooks": [
+            {
+                "id": "53afd7e5-bf59-4408-acbc-1c5ebb5ff146",
+                "title": "Book1",
+                "author": {
+                    "firstName": "Author1",
+                    "lastName": "First"
+                }
+            },
+            {
+                "id": "4fab24e4-f584-4077-bb93-09cdfc88b202",
+                "title": "Book2",
+                "author": {
+                    "firstName": "Author2",
+                    "lastName": "Two"
+                }
+            }
+        ]
+    },
+    "extensions": {
+        "globalDataVersion": 2,
+        "warnings": ["warning 1", "warning 2"]
+    }
+}
+```
+
+You can see inside the `extensions` that we have the warnings we defined earlier.
+
 ### Example
 
-```Typescript
-
+```typescript
 import { ApplicationProperties, PolarisServer } from '@enigmatis/polaris-core';
 
 const typeDefs = `
@@ -96,7 +278,6 @@ const server = new PolarisServer({
     applicationProperties,
 });
 server.start();
-
 ```
 
 For any additional help and requests, feel free to contact us :smile:

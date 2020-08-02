@@ -1,0 +1,4 @@
+{
+    "query": "query { authorsByFirstNameFromCustomHeader { firstName realityId } }",
+    "headers": { "reality-id": 0, "custom-header": 1 }
+}
