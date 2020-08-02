@@ -22,7 +22,11 @@ export class ExtensionsListener implements GraphQLRequestListener<PolarisGraphQL
             if (!this.shouldAddWarningsToExtensions) {
                 context.returnedExtensions.warnings = undefined;
             }
-            response.extensions = { ...response.extensions, ...context.returnedExtensions };
+            const extensionsToReturn = { ...response.extensions, ...context.returnedExtensions };
+            if (context.snapshotContext && extensionsToReturn.prefetchBuffer) {
+                delete extensionsToReturn.prefetchBuffer;
+            }
+            response.extensions = extensionsToReturn;
         }
     }
 }
