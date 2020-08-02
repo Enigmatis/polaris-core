@@ -155,6 +155,17 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
         await snapshotMetadataRepository.save({} as any, snapshotMetadata);
     }
 
+    private static async failSnapshotMetadata(
+        snapshotMetadataRepository: PolarisRepository<SnapshotMetadata>,
+        snapshotMetadata: SnapshotMetadata,
+        error: Error,
+    ) {
+        snapshotMetadata.setSnapshotStatus(SnapshotStatus.FAILED);
+        snapshotMetadata.setPageIds([]);
+        snapshotMetadata.addErrors(error.message);
+        await snapshotMetadataRepository.save({} as any, snapshotMetadata);
+    }
+
     public constructor(
         private readonly logger: PolarisGraphQLLogger,
         private readonly realitiesHolder: RealitiesHolder,
@@ -242,6 +253,11 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 );
             } catch (e) {
                 await queryRunner.rollbackTransaction();
+                SnapshotListener.failSnapshotMetadata(
+                    snapshotMetadataRepository,
+                    snapshotMetadata,
+                    e,
+                );
                 this.logger.error('Error in snapshot process', context, {
                     throwable: e,
                 });
