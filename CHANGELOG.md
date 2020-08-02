@@ -1,3 +1,12 @@
+# [2.0.0-beta.27](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.26...v2.0.0-beta.27) (2020-08-02)
+
+
+### Bug Fixes
+
+* added a bit of transaction management ([987a4d6](https://github.com/Enigmatis/polaris-core/commit/987a4d6d7a23c019aa14060a1f3aa1673ddb9708))
+* added await when dealing with a transaction ([e463c3b](https://github.com/Enigmatis/polaris-core/commit/e463c3bc65209bc0f96e9992fdfe5c6249934c34))
+* snapshot process is now transactional ([51f6945](https://github.com/Enigmatis/polaris-core/commit/51f6945a41049115d2a2d32b216f79ef57ad84f9))
+
 # [2.0.0-beta.26](https://github.com/Enigmatis/polaris-core/compare/v2.0.0-beta.25...v2.0.0-beta.26) (2020-07-28)
 
 
