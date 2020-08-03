@@ -45,7 +45,13 @@ export async function startTestServer(
     return server;
 }
 
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 export async function stopTestServer(server: PolarisServer): Promise<void> {
+    while (getPolarisConnectionManager().get().manager.queryRunner?.isTransactionActive) {
+        await sleep(1000);
+    }
     await server.stop();
     if (getPolarisConnectionManager().connections.length > 0) {
         await getPolarisConnectionManager()

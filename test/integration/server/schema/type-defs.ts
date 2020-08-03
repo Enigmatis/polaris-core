@@ -5,7 +5,7 @@ export const typeDefs = `
         allBooksWithWarnings: [Book]!
         authorById(id: String!): Author
         bookByTitle(title: String!): [Book]!
-        authorsByName(name: String!): [Author]!
+        authorsByFirstName(name: String!): [Author]!
         authorsByFirstNameFromCustomHeader: [Author]!
         customContextCustomField: Int!
         customContextInstanceMethod: String!
@@ -17,6 +17,7 @@ export const typeDefs = `
         updateBooksByTitle(title: String!, newTitle: String!): [Book]!
         deleteBook(id: String!): Boolean
         deleteAuthor(id: String!): Boolean
+        fail: Boolean
     }
 
     type Subscription {

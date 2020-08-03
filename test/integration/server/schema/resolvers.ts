@@ -1,4 +1,4 @@
-import { PolarisGraphQLContext } from '@enigmatis/polaris-common';
+import { PolarisError, PolarisGraphQLContext } from '@enigmatis/polaris-common';
 import { PubSub } from 'apollo-server-express';
 import {
     DeleteResult,
@@ -65,7 +65,7 @@ export const resolvers = {
                 relations: ['author'],
             });
         },
-        authorsByName: async (
+        authorsByFirstName: async (
             parent: any,
             args: any,
             context: PolarisGraphQLContext,
@@ -105,12 +105,15 @@ export const resolvers = {
             parent: any,
             args: any,
             context: PolarisGraphQLContext,
-        ): Promise<Author> => {
+        ): Promise<Author | undefined> => {
             const connection = getPolarisConnectionManager().get();
             const authorRepo = connection.getRepository(Author);
             const newAuthor = new Author(args.firstName, args.lastName);
-            await authorRepo.save(context, newAuthor);
-            return newAuthor;
+            const authorSaved = await authorRepo.save(context, newAuthor);
+            return authorSaved instanceof Array ? authorSaved[0] : authorSaved;
+        },
+        fail: async () => {
+            throw new PolarisError('fail', 404);
         },
         createBook: async (
             parent: any,

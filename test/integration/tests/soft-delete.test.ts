@@ -4,7 +4,7 @@ import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphQLRequest } from '../server/utils/graphql-client';
 import * as deleteAuthor from './jsonRequestsAndHeaders/deleteAuthor.json';
 import * as deleteBook from './jsonRequestsAndHeaders/deleteBook.json';
-import * as authorsByName from './jsonRequestsAndHeaders/queryAuthorsByName.json';
+import * as authorsByFirstName from './jsonRequestsAndHeaders/authorsByFirstName.json';
 import * as bookByTitle from './jsonRequestsAndHeaders/queryBooksByTitle.json';
 
 let polarisServer: PolarisServer;
@@ -49,12 +49,12 @@ describe('soft delete tests', () => {
         };
 
         const authorToDelete: any = await graphQLRequest(
-            authorsByName.request,
-            authorsByName.headers,
+            authorsByFirstName.request,
+            authorsByFirstName.headers,
             authorDeletionCriteria,
         );
         await graphQLRequest(deleteAuthor.request, deleteAuthor.headers, {
-            id: authorToDelete.authorsByName[0].id,
+            id: authorToDelete.authorsByFirstName[0].id,
         });
         const afterBookDeletionResponse: any = await graphQLRequest(
             bookByTitle.request,

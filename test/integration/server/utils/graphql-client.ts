@@ -10,5 +10,6 @@ export const graphQLRequest = async (data: string, headers: any, variables: any 
 
 export const graphqlRawRequest = async (data: string, headers: any, variables: any = undefined) => {
     const graphQLClient = new GraphQLClient(url, { headers });
-    return graphQLClient.rawRequest(data, variables);
+    const x = await graphQLClient.rawRequest(data, variables);
+    return x;
 };

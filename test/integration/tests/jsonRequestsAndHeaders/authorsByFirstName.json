@@ -1,0 +1,5 @@
+{
+    "request": "query($name:String!){\n  authorsByFirstName(name:$name){\n    id\n    firstName\n  }\n}",
+    "requestTwice": "query($name:String!, $name2:String!){\n  a:authorsByFirstName(name:$name){\n    id\n    firstName\n  }\n b:authorsByFirstName(name:$name2){\n    id\n    firstName\n  }\n}",
+    "headers": { "reality-id": 0 }
+}
