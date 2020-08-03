@@ -10,7 +10,7 @@ export const snapshotRequest = async (snapshotId: string) => {
 };
 
 export const metadataRequest = async (snapshotMetadataId: string) => {
-    return axios(metadataUrl + '?id=' + snapshotMetadataId, {method: 'get'});
+    return axios(metadataUrl + '?id=' + snapshotMetadataId, { method: 'get' });
 };
 
 export const waitUntilSnapshotRequestIsDone = async (metadataId: string, delayInMs: number) => {

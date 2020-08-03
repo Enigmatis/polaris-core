@@ -2,9 +2,9 @@ import { PolarisServer } from '../../../src';
 import { initializeDatabase } from '../server/dal/data-initalizer';
 import { startTestServer, stopTestServer } from '../server/test-server';
 import { graphQLRequest } from '../server/utils/graphql-client';
+import * as authorsByFirstName from './jsonRequestsAndHeaders/authorsByFirstName.json';
 import * as deleteAuthor from './jsonRequestsAndHeaders/deleteAuthor.json';
 import * as deleteBook from './jsonRequestsAndHeaders/deleteBook.json';
-import * as authorsByFirstName from './jsonRequestsAndHeaders/authorsByFirstName.json';
 import * as bookByTitle from './jsonRequestsAndHeaders/queryBooksByTitle.json';
 
 let polarisServer: PolarisServer;
