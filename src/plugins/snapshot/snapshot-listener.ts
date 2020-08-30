@@ -89,7 +89,7 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
                 context.snapshotContext!.prefetchBuffer = parsedResult.extensions.prefetchBuffer;
                 delete parsedResult.extensions.prefetchBuffer;
                 const snapshotPage = new SnapshotPage(JSON.stringify(parsedResult));
-                await snapshotRepository.save({} as any, snapshotPage);
+                await this.saveSnapshotPage(snapshotPage, snapshotRepository);
                 pagesIds.push(snapshotPage.getId());
                 context.snapshotContext!.startIndex! += context.snapshotContext!.countPerPage!;
                 currentPageIndex++;
@@ -124,15 +124,26 @@ export class SnapshotListener implements GraphQLRequestListener<PolarisGraphQLCo
 
     private getSnapshotRepository(
         requestHeaders: PolarisRequestHeaders,
-    ): PolarisRepository<SnapshotPage> {
-        // if (this.connectionlessConfig) {
-        //     return this.connectionlessConfig.getRepository('snapshot');
-        // } else {
-        return getConnectionForReality(
-            requestHeaders.realityId!,
-            this.realitiesHolder as any,
-            this.connectionManager,
-        ).getRepository(SnapshotPage);
-        // }
+    ): PolarisRepository<SnapshotPage> | undefined {
+        if (this.connectionlessConfig) {
+            return undefined;
+        } else {
+            return getConnectionForReality(
+                requestHeaders.realityId!,
+                this.realitiesHolder as any,
+                this.connectionManager,
+            ).getRepository(SnapshotPage);
+        }
+    }
+
+    private async saveSnapshotPage(
+        snapshotPage: SnapshotPage,
+        snapshotRepository?: PolarisRepository<SnapshotPage>,
+    ) {
+        if (this.connectionlessConfig) {
+            this.connectionlessConfig.saveSnapshotPage(snapshotPage);
+        } else {
+            await snapshotRepository?.save({} as any, snapshotPage);
+        }
     }
 }

@@ -4,8 +4,9 @@ import {
     ConnectionOptions,
     DataVersion,
     getPolarisConnectionManager,
+    SnapshotPage,
 } from '@enigmatis/polaris-typeorm';
-import { Client, Pool } from 'pg';
+import { Pool } from 'pg';
 import { ExpressContext, PolarisServer, PolarisServerOptions } from '../../../src';
 import * as customContextFields from './constants/custom-context-fields.json';
 import { TestClassInContext } from './context/test-class-in-context';
@@ -83,7 +84,7 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
                 });
                 const query =
                     'SELECT "DataVersion"."id" AS "id", "DataVersion"."value" AS "value" \n' +
-                    'FROM "arik"."data_version" "DataVersion" LIMIT 1';
+                    `FROM "${process.env.SCHEMA_NAME}"."data_version" "DataVersion" LIMIT 1`;
                 return pool.query(query).then(res => {
                     const dataVersion = new DataVersion(res.rows[0].value);
                     pool.end();
@@ -101,7 +102,7 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
                     port: 5432,
                 });
                 const query =
-                    `SELECT * FROM "arik"."book" "${typeName}" \n` +
+                    `SELECT * FROM "${process.env.SCHEMA_NAME}"."book" "${typeName}" \n` +
                     `WHERE NOT("${typeName}"."id" IN ('${criteria.notInIds?.join(',')}')) \n` +
                     `AND "${typeName}"."realityId" = ${criteria.realityId}`;
                 return pool.query(query).then(res => {
@@ -122,6 +123,53 @@ const getDefaultTestServerConfig = (): PolarisServerOptions => {
                     }
                     pool.end();
                     return irrelevantEntities;
+                });
+            },
+            saveSnapshotPage(page: SnapshotPage): void {
+                const pool = new Pool({
+                    connectionString:
+                        'postgres://vulcan_usr@galileo-dbs:vulcan_usr123@galileo-dbs.postgres.database.azure.com:5432/vulcan_db',
+                    database: 'postgres',
+                    port: 5432,
+                });
+                const dataAsByteArray = page
+                    .getData()
+                    .split('')
+                    .map(c => c.charCodeAt(0));
+                const data = `[{"type":"Buffer","data":[${dataAsByteArray}]}]`;
+                const query = `INSERT INTO "${process.env.SCHEMA_NAME}"."snapshot_page"("id", "data", "creationTime") VALUES (DEFAULT, ${data}, DEFAULT) RETURNING "id", "creationTime"`;
+                pool.query(query).then(() => {
+                    pool.end();
+                });
+            },
+            getSnapshotPageById(id: string): Promise<SnapshotPage> {
+                const pool = new Pool({
+                    connectionString:
+                        'postgres://vulcan_usr@galileo-dbs:vulcan_usr123@galileo-dbs.postgres.database.azure.com:5432/vulcan_db',
+                    database: 'postgres',
+                    port: 5432,
+                });
+                const query = `SELECT "SnapshotPage"."id" AS "SnapshotPage_id", "SnapshotPage"."data" AS "SnapshotPage_data", "SnapshotPage"."creationTime" AS "SnapshotPage_creationTime"
+                               FROM "${process.env.SCHEMA_NAME}"."snapshot_page" "SnapshotPage" WHERE "SnapshotPage"."id" IN ("${id}") LIMIT 1`;
+                return pool.query(query).then(res => {
+                    const snapshotPage = new SnapshotPage('');
+                    pool.end();
+                    return snapshotPage;
+                });
+            },
+            deleteSnapshotPageBySecondsToBeOutdated(
+                secondsToBeOutdated: number,
+                tablePath: string,
+            ): void {
+                const pool = new Pool({
+                    connectionString:
+                        'postgres://vulcan_usr@galileo-dbs:vulcan_usr123@galileo-dbs.postgres.database.azure.com:5432/vulcan_db',
+                    database: 'postgres',
+                    port: 5432,
+                });
+                const query = `DELETE FROM ${tablePath} WHERE EXTRACT(EPOCH FROM (NOW() - "creationTime")) > ${secondsToBeOutdated};`;
+                pool.query(query).then(() => {
+                    pool.end();
                 });
             },
         },

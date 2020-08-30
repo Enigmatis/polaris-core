@@ -57,12 +57,7 @@ export class PolarisServer {
                 const id = req.query.id;
                 const realityHeader: string | string[] | undefined = req.headers[REALITY_ID];
                 const realityId: number = realityHeader ? +realityHeader : 0;
-                const snapshotRepository = getConnectionForReality(
-                    realityId,
-                    this.polarisServerConfig.supportedRealities as any,
-                    config.connectionManager as PolarisConnectionManager,
-                ).getRepository(SnapshotPage);
-                const result = await snapshotRepository.findOne({} as any, id);
+                const result = await this.getSnapshotPageById(id, realityId);
                 res.send(result?.getData());
             });
         }
@@ -109,6 +104,19 @@ export class PolarisServer {
             await server.close();
         }
         this.polarisLogger.info('Server stopped');
+    }
+
+    private getSnapshotPageById(id: string, realityId: number): Promise<SnapshotPage | undefined> {
+        if (this.polarisServerConfig.connectionLessConfiguration) {
+            return this.polarisServerConfig.connectionLessConfiguration.getSnapshotPageById(id);
+        } else {
+            const snapshotRepository = getConnectionForReality(
+                realityId,
+                this.polarisServerConfig.supportedRealities as any,
+                this.polarisServerConfig.connectionManager as PolarisConnectionManager,
+            ).getRepository(SnapshotPage);
+            return snapshotRepository.findOne({} as any, id);
+        }
     }
 
     private getApolloServerConfigurations(): ApolloServerExpressConfig {
