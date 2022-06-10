@@ -102,7 +102,7 @@
         "pg": "^7.18.2",
         "prettier": "^1.19.1",
         "rimraf": "^3.0.2",
-        "semantic-release": "^17.1.1",
+        "semantic-release": "^19.0.3",
         "travis-deploy-once": "^5.0.11",
         "ts-jest": "^26.1.4",
         "tslint": "^5.20.1",
